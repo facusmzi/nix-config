@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: matplotlib
+# key: plt
+# --
+#+begin_src python :results none
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+$0
+
+plt.savefig('${1:grafico}.png', dpi=150, bbox_inches='tight')
+plt.close()
+#+end_src
+
+#+RESULTS:
+
+[[file:${1:grafico}.png]]

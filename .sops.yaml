@@ -1,0 +1,14 @@
+keys:
+  - &nily  age1emaqs9tgfmt933ce5shp3h9uyx267ueucyrytffhy5gyvq9laytqqacgaa
+  # - &nixi  age1REEMPLAZAR_CUANDO_TENGAS_NIXI
+
+creation_rules:
+  - path_regex: secrets/common\.yaml$
+    key_groups:
+      - age:
+          - *nily
+
+  - path_regex: secrets/nily\.yaml$
+    key_groups:
+      - age:
+          - *nily
