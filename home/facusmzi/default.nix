@@ -11,6 +11,7 @@
 
     ./git.nix
     ./ssh.nix
+    ./haruna.nix
   ];
 
   home.stateVersion = "25.05";
