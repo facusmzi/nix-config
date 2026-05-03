@@ -3,7 +3,6 @@
 {
 
   imports = [
-    ../../modules/home/plasma.nix
     ../../modules/home/firefox.nix
     ../../modules/home/ssh.nix
     ../../modules/home/git.nix
