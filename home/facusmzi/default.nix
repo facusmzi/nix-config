@@ -3,14 +3,12 @@
 {
 
   imports = [
-    ../../modules/home/firefox.nix
     ../../modules/home/ssh.nix
     ../../modules/home/git.nix
 
 
     ./git.nix
     ./ssh.nix
-    ./haruna.nix
   ];
 
   home.stateVersion = "25.05";
