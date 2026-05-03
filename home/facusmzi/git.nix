@@ -1,8 +1,8 @@
 { config, ... }:
 
 {
-  sops.age.sshKeyPaths  = [ "/etc/ssh/ssh_host_ed25519_key" ];
-  sops.defaultSopsFile  = ../../secrets/common.yaml;
+  sops.age.sshKeyPaths   = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  sops.defaultSopsFile   = ../../secrets/common.yaml;
   sops.defaultSopsFormat = "yaml";
 
   sops.secrets."git/user1_name"  = { };
@@ -11,16 +11,28 @@
   sops.secrets."git/user2_email" = { };
 
   programs.bash.initExtra = ''
-    export GIT_AUTHOR_NAME=$(cat ${config.sops.secrets."git/user1_name".path})
-    export GIT_AUTHOR_EMAIL=$(cat ${config.sops.secrets."git/user1_email".path})
-    export GIT_COMMITTER_NAME=$GIT_AUTHOR_NAME
-    export GIT_COMMITTER_EMAIL=$GIT_AUTHOR_EMAIL
+    if [ -r ${config.sops.secrets."git/user1_name".path} ]; then
+      export GIT_AUTHOR_NAME=$(cat ${config.sops.secrets."git/user1_name".path})
+      export GIT_AUTHOR_EMAIL=$(cat ${config.sops.secrets."git/user1_email".path})
+      export GIT_COMMITTER_NAME=$GIT_AUTHOR_NAME
+      export GIT_COMMITTER_EMAIL=$GIT_AUTHOR_EMAIL
+    fi
+
+    # Si estamos en ~/work/ usar identidad secundaria
+    if [[ "$PWD" == "$HOME/work"* ]]; then
+      if [ -r ${config.sops.secrets."git/user2_name".path} ]; then
+        export GIT_AUTHOR_NAME=$(cat ${config.sops.secrets."git/user2_name".path})
+        export GIT_AUTHOR_EMAIL=$(cat ${config.sops.secrets."git/user2_email".path})
+        export GIT_COMMITTER_NAME=$GIT_AUTHOR_NAME
+        export GIT_COMMITTER_EMAIL=$GIT_AUTHOR_EMAIL
+      fi
+    fi
   '';
 
   programs.git.includes = [
     {
       condition = "gitdir:~/work/";
-      contents.core.sshCommand = "ssh -i ~/.ssh/key2 -F /dev/null";
+      contents.core.sshCommand = "ssh -i ~/.ssh/key2 -F /dev/null -o IdentitiesOnly=yes";
     }
   ];
 }
