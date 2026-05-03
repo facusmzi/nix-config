@@ -42,7 +42,11 @@
     shellAliases = {
       ll = "ls -la";
       ".." = "cd ..";
-      rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#nixi";
     };
+    initExtra = ''
+      rebuild() {
+        sudo nixos-rebuild switch --flake ~/nix-config#$(hostname)
+      }
+    '';
   };
 }
