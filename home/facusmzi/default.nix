@@ -34,6 +34,11 @@
     VISUAL = "kate --block";
   };
 
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+  };
+
   programs.bash = {
     enable = true;
     shellAliases = {
