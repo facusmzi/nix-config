@@ -57,8 +57,11 @@
     LC_TIME           = "es_AR.UTF-8";
   };
 
-  services.xserver.xkb = { layout = "es"; variant = ""; };
-  console.keyMap = "es";
+  services.xserver.xkb = {
+    layout = "latam";
+    variant = "";
+  };
+  console.keyMap = "la-latin1";
 
   security.rtkit.enable = true;
   services.pipewire = {
