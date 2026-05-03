@@ -109,3 +109,46 @@ git clone git@github.com-work:usuario2/repo.git
 ```bash
 EDITOR="kate --block" sops ~/nix-config/secrets/common.yaml
 ```
+
+---
+
+## Reinstalar en una máquina existente (clave sops perdida)
+
+Cuando reinstalás NixOS en una máquina que ya estaba en el repo, la clave host SSH cambia y sops ya no puede abrir los secretos anteriores. El archivo encriptado con la clave vieja es irrecuperable — hay que recrearlo.
+
+**1. Primer rebuild** (va a fallar home-manager pero está bien por ahora):
+```bash
+sudo nixos-rebuild switch --flake ~/nix-config#NOMBRE_HOST
+```
+
+**2. Generar la nueva clave age:**
+```bash
+mkdir -p ~/.config/sops/age
+sudo ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key > ~/.config/sops/age/keys.txt
+chmod 600 ~/.config/sops/age/keys.txt
+
+# Obtener la clave pública nueva
+sudo ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+**3. Actualizar `.sops.yaml`** — reemplazá la clave vieja del host con la nueva:
+```yaml
+keys:
+  - &nily  age1NUEVA_CLAVE_AQUI
+```
+
+**4. Borrar el secreto viejo y recrearlo:**
+```bash
+rm ~/nix-config/secrets/common.yaml
+EDITOR="kate --block" sops ~/nix-config/secrets/common.yaml
+```
+
+Agregá todos los secretos de nuevo (git user1_name, user1_email, etc.).
+
+**5. Commitear y rebuild:**
+```bash
+git add -A
+git commit -m "fix: actualizar clave sops NOMBRE_HOST"
+git push
+sudo nixos-rebuild switch --flake ~/nix-config#NOMBRE_HOST
+```
