@@ -25,9 +25,14 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-doom-emacs = {
+      url = "github:marienz/nix-doom-emacs-unstraightened";
+      inputs.nixpkgs.follows = "";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, plasma-manager, dms, sops-nix, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, plasma-manager, dms, sops-nix, nix-doom-emacs, ... }@inputs:
     let
       system = "x86_64-linux";
 
@@ -48,6 +53,7 @@
         home-manager.sharedModules = [
           plasma-manager.homeModules.plasma-manager
           sops-nix.homeManagerModules.sops
+          nix-doom-emacs.homeModule
         ] ++ extraSharedModules;
       };
 
