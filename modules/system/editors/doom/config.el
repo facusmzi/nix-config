@@ -14,3 +14,6 @@
 (after! eglot
   (add-to-list 'eglot-server-programs
                '(nix-mode . ("nixd"))))
+
+(after! org-agenda
+  (setq org-agenda-span 'month))
