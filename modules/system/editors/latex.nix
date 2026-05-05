@@ -1,7 +1,7 @@
+# modules/system/editors/latex.nix
 { pkgs, ... }:
-
 {
-  home.packages = [
+  environment.systemPackages = [
     (pkgs.texlive.withPackages (ps: with ps; [
       scheme-basic
       dvisvgm

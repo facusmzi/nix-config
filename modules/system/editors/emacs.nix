@@ -20,7 +20,7 @@ in
   ];
 
   # ─── Home Manager ──────────────────────────────────────────
-  home-manager.users = lib.genAttrs users (_: {
+  home-manager.users = lib.genAttrs users (username: { config, ... }: {
     programs.doom-emacs = {
       enable = true;
       doomDir = ./doom;
