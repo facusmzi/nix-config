@@ -1,7 +1,10 @@
 ;;; config.el -*- lexical-binding: t; -*-
 
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+;; Lee nombre y email desde las variables de entorno que sops
+;; ya inyecta en bash (GIT_AUTHOR_NAME / GIT_AUTHOR_EMAIL)
+(setq user-full-name (or (getenv "GIT_AUTHOR_NAME") "")
+      user-mail-address (or (getenv "GIT_AUTHOR_EMAIL") ""))
+
 
 
 (setq doom-font (font-spec :family "Terminess Nerd Font" :weight 'medium)
@@ -42,14 +45,9 @@
 (use-package! dape)
 
 
-(after! spell
+;; ispell/hunspell — hunspellWithDicts ya pone los .aff en el PATH,
+;; no hace falta DICPATH ni ispell-hunspell-dict-paths-alist
+(after! ispell
   (setq ispell-program-name "hunspell")
-  ;; Cambia esto a tu idioma principal:
-  (setq ispell-dictionary "es_ES")
+  (setq ispell-dictionary "es_ES"))
 
-  (setq ispell-hunspell-dict-paths-alist
-        '(("es_ES" "/run/current-system/sw/share/hunspell/es_ES.aff")
-          ("en_US" "/run/current-system/sw/share/hunspell/en_US.aff")))
-
-  ;; Línea de seguridad extra:
-  (setenv "DICPATH" "/run/current-system/sw/share/hunspell"))

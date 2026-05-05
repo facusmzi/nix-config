@@ -11,24 +11,17 @@ let
 in
 {
   # ─── Configuración de Fuentes ──────────────────────────────
-  # Esto soluciona los errores de 'Symbola' y 'Nerd Fonts' del doctor
   fonts.packages = with pkgs; [
     symbola
-    # En versiones nuevas, seleccionas la fuente directamente del set nerd-fonts
     nerd-fonts.terminess-ttf
   ];
 
   # ─── Sistema ───────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
-    # Dependencias de compilación para vterm y utilidades base
     cmake
     libtool
     libvterm-neovim
     coreutils
-
-    hunspell
-    hunspellDicts.es_ES
-    hunspellDicts.en_US
   ];
 
   # ─── Home Manager ──────────────────────────────────────────
@@ -49,48 +42,42 @@ in
         ];
 
         extraBinPackages = with pkgs; [
-          # Herramientas de búsqueda (indispensables para Doom)
+          # Búsqueda (indispensable para Doom)
           fd
           (ripgrep.override { withPCRE2 = true; })
 
           # Vterm & Tools
           gnumake
-          sqlite # Necesario para el módulo (lookup +docsets)
+          sqlite
 
-          # --- Correctores ortográficos ---
-          hunspell
-          hunspellDicts.es_ES # Diccionario en español
-          hunspellDicts.en_US # Diccionario en inglés
+          # Correctores ortográficos — hunspellWithDicts bundlea
+          # hunspell + .aff/.dic en el mismo output, sin DICPATH
+          (hunspellWithDicts (with hunspellDicts; [ es_ES en_US ]))
 
-          # Haskell[cite: 2]
+          # Nix
+          nixd
+          nixfmt-rfc-style
+
+          # Haskell
           haskell-language-server
-          haskellPackages.hoogle # <--- Cambia 'hoogle' por esto
+          haskellPackages.hoogle
           cabal-install
           ormolu
 
-          # Rust[cite: 2]
+          # Rust
           rust-analyzer
           cargo
           rustc
 
           # Markdown & Org
-          pandoc # Compilador para markdown[cite: 2]
-          graphviz # Provee 'dot' para los gráficos de org-roam[cite: 2]
+          pandoc
+          graphviz
 
           # Shell
           shfmt
           shellcheck
         ];
       };
-
-      # Dentro de home-manager.users.facusmzi en emacs.nix
-      # Dentro de home-manager.users.facusmzi en emacs.nix
-      home.sessionVariables = {
-        # Esta ruta apunta a donde Nix instala los diccionarios del sistema
-        DICPATH = "/run/current-system/sw/share/hunspell";
-      };
-
-      home.sessionPath = [ "$HOME/.config/emacs/bin" ];
     }
   );
 }
