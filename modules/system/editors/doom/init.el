@@ -16,7 +16,7 @@
        undo
 
        :term
-       eshell
+       vterm
 
        :checkers
        syntax
