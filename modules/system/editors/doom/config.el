@@ -7,8 +7,8 @@
 
 
 
-(setq doom-font (font-spec :family "Terminess Nerd Font" :weight 'medium)
-      doom-variable-pitch-font (font-spec :family "Terminess Nerd Font"))
+;; (setq doom-font (font-spec :family "Terminess Nerd Font" :weight 'medium)
+;;       doom-variable-pitch-font (font-spec :family "Terminess Nerd Font"))
 
 (setq doom-theme 'catppuccin
       catppuccin-flavor 'mocha) ; or 'frappe 'latte, 'macchiato, or 'mocha
@@ -44,10 +44,4 @@
 
 (use-package! dape)
 
-
-;; ispell/hunspell — hunspellWithDicts ya pone los .aff en el PATH,
-;; no hace falta DICPATH ni ispell-hunspell-dict-paths-alist
-(after! ispell
-  (setq ispell-program-name "hunspell")
-  (setq ispell-dictionary "es_ES"))
 

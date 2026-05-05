@@ -32,7 +32,7 @@
 
        :checkers
        syntax
-       (spell +flyspell)
+       ;;spell
 
        :tools
        (eval +overlay)

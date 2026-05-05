@@ -14,6 +14,7 @@ in
   fonts.packages = with pkgs; [
     symbola
     nerd-fonts.terminess-ttf
+    nerd-fonts.symbols-only
   ];
 
   # ─── Sistema ───────────────────────────────────────────────
@@ -50,24 +51,20 @@ in
           gnumake
           sqlite
 
-          # Correctores ortográficos — hunspellWithDicts bundlea
-          # hunspell + .aff/.dic en el mismo output, sin DICPATH
-          (hunspellWithDicts (with hunspellDicts; [ es_ES en_US ]))
-
           # Nix
           nixd
           nixfmt-rfc-style
 
           # Haskell
-          haskell-language-server
-          haskellPackages.hoogle
-          cabal-install
-          ormolu
-
-          # Rust
-          rust-analyzer
-          cargo
-          rustc
+#           haskell-language-server
+#           haskellPackages.hoogle
+#           cabal-install
+#           ormolu
+#
+#           # Rust
+#           rust-analyzer
+#           cargo
+#           rustc
 
           # Markdown & Org
           pandoc
