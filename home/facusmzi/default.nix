@@ -5,7 +5,6 @@
   imports = [
     ../../modules/home/ssh.nix
     ../../modules/home/git.nix
-    ../../modules/home/editors
 
 
     ./git.nix

@@ -5,6 +5,7 @@
     ../../modules/system/services
     ../../modules/system/dev
     ../../modules/system/packages
+    ../../modules/system/editors
   ];
 
   networking.hostName = "nily";
