@@ -19,10 +19,22 @@
       options = [ "subvol=@" ];
     };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/D948-6A0E";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
+  fileSystems."/nix" =
+    { device = "/dev/disk/by-uuid/4f716ea1-6ec8-4314-905c-87a5591b26b0";
+      fsType = "btrfs";
+      options = [ "subvol=@nix" ];
+    };
+
+  fileSystems."/var" =
+    { device = "/dev/disk/by-uuid/4f716ea1-6ec8-4314-905c-87a5591b26b0";
+      fsType = "btrfs";
+      options = [ "subvol=@var" ];
+    };
+
+  fileSystems."/var/log" =
+    { device = "/dev/disk/by-uuid/4f716ea1-6ec8-4314-905c-87a5591b26b0";
+      fsType = "btrfs";
+      options = [ "subvol=@log" ];
     };
 
   fileSystems."/home" =
@@ -31,22 +43,10 @@
       options = [ "subvol=@home" ];
     };
 
-  fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/4f716ea1-6ec8-4314-905c-87a5591b26b0";
-      fsType = "btrfs";
-      options = [ "subvol=@nix" ];
-    };
-
   fileSystems."/tmp" =
     { device = "/dev/disk/by-uuid/4f716ea1-6ec8-4314-905c-87a5591b26b0";
       fsType = "btrfs";
       options = [ "subvol=@tmp" ];
-    };
-
-  fileSystems."/var" =
-    { device = "/dev/disk/by-uuid/4f716ea1-6ec8-4314-905c-87a5591b26b0";
-      fsType = "btrfs";
-      options = [ "subvol=@var" ];
     };
 
   fileSystems."/var/cache" =
@@ -61,10 +61,10 @@
       options = [ "subvol=@libvirt" ];
     };
 
-  fileSystems."/var/log" =
-    { device = "/dev/disk/by-uuid/4f716ea1-6ec8-4314-905c-87a5591b26b0";
-      fsType = "btrfs";
-      options = [ "subvol=@log" ];
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/D948-6A0E";
+      fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices =
