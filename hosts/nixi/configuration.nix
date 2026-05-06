@@ -119,7 +119,7 @@
 
   # firewall?
   networking.firewall.enable = true;
-
+  networking.firewall.allowedTCPPorts = [ 22 ];
 
 
 
@@ -130,6 +130,9 @@
     isNormalUser = true;
     description = "facusmzi";
     extraGroups = [ "networkmanager" "wheel" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGAbakJDyuHBdDLawKwvBpL2eN4HfjXNiZNnVKlzqXro nily→nixi"
+    ];
   };
 
   # Paquetes básicos del sistema
