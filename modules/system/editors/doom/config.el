@@ -21,6 +21,7 @@
 (setq display-line-numbers-type t)
 
 (setq org-directory "~/org/")
+(setq org-agenda-files (directory-files-recursively "~/org" "\\.org$"))
 
 (after! haskell-mode
   (setq haskell-stylish-on-save nil))

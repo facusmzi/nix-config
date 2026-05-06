@@ -1,13 +1,11 @@
 { config, pkgs, ... }:
 {
   imports = [
-    ../../modules/dev
-    ../../modules/desktop
-    ../../modules/editors
-    ../../modules/virtualization
-    ../../modules/packages
-    ../../modules/services
-    ../../modules/games
+    ../../modules/system/desktop
+    ../../modules/system/services
+    ../../modules/system/dev
+    ../../modules/system/packages
+    ../../modules/system/editors
   ];
 
   # Configuración básica del host
