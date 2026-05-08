@@ -29,6 +29,11 @@
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+  ;; Transparencia del frame
+  (let ((opacity 100))
+    (set-frame-parameter nil 'alpha-background opacity)
+    (add-to-list 'default-frame-alist `(alpha-background . ,opacity)))
+
   (setq inhibit-startup-message t
         use-short-answers t
         blink-cursor-mode nil
@@ -127,7 +132,15 @@
 ** Fuente
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
-  		    :font "JetBrainsMono Nerd Font"
+  		    :font "FiraCode Nerd Font"
+  		    :height 130
+  		    :weight 'medium)
+  (set-face-attribute 'variable-pitch nil
+  		    :font "Roboto"
+  		    :height 130
+  		    :weight 'medium)
+  (set-face-attribute 'fixed-pitch nil
+  		    :font "FiraCode Nerd Font"
   		    :height 130
   		    :weight 'medium)
   (set-language-environment "UTF-8")
@@ -156,6 +169,9 @@
 #+begin_src emacs-lisp
   (use-package doom-modeline
     :init (doom-modeline-mode 1)
+    :config
+    (display-battery-mode 1) ;; Sacar esta línea si usás desktop sin batería
+    (display-time-mode 1)
     :custom (doom-modeline-height 15))
 #+end_src
 
