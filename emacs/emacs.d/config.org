@@ -27,111 +27,111 @@
 * General
 ** UI Básica
 #+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(setq inhibit-startup-message t
-      use-short-answers t
-      blink-cursor-mode nil
-      frame-resize-pixelwise t)
+  (setq inhibit-startup-message t
+        use-short-answers t
+        blink-cursor-mode nil
+        frame-resize-pixelwise t)
 
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
-(set-fringe-mode 12)
-(column-number-mode)
-(delete-selection-mode 1)
-(electric-pair-mode 1)
-(save-place-mode)
-(global-display-line-numbers-mode 1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (menu-bar-mode -1)
+  (set-fringe-mode 12)
+  (column-number-mode)
+  (delete-selection-mode 1)
+  (electric-pair-mode 1)
+  (save-place-mode)
+  (global-display-line-numbers-mode 1)
 
-;; Scroll más suave
-(setq scroll-conservatively 101
-      mouse-wheel-scroll-amount '(1 ((shift) . 1))
-      mouse-wheel-progressive-speed nil
-      mouse-wheel-follow-mouse t)
+  ;; Scroll más suave
+  (setq scroll-conservatively 101
+        mouse-wheel-scroll-amount '(1 ((shift) . 1))
+        mouse-wheel-progressive-speed nil
+        mouse-wheel-follow-mouse t)
 
-;; Desactivar números de línea en ciertos modos
-(dolist (mode '(term-mode-hook
-                shell-mode-hook
-                eshell-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  ;; Desactivar números de línea en ciertos modos
+  (dolist (mode '(term-mode-hook
+                  shell-mode-hook
+                  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 
 ** Archivos
 #+begin_src emacs-lisp
-(setq make-backup-files nil
-      auto-save-default nil
-      create-lockfiles nil
-      custom-file (locate-user-emacs-file "custom-vars.el"))
-(load custom-file 'noerror 'nomessage)
+  (setq make-backup-files nil
+        auto-save-default nil
+        create-lockfiles nil
+        custom-file (locate-user-emacs-file "custom-vars.el"))
+  (load custom-file 'noerror 'nomessage)
 #+end_src
 
 ** Historial
 #+begin_src emacs-lisp
-(recentf-mode 1)
-(global-set-key (kbd "C-c r") 'recentf-open-files)
-(setq history-length 25)
-(savehist-mode 1)
+  (recentf-mode 1)
+  (global-set-key (kbd "C-c r") 'recentf-open-files)
+  (setq history-length 25)
+  (savehist-mode 1)
 #+end_src
 
 ** GC post-startup
 #+begin_src emacs-lisp
-(add-hook 'after-init-hook (lambda ()
-  (setq gc-cons-threshold (* 1024 1024 16)
-        gc-cons-percentage 0.1)
-  (setq file-name-handler-alist file-name-handler-alist-original)
-  (makunbound 'file-name-handler-alist-original)))
+  (add-hook 'after-init-hook (lambda ()
+  			     (setq gc-cons-threshold (* 1024 1024 16)
+  				   gc-cons-percentage 0.1)
+  			     (setq file-name-handler-alist file-name-handler-alist-original)
+  			     (makunbound 'file-name-handler-alist-original)))
 #+end_src
 
 * Paquetes
 #+begin_src emacs-lisp
-    (require 'package)
-     (package-initialize)
-    (require 'use-package)
-    (setq use-package-always-ensure nil) ;; Nix instala los paquetes
+  (require 'package)
+  (package-initialize)
+  (require 'use-package)
+  (setq use-package-always-ensure nil) ;; Nix instala los paquetes
 #+end_src
 
 * Apariencia
 ** Colores
 #+begin_src emacs-lisp
-;; Paleta Catppuccin Mocha hardcodeada
-(setq facusmzi/bg-0    "#11111B"   ; crust — fondo más oscuro
-      facusmzi/bg-1    "#181825"   ; mantle — fondo principal
-      facusmzi/bg-2    "#1e1e2e"   ; base — fondo más claro
-      facusmzi/acc-0   "#CBA6F7"   ; mauve — acento principal
-      facusmzi/acc-1   "#89B4FA"   ; blue — acento secundario
-      facusmzi/acc-2   "#cdd6f4")  ; text
+  ;; Paleta Catppuccin Mocha hardcodeada
+  (setq facusmzi/bg-0    "#11111B"   ; crust — fondo más oscuro
+        facusmzi/bg-1    "#181825"   ; mantle — fondo principal
+        facusmzi/bg-2    "#1e1e2e"   ; base — fondo más claro
+        facusmzi/acc-0   "#CBA6F7"   ; mauve — acento principal
+        facusmzi/acc-1   "#89B4FA"   ; blue — acento secundario
+        facusmzi/acc-2   "#cdd6f4")  ; text
 
-;; Aplicar colores a faces de UI
-(add-hook 'after-init-hook
-  (lambda ()
-    (set-face-attribute 'default nil :background facusmzi/bg-1)
-    (set-face-attribute 'fringe nil :background facusmzi/bg-1)
-    (set-face-attribute 'line-number nil :background facusmzi/bg-1)
-    (set-face-attribute 'line-number-current-line nil
-                        :background facusmzi/bg-1
-                        :foreground facusmzi/acc-0)
-    (set-face-attribute 'mode-line nil :background facusmzi/bg-0)
-    (set-face-attribute 'mode-line-inactive nil :background facusmzi/bg-0)
-    (set-face-attribute 'vertical-border nil
-                        :background facusmzi/bg-0
-                        :foreground facusmzi/bg-0)))
+  ;; Aplicar colores a faces de UI
+  (add-hook 'after-init-hook
+  	  (lambda ()
+  	    (set-face-attribute 'default nil :background facusmzi/bg-1)
+  	    (set-face-attribute 'fringe nil :background facusmzi/bg-1)
+  	    (set-face-attribute 'line-number nil :background facusmzi/bg-1)
+  	    (set-face-attribute 'line-number-current-line nil
+  				:background facusmzi/bg-1
+  				:foreground facusmzi/acc-0)
+  	    (set-face-attribute 'mode-line nil :background facusmzi/bg-0)
+  	    (set-face-attribute 'mode-line-inactive nil :background facusmzi/bg-0)
+  	    (set-face-attribute 'vertical-border nil
+  				:background facusmzi/bg-0
+  				:foreground facusmzi/bg-0)))
 
-;; Minibuffer con fondo más oscuro
-(add-hook 'minibuffer-setup-hook
-  (lambda ()
-    (face-remap-add-relative 'default `(:background ,facusmzi/bg-0))
-    (face-remap-add-relative 'fringe  `(:background ,facusmzi/bg-0 :foreground ,facusmzi/bg-0))))
+  ;; Minibuffer con fondo más oscuro
+  (add-hook 'minibuffer-setup-hook
+  	  (lambda ()
+  	    (face-remap-add-relative 'default `(:background ,facusmzi/bg-0))
+  	    (face-remap-add-relative 'fringe  `(:background ,facusmzi/bg-0 :foreground ,facusmzi/bg-0))))
 #+end_src
 
 ** Fuente
 #+begin_src emacs-lisp
-(set-face-attribute 'default nil
-  :font "JetBrainsMono Nerd Font"
-  :height 130
-  :weight 'medium)
-(set-language-environment "UTF-8")
-(setq-default line-spacing 0)
+  (set-face-attribute 'default nil
+  		    :font "JetBrainsMono Nerd Font"
+  		    :height 130
+  		    :weight 'medium)
+  (set-language-environment "UTF-8")
+  (setq-default line-spacing 0)
 #+end_src
 
 ** Tema
@@ -145,92 +145,92 @@
   ;;   (load-theme 'catppuccin t))
 
   (use-package doom-themes
-  :config
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  (load-theme 'doom-one t)
-  (doom-themes-org-config))
+    :config
+    (setq doom-themes-enable-bold t
+  	doom-themes-enable-italic t)
+    (load-theme 'doom-one t)
+    (doom-themes-org-config))
 #+end_src
 
 ** Modeline
 #+begin_src emacs-lisp
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom (doom-modeline-height 15))
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom (doom-modeline-height 15))
 #+end_src
 
 ** Rainbow Delimiters
 #+begin_src emacs-lisp
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
 * Completion
 ** Ivy
 #+begin_src emacs-lisp
-(use-package ivy
-  :config
-  (ivy-mode)
-  (setq ivy-use-virtual-buffers t
-        enable-recursive-minibuffers t))
+  (use-package ivy
+    :config
+    (ivy-mode)
+    (setq ivy-use-virtual-buffers t
+          enable-recursive-minibuffers t))
 
-(use-package ivy-rich
-  :after ivy
-  :config (ivy-rich-mode 1))
+  (use-package ivy-rich
+    :after ivy
+    :config (ivy-rich-mode 1))
 #+end_src
 
 ** Counsel
 #+begin_src emacs-lisp
-(use-package counsel
-  :after ivy
-  :bind (("M-x"     . counsel-M-x)
-         ("C-x b"   . counsel-ibuffer)
-         ("C-x C-f" . counsel-find-file)
-         :map minibuffer-local-map
-         ("C-r" . counsel-minibuffer-history)))
+  (use-package counsel
+    :after ivy
+    :bind (("M-x"     . counsel-M-x)
+           ("C-x b"   . counsel-ibuffer)
+           ("C-x C-f" . counsel-find-file)
+           :map minibuffer-local-map
+           ("C-r" . counsel-minibuffer-history)))
 #+end_src
 
 ** Helpful
 #+begin_src emacs-lisp
-(use-package helpful
-  :after counsel
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command]  . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key]      . helpful-key))
+  (use-package helpful
+    :after counsel
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command]  . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key]      . helpful-key))
 #+end_src
 
 * Proyectos
 #+begin_src emacs-lisp
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config (setq which-key-idle-delay 0.5))
+  (use-package which-key
+    :init (which-key-mode)
+    :diminish which-key-mode
+    :config (setq which-key-idle-delay 0.5))
 
-(use-package projectile
-  :diminish projectile-mode
-  :config (projectile-mode)
-  :custom (projectile-completion-system 'ivy)
-  :bind-keymap ("C-c p" . projectile-command-map)
-  :init
-  (when (file-directory-p "~/projects")
-    (setq projectile-project-search-path '(("~/projects/" . 2)))))
+  (use-package projectile
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom (projectile-completion-system 'ivy)
+    :bind-keymap ("C-c p" . projectile-command-map)
+    :init
+    (when (file-directory-p "~/projects")
+      (setq projectile-project-search-path '(("~/projects/" . 2)))))
 
-(use-package counsel-projectile
-  :after projectile
-  :config (counsel-projectile-mode 1))
+  (use-package counsel-projectile
+    :after projectile
+    :config (counsel-projectile-mode 1))
 #+end_src
 
 * Git
 #+begin_src emacs-lisp
-(use-package magit
-  :custom
-  (magit-display-buffer-function
-   #'magit-display-buffer-same-window-except-diff-v1))
+  (use-package magit
+    :custom
+    (magit-display-buffer-function
+     #'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
 
 * Org
