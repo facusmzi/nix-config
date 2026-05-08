@@ -5,6 +5,7 @@
     package = pkgs.emacs30-pgtk;
     extraPackages = epkgs: with epkgs; [
       catppuccin-theme
+      doom-themes
       ivy
       ivy-rich
       counsel
