@@ -149,6 +149,10 @@
     bitwarden-desktop
   ];
 
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+  ];
+
   nix.settings = {
   substituters = [
     "https://cache.nixos.org"

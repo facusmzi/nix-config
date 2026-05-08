@@ -9,6 +9,7 @@
 
     ./git.nix
     ./ssh.nix
+    ../../emacs
   ];
 
   home.stateVersion = "25.05";
