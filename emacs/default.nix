@@ -21,6 +21,8 @@
       markdown-mode
       nix-mode
       diminish
+      sudo-edit
+      dashboard
     ];
   };
 
