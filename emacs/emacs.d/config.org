@@ -15,7 +15,6 @@
   - [[#fuente][Fuente]]
   - [[#tema][Tema]]
   - [[#modeline][Modeline]]
-  - [[#numeros-de-linea][Números de línea]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#completion][Completion]]
   - [[#ivy][Ivy]]
@@ -132,7 +131,7 @@
   :height 130
   :weight 'medium)
 (set-language-environment "UTF-8")
-(setq-default line-spacing 0.10)
+(setq-default line-spacing 0)
 #+end_src
 
 ** Tema
@@ -158,12 +157,6 @@
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom (doom-modeline-height 15))
-#+end_src
-
-** Números de línea
-#+begin_src emacs-lisp
-(custom-set-faces
-  '(line-number ((t (:height 1.2)))))
 #+end_src
 
 ** Rainbow Delimiters
@@ -242,10 +235,12 @@
 
 * Org
 #+begin_src emacs-lisp
-(use-package org
-  :hook (org-mode . org-indent-mode))
+  (use-package org
+    :hook (org-mode . org-indent-mode)
+    :custom
+    (org-return-follows-link t))
 
-(use-package org-modern
-  :after org
-  :hook (org-mode . org-modern-mode))
+  (use-package org-modern
+    :after org
+    :hook (org-mode . org-modern-mode))
 #+end_src
