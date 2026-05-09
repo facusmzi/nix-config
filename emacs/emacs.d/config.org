@@ -17,8 +17,10 @@
   - [[#modeline][Modeline]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#completion][Completion]]
-  - [[#ivy][Ivy]]
-  - [[#counsel][Counsel]]
+  - [[#vertico][Vertico]]
+  - [[#orderless][Orderless]]
+  - [[#marginalia][Marginalia]]
+  - [[#consult][Consult]]
   - [[#helpful][Helpful]]
 - [[#proyectos][Proyectos]]
 - [[#git][Git]]
@@ -39,7 +41,6 @@
 
   (setq inhibit-startup-message t
         use-short-answers t
-        blink-cursor-mode nil
         frame-resize-pixelwise t)
 
   (tool-bar-mode -1)
@@ -51,6 +52,7 @@
   (electric-pair-mode 1)
   (save-place-mode)
   (global-display-line-numbers-mode 1)
+  (blink-cursor-mode -1)
 
   ;; Scroll más suave
   (setq scroll-conservatively 101
@@ -77,18 +79,18 @@
 ** Historial
 #+begin_src emacs-lisp
   (recentf-mode 1)
-  (global-set-key (kbd "C-c r") 'recentf-open-files)
   (setq history-length 25)
   (savehist-mode 1)
 #+end_src
 
 ** GC post-startup
 #+begin_src emacs-lisp
-  (add-hook 'after-init-hook (lambda ()
-  			     (setq gc-cons-threshold (* 1024 1024 16)
-  				   gc-cons-percentage 0.1)
-  			     (setq file-name-handler-alist file-name-handler-alist-original)
-  			     (makunbound 'file-name-handler-alist-original)))
+  (add-hook 'after-init-hook
+            (lambda ()
+              (setq gc-cons-threshold (* 1024 1024 16)
+                    gc-cons-percentage 0.1)
+              (setq file-name-handler-alist file-name-handler-alist-original)
+              (makunbound 'file-name-handler-alist-original)))
 #+end_src
 
 * Paquetes
@@ -112,40 +114,40 @@
 
   ;; Aplicar colores a faces de UI
   (add-hook 'after-init-hook
-  	  (lambda ()
-  	    (set-face-attribute 'default nil :background facusmzi/bg-1)
-  	    (set-face-attribute 'fringe nil :background facusmzi/bg-1)
-  	    (set-face-attribute 'line-number nil :background facusmzi/bg-1)
-  	    (set-face-attribute 'line-number-current-line nil
-  				:background facusmzi/bg-1
-  				:foreground facusmzi/acc-0)
-  	    (set-face-attribute 'mode-line nil :background facusmzi/bg-0)
-  	    (set-face-attribute 'mode-line-inactive nil :background facusmzi/bg-0)
-  	    (set-face-attribute 'vertical-border nil
-  				:background facusmzi/bg-0
-  				:foreground facusmzi/bg-0)))
+            (lambda ()
+              (set-face-attribute 'default nil :background facusmzi/bg-1)
+              (set-face-attribute 'fringe nil :background facusmzi/bg-1)
+              (set-face-attribute 'line-number nil :background facusmzi/bg-1)
+              (set-face-attribute 'line-number-current-line nil
+                                  :background facusmzi/bg-1
+                                  :foreground facusmzi/acc-0)
+              (set-face-attribute 'mode-line nil :background facusmzi/bg-0)
+              (set-face-attribute 'mode-line-inactive nil :background facusmzi/bg-0)
+              (set-face-attribute 'vertical-border nil
+                                  :background facusmzi/bg-0
+                                  :foreground facusmzi/bg-0)))
 
   ;; Minibuffer con fondo más oscuro
   (add-hook 'minibuffer-setup-hook
-  	  (lambda ()
-  	    (face-remap-add-relative 'default `(:background ,facusmzi/bg-0))
-  	    (face-remap-add-relative 'fringe  `(:background ,facusmzi/bg-0 :foreground ,facusmzi/bg-0))))
+            (lambda ()
+              (face-remap-add-relative 'default `(:background ,facusmzi/bg-0))
+              (face-remap-add-relative 'fringe  `(:background ,facusmzi/bg-0 :foreground ,facusmzi/bg-0))))
 #+end_src
 
 ** Fuente
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
-  		    :font "FiraCode Nerd Font"
-  		    :height 130
-  		    :weight 'medium)
+                      :font "FiraCode Nerd Font"
+                      :height 130
+                      :weight 'medium)
   (set-face-attribute 'variable-pitch nil
-  		    :font "Roboto"
-  		    :height 130
-  		    :weight 'medium)
+                      :font "Roboto"
+                      :height 130
+                      :weight 'medium)
   (set-face-attribute 'fixed-pitch nil
-  		    :font "FiraCode Nerd Font"
-  		    :height 130
-  		    :weight 'medium)
+                      :font "FiraCode Nerd Font"
+                      :height 130
+                      :weight 'medium)
   (set-language-environment "UTF-8")
   (setq-default line-spacing 0)
 #+end_src
@@ -163,8 +165,8 @@
   (use-package doom-themes
     :config
     (setq doom-themes-enable-bold t
-  	doom-themes-enable-italic t)
-    (load-theme 'doom-one t)
+          doom-themes-enable-italic t)
+    (load-theme 'doom-dracula t)
     (doom-themes-org-config))
 #+end_src
 
@@ -185,41 +187,52 @@
 #+end_src
 
 * Completion
-** Ivy
+** Vertico
 #+begin_src emacs-lisp
-  (use-package ivy
-    :config
-    (ivy-mode)
-    (setq ivy-use-virtual-buffers t
-          enable-recursive-minibuffers t))
+  (use-package vertico
+    :init
+    (vertico-mode 1)
 
-  (use-package ivy-rich
-    :after ivy
-    :config (ivy-rich-mode 1))
+    :custom
+    (vertico-cycle t)
+    (enable-recursive-minibuffers t))
 #+end_src
 
-** Counsel
+** Orderless
 #+begin_src emacs-lisp
-  (use-package counsel
-    :after ivy
-    :bind (("M-x"     . counsel-M-x)
-           ("C-x b"   . counsel-ibuffer)
-           ("C-x C-f" . counsel-find-file)
+  (use-package orderless
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides
+     '((file (styles basic partial-completion)))))
+#+end_src
+
+** Marginalia
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :after vertico
+    :init
+    (marginalia-mode 1))
+#+end_src
+
+** Consult
+#+begin_src emacs-lisp
+  (use-package consult
+    :bind (("C-x b"   . consult-buffer)
+           ("C-x C-f" . find-file)
+           ("C-c r"   . consult-recent-file)
+           ("C-s"     . consult-line)
            :map minibuffer-local-map
-           ("C-r" . counsel-minibuffer-history)))
+           ("C-r" . consult-history)))
 #+end_src
 
 ** Helpful
 #+begin_src emacs-lisp
   (use-package helpful
-    :after counsel
-    :custom
-    (counsel-describe-function-function #'helpful-callable)
-    (counsel-describe-variable-function #'helpful-variable)
     :bind
-    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-function] . helpful-callable)
     ([remap describe-command]  . helpful-command)
-    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-variable] . helpful-variable)
     ([remap describe-key]      . helpful-key))
 #+end_src
 
@@ -233,15 +246,11 @@
   (use-package projectile
     :diminish projectile-mode
     :config (projectile-mode)
-    :custom (projectile-completion-system 'ivy)
+    :custom (projectile-completion-system 'default)
     :bind-keymap ("C-c p" . projectile-command-map)
     :init
     (when (file-directory-p "~/projects")
       (setq projectile-project-search-path '(("~/projects/" . 2)))))
-
-  (use-package counsel-projectile
-    :after projectile
-    :config (counsel-projectile-mode 1))
 #+end_src
 
 * Git
@@ -260,6 +269,8 @@
     (setq dashboard-center-content t
           dashboard-vertically-center-content t
           dashboard-startup-banner 'logo
+          dashboard-projects-backend 'projectile
+          dashboard-projects-switch-function 'projectile-switch-project
           dashboard-items '((recents  . 5)
                             (projects . 5)
                             (bookmarks . 5)))

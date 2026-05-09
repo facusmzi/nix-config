@@ -6,16 +6,16 @@
     extraPackages = epkgs: with epkgs; [
       catppuccin-theme
       doom-themes
-      ivy
-      ivy-rich
-      counsel
+      vertico
+      orderless
+      marginalia
+      consult
       helpful
       all-the-icons
       doom-modeline
       rainbow-delimiters
       which-key
       projectile
-      counsel-projectile
       magit
       org-modern
       markdown-mode
