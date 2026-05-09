@@ -105,33 +105,33 @@
 ** Colores
 #+begin_src emacs-lisp
   ;; Paleta Catppuccin Mocha hardcodeada
-  (setq facusmzi/bg-0    "#11111B"   ; crust — fondo más oscuro
-        facusmzi/bg-1    "#181825"   ; mantle — fondo principal
-        facusmzi/bg-2    "#1e1e2e"   ; base — fondo más claro
-        facusmzi/acc-0   "#CBA6F7"   ; mauve — acento principal
-        facusmzi/acc-1   "#89B4FA"   ; blue — acento secundario
-        facusmzi/acc-2   "#cdd6f4")  ; text
+  (setq user/bg-0    "#11111B"   ; crust — fondo más oscuro
+        user/bg-1    "#181825"   ; mantle — fondo principal
+        user/bg-2    "#1e1e2e"   ; base — fondo más claro
+        user/acc-0   "#CBA6F7"   ; mauve — acento principal
+        user/acc-1   "#89B4FA"   ; blue — acento secundario
+        user/acc-2   "#cdd6f4")  ; text
 
   ;; Aplicar colores a faces de UI
   (add-hook 'after-init-hook
             (lambda ()
-              (set-face-attribute 'default nil :background facusmzi/bg-1)
-              (set-face-attribute 'fringe nil :background facusmzi/bg-1)
-              (set-face-attribute 'line-number nil :background facusmzi/bg-1)
+              (set-face-attribute 'default nil :background user/bg-1)
+              (set-face-attribute 'fringe nil :background user/bg-1)
+              (set-face-attribute 'line-number nil :background user/bg-1)
               (set-face-attribute 'line-number-current-line nil
-                                  :background facusmzi/bg-1
-                                  :foreground facusmzi/acc-0)
-              (set-face-attribute 'mode-line nil :background facusmzi/bg-0)
-              (set-face-attribute 'mode-line-inactive nil :background facusmzi/bg-0)
+                                  :background user/bg-1
+                                  :foreground user/acc-0)
+              (set-face-attribute 'mode-line nil :background user/bg-0)
+              (set-face-attribute 'mode-line-inactive nil :background user/bg-0)
               (set-face-attribute 'vertical-border nil
-                                  :background facusmzi/bg-0
-                                  :foreground facusmzi/bg-0)))
+                                  :background user/bg-0
+                                  :foreground user/bg-0)))
 
   ;; Minibuffer con fondo más oscuro
   (add-hook 'minibuffer-setup-hook
             (lambda ()
-              (face-remap-add-relative 'default `(:background ,facusmzi/bg-0))
-              (face-remap-add-relative 'fringe  `(:background ,facusmzi/bg-0 :foreground ,facusmzi/bg-0))))
+              (face-remap-add-relative 'default `(:background ,user/bg-0))
+              (face-remap-add-relative 'fringe  `(:background ,user/bg-0 :foreground ,user/bg-0))))
 #+end_src
 
 ** Fuente
