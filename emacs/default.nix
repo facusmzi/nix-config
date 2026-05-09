@@ -23,6 +23,10 @@
       diminish
       sudo-edit
       dashboard
+      corfu
+      cape
+      dap-mode   
+      envrc      
     ];
   };
 

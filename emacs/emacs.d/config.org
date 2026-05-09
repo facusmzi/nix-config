@@ -24,6 +24,11 @@
   - [[#helpful][Helpful]]
 - [[#proyectos][Proyectos]]
 - [[#git][Git]]
+- [[#desarrollo][Desarrollo]]
+  - [[#direnv][Direnv]]
+  - [[#lsp-eglot][LSP (Eglot)]]
+  - [[#completion-inline-corfu][Completion Inline (Corfu)]]
+  - [[#debug-dap][Debug (DAP)]]
 - [[#misc][Misc]]
   - [[#dashboard][Dashboard]]
   - [[#sudo-edit][Sudo Edit]]
@@ -259,6 +264,99 @@
     :custom
     (magit-display-buffer-function
      #'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
+
+* Desarrollo
+** Direnv
+;; envrc aplica las variables de direnv por buffer en lugar de globalmente.
+;; Así cada buffer ve el entorno de su propio devshell, lo que es clave
+;; cuando tenés varios proyectos con distintos flakes abiertos al mismo tiempo.
+;; Tiene que ir antes de eglot y dap para que vean los binarios del devshell.
+#+begin_src emacs-lisp
+  (use-package envrc
+    :init (envrc-global-mode 1))
+#+end_src
+
+** LSP (Eglot)
+#+begin_src emacs-lisp
+  (use-package eglot
+    :hook
+    ;; Antes: corría antes de envrc → clangd no encontrado
+    ;; (c-ts-mode   . eglot-ensure)
+    ;; (c++-ts-mode . eglot-ensure)
+
+    ;; Ahora: corre después de que envrc cargó el entorno
+    (hack-local-variables . eglot-ensure)
+
+    :custom
+    (eglot-autoshutdown t)
+    (eglot-sync-connect nil)
+    :bind (:map eglot-mode-map
+                ("C-c l r" . eglot-rename)
+                ("C-c l a" . eglot-code-actions)
+                ("C-c l f" . eglot-format-buffer)
+                ("M-."     . xref-find-definitions)
+                ("M-?"     . xref-find-references)
+                ("M-,"     . xref-go-back)))
+#+end_src
+
+** Completion Inline (Corfu)
+#+begin_src emacs-lisp
+  (use-package corfu
+    :init (global-corfu-mode 1)
+    :custom
+    (corfu-auto t)           ; mostrar sugerencias automáticamente
+    (corfu-auto-delay 0.2)   ; después de 200ms
+    (corfu-auto-prefix 2)    ; con al menos 2 caracteres
+    (corfu-cycle t)          ; ciclar entre candidatos
+    (corfu-quit-no-match t)) ; cerrar si no hay match
+
+  (use-package cape
+    :init
+    (add-hook 'prog-mode-hook
+              (lambda ()
+                (add-to-list 'completion-at-point-functions #'cape-file)
+                (add-to-list 'completion-at-point-functions #'cape-keyword))))
+#+end_src
+
+** Debug (DAP)
+;; Usa lldb-dap como adaptador, que viene incluido en el devshell de C++.
+;; envrc se encarga de que Emacs vea el binario correcto por proyecto.
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :after eglot
+    :config
+    (dap-auto-configure-mode 1)
+    (require 'dap-lldb)
+
+    ;; Buscar lldb-dap en el PATH del devshell (resuelto por envrc).
+    ;; nixpkgs puede llamarlo lldb-dap (>= 18) o lldb-vscode (< 18).
+    (setq dap-lldb-debug-program
+          (list (or (executable-find "lldb-dap")
+                    (executable-find "lldb-vscode")
+                    "lldb-dap")))
+
+    ;; Template de launch para C++
+    (dap-register-debug-template
+     "C++ LLDB"
+     (list :type "lldb"
+           :request "launch"
+           :name "C++ LLDB"
+           :program "${workspaceFolder}/build/${fileBasenameNoExtension}"
+           :cwd "${workspaceFolder}"
+           :args []
+           :stopOnEntry nil))
+
+    :bind (:map dap-mode-map
+                ("C-c d d" . dap-debug)
+                ("C-c d b" . dap-breakpoint-toggle)
+                ("C-c d c" . dap-continue)
+                ("C-c d n" . dap-next)
+                ("C-c d i" . dap-step-in)
+                ("C-c d o" . dap-step-out)
+                ("C-c d q" . dap-disconnect)
+                ("C-c d r" . dap-debug-restart)
+                ("C-c d e" . dap-eval-thing-at-point)))
 #+end_src
 
 * Misc
