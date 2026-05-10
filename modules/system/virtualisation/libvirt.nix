@@ -25,3 +25,7 @@
 
   users.users.facusmzi.extraGroups = [ "libvirtd" ];
 }
+
+# Activar la red virtual default (solo la primera vez)
+# sudo virsh net-start default
+# sudo virsh net-autostart default
