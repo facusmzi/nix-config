@@ -29,6 +29,7 @@
   - [[#lsp-eglot][LSP (Eglot)]]
   - [[#completion-inline-corfu][Completion Inline (Corfu)]]
   - [[#debug-dap][Debug (DAP)]]
+  - [[#rust-rustic][Rust (Rustic)]]
 - [[#misc][Misc]]
   - [[#dashboard][Dashboard]]
   - [[#sudo-edit][Sudo Edit]]
@@ -357,6 +358,39 @@
                 ("C-c d q" . dap-disconnect)
                 ("C-c d r" . dap-debug-restart)
                 ("C-c d e" . dap-eval-thing-at-point)))
+#+end_src
+
+** Rust (Rustic)
+;; rustic es un wrapper sobre rust-mode con integración nativa a cargo y soporte
+;; para eglot. Le decimos explícitamente que use eglot (ya configurado arriba)
+;; en vez de su propio cliente LSP interno.
+;; rust-analyzer tiene que estar en el PATH del devshell — envrc se encarga de eso.
+#+begin_src emacs-lisp
+  (use-package rustic
+    :custom
+    ;; Usar eglot en vez del cliente LSP interno de rustic
+    (rustic-lsp-client 'eglot)
+    ;; Formatear con rustfmt al guardar
+    (rustic-format-on-save t)
+
+    :config
+    ;; Activar inlay hints de eglot al abrir un archivo .rs
+    ;; Muestra los tipos inferidos inline — muy útil para aprender ownership
+    (add-hook 'rustic-mode-hook
+              (lambda ()
+                (when (fboundp 'eglot-inlay-hints-mode)
+                  (eglot-inlay-hints-mode 1))))
+
+    :bind (:map rustic-mode-map
+                ;; Cargo desde Emacs — sin salir del editor
+                ("C-c c r" . rustic-cargo-run)
+                ("C-c c b" . rustic-cargo-build)
+                ("C-c c t" . rustic-cargo-test)
+                ("C-c c c" . rustic-cargo-clippy)
+                ("C-c c f" . rustic-cargo-fmt)
+                ("C-c c a" . rustic-cargo-add)
+                ;; Ver documentación del símbolo bajo el cursor
+                ("C-c c d" . eldoc-doc-buffer)))
 #+end_src
 
 * Misc
