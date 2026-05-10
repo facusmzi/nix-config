@@ -6,7 +6,14 @@
     ../../modules/system/dev
     ../../modules/system/packages
     ../../modules/system/editors
+    ../../modules/system/virtualisation
   ];
+
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "monthly";
+    fileSystems = [ "/" ];
+  };
 
   networking.hostName = "nily";
 
