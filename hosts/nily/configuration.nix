@@ -44,6 +44,11 @@
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
 
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   time.timeZone = "America/Argentina/Buenos_Aires";
   i18n.defaultLocale = "es_AR.UTF-8";
   i18n.extraLocaleSettings = {
