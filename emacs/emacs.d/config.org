@@ -32,6 +32,7 @@
   - [[#rust-rustic][Rust (Rustic)]]
 - [[#misc][Misc]]
   - [[#dashboard][Dashboard]]
+  - [[#eat][Eat]]
   - [[#sudo-edit][Sudo Edit]]
 - [[#org][Org]]
 
@@ -374,11 +375,22 @@
     (rustic-format-on-save t)
 
     :config
-    ;; Activar inlay hints de eglot al abrir un archivo .rs
-    ;; Muestra los tipos inferidos inline — muy útil para aprender ownership
-    (add-hook 'rustic-mode-hook
+    ;; FIX: usar eglot-managed-mode-hook en vez de rustic-mode-hook.
+    ;;
+    ;; rustic-mode-hook se dispara cuando el modo se activa, que puede ser
+    ;; ANTES de que eglot establezca la conexión (eglot-sync-connect nil →
+    ;; conexión async). Si eglot-inlay-hints-mode corre en ese momento intenta
+    ;; mandar una request al servidor y explota con:
+    ;;   "File mode specification error: jsonrpc-error No current JSON-RPC connection"
+    ;;
+    ;; eglot-managed-mode-hook se dispara recién cuando eglot tomó control del
+    ;; buffer, así que la conexión está garantizada. El guard derived-mode-p
+    ;; limita el hook solo a buffers rustic (eglot-managed-mode-hook corre en
+    ;; todos los modos que eglot maneja).
+    (add-hook 'eglot-managed-mode-hook
               (lambda ()
-                (when (fboundp 'eglot-inlay-hints-mode)
+                (when (and (derived-mode-p 'rustic-mode)
+                           (fboundp 'eglot-inlay-hints-mode))
                   (eglot-inlay-hints-mode 1))))
 
     :bind (:map rustic-mode-map
@@ -407,6 +419,27 @@
                             (projects . 5)
                             (bookmarks . 5)))
     (dashboard-setup-startup-hook))
+#+end_src
+
+** Eat
+;; eat (Emulate A Terminal) es un emulador de terminal moderno y rápido para Emacs.
+;; Soporta xterm-256color, mouse, imágenes inline, y se integra bien con eshell.
+;; envrc se encarga de que el shell vea el entorno del devshell activo.
+#+begin_src emacs-lisp
+  (use-package eat
+    :hook
+    ;; Integración con eshell: eat reemplaza el manejo de programas de terminal
+    ;; (vim, htop, etc.) dentro de eshell, sin necesidad de abrir un buffer aparte
+    (eshell-load . eat-eshell-mode)
+
+    :custom
+    ;; Usar el shell definido en el sistema
+    (eat-shell shell-file-name)
+
+    :bind
+    ;; Abrir terminal en el directorio del proyecto actual
+    ("C-c t t" . eat)
+    ("C-c t p" . eat-project))
 #+end_src
 
 ** Sudo Edit

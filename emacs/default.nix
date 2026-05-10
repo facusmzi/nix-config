@@ -27,6 +27,7 @@
       cape
       dap-mode   
       envrc      
+      eat
 
       # Rust
       rustic        # modo principal: syntax, cargo commands, eglot integration
