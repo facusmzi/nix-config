@@ -49,6 +49,8 @@
     powerOnBoot = true;
   };
 
+  services.avahi.enable = true;
+
   time.timeZone = "America/Argentina/Buenos_Aires";
   i18n.defaultLocale = "es_AR.UTF-8";
   i18n.extraLocaleSettings = {
@@ -89,6 +91,7 @@
     ntfs3g p7zip
     qbittorrent
     bitwarden-desktop
+    gnome-network-displays
   ];
 
   fonts.packages = with pkgs; [
