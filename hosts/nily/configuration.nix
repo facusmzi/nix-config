@@ -39,7 +39,7 @@
     };
   };
 
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelPackages = pkgs.unstable.linuxPackages_zen;
 
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
