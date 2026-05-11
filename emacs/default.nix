@@ -32,6 +32,10 @@
       # Rust
       rustic        # modo principal: syntax, cargo commands, eglot integration
       cargo-mode    # comandos de cargo extra (cargo-execute-task, etc.)
+
+      # Lectura
+      pdf-tools
+      nov
     ];
   };
 

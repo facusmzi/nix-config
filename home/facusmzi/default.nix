@@ -23,6 +23,7 @@
     vlc-bittorrent
     kdePackages.arianna
     tomato-c
+    unzip
   ];
 
   programs.direnv = {
