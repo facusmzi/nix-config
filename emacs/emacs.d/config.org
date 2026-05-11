@@ -34,6 +34,10 @@
   - [[#snippets-tempel][Snippets (Tempel)]]
   - [[#debug-dap][Debug (DAP)]]
   - [[#rust-rustic][Rust (Rustic)]]
+- [[#ventanas-y-workspaces][Ventanas y Workspaces]]
+  - [[#ace-window][Ace Window]]
+  - [[#windmove][Windmove]]
+  - [[#tab-bar-workspaces][Tab Bar (Workspaces)]]
 - [[#misc][Misc]]
   - [[#dashboard][Dashboard]]
   - [[#eat][Eat]]
@@ -440,6 +444,81 @@
                 ("C-c c a" . rustic-cargo-add)
                 ("C-c c e" . rustic-cargo-expand)
                 ("C-c c d" . eldoc-doc-buffer)))
+#+end_src
+
+* Ventanas y Workspaces
+** Ace Window
+;; Salta a cualquier ventana visible asignándole una letra.
+;; C-u M-o: swap de ventanas. C-u C-u M-o: mover buffer a otra ventana.
+#+begin_src emacs-lisp
+  (use-package ace-window
+    :bind
+    ("M-o" . ace-window)
+    :custom
+    (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+    (aw-scope 'frame)
+    :config
+    (set-face-attribute 'aw-leading-char-face nil
+                        :foreground user/acc-0
+                        :height 2.5
+                        :weight 'bold))
+#+end_src
+
+** Windmove
+;; Moverse entre ventanas adyacentes con Shift+flechas (built-in).
+#+begin_src emacs-lisp
+  (windmove-default-keybindings)   ; Shift + ←↑↓→
+
+  ;; Split, cierre y balance estilo Doom
+  (global-set-key (kbd "C-c w v") #'split-window-right)
+  (global-set-key (kbd "C-c w s") #'split-window-below)
+  (global-set-key (kbd "C-c w d") #'delete-window)
+  (global-set-key (kbd "C-c w D") #'delete-other-windows)
+  (global-set-key (kbd "C-c w b") #'balance-windows)
+#+end_src
+
+** Tab Bar (Workspaces)
+;; tab-bar-mode es built-in desde Emacs 27 y es lo que Doom usa bajo el capó
+;; para sus workspaces. Cada tab mantiene su propio layout de ventanas y buffers.
+;; Los faces usan la paleta Catppuccin Mocha definida en la sección Colores,
+;; así que este bloque tiene que cargarse después de que user/bg-* estén seteadas.
+#+begin_src emacs-lisp
+  (use-package tab-bar
+    :ensure nil   ; built-in
+    :init (tab-bar-mode 1)
+
+    :custom
+    (tab-bar-show 1)                        ; ocultar la barra si hay solo 1 tab
+    (tab-bar-new-tab-choice "*dashboard*")  ; abre dashboard al crear un tab nuevo
+    (tab-bar-close-button-show nil)
+    (tab-bar-new-button-show nil)
+    (tab-bar-tab-name-function #'tab-bar-tab-name-current)
+
+    :config
+    (set-face-attribute 'tab-bar nil
+                        :background user/bg-0
+                        :foreground user/acc-2)
+    (set-face-attribute 'tab-bar-tab nil
+                        :background user/bg-2
+                        :foreground user/acc-0
+                        :weight 'bold)
+    (set-face-attribute 'tab-bar-tab-inactive nil
+                        :background user/bg-0
+                        :foreground user/acc-2)
+
+    :bind
+    ("C-c TAB n"   . tab-bar-new-tab)
+    ("C-c TAB d"   . tab-bar-close-tab)
+    ("C-c TAB r"   . tab-bar-rename-tab)
+    ("C-c TAB ]"   . tab-bar-switch-to-next-tab)
+    ("C-c TAB ["   . tab-bar-switch-to-prev-tab)
+    ("C-c TAB TAB" . tab-bar-switch-to-recent-tab)
+    ;; Saltar directo a tab por número (como SPC TAB 1/2/3 en Doom)
+    ("C-c TAB 1"   . (lambda () (interactive) (tab-bar-select-tab 1)))
+    ("C-c TAB 2"   . (lambda () (interactive) (tab-bar-select-tab 2)))
+    ("C-c TAB 3"   . (lambda () (interactive) (tab-bar-select-tab 3)))
+    ("C-c TAB 4"   . (lambda () (interactive) (tab-bar-select-tab 4)))
+    ("C-c TAB 5"   . (lambda () (interactive) (tab-bar-select-tab 5))))
 #+end_src
 
 * Misc

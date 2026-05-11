@@ -42,6 +42,7 @@
       # Lectura
       pdf-tools
       nov
+      ace-window
     ];
   };
 
