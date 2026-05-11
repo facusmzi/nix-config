@@ -34,6 +34,10 @@
   - [[#snippets-tempel][Snippets (Tempel)]]
   - [[#debug-dap][Debug (DAP)]]
   - [[#rust-rustic][Rust (Rustic)]]
+- [[#evil][Evil]]
+  - [[#evil-mode][Evil Mode]]
+  - [[#evil-collection][Evil Collection]]
+  - [[#general-leader-key][General (Leader key)]]
 - [[#ventanas-y-workspaces][Ventanas y Workspaces]]
   - [[#ace-window][Ace Window]]
   - [[#windmove][Windmove]]
@@ -446,6 +450,112 @@
                 ("C-c c d" . eldoc-doc-buffer)))
 #+end_src
 
+* Evil
+** Evil Mode
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    ;; Estas tres variables tienen que ir ANTES de (evil-mode 1)
+    (setq evil-want-integration t)       ; requerido por evil-collection
+    (setq evil-want-keybinding nil)      ; requerido por evil-collection
+    (setq evil-want-C-u-scroll t)        ; C-u scrollea como en vim
+    (setq evil-want-C-d-scroll t)
+    (setq evil-undo-system 'undo-redo)   ; usa el undo nativo de Emacs 28+
+
+    :config
+    (evil-mode 1)
+
+    ;; C-g sale de insert mode (más cómodo que ESC)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+    ;; j/k sobre líneas visuales (útil en org/markdown con wrap)
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
+#+end_src
+
+** Evil Collection
+;; Extiende evil a todos los modos que no soporta por defecto:
+;; magit, dired, corfu, pdf-tools, helpful, vertico, etc.
+#+begin_src emacs-lisp
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+#+end_src
+
+** General (Leader key)
+;; General permite definir keybindings con SPC como leader, igual que Doom.
+;; SPC es el leader en normal/visual. M-SPC funciona en insert/emacs state.
+#+begin_src emacs-lisp
+  (use-package general
+    :after evil
+    :config
+    (general-evil-setup t)
+
+    (general-create-definer user/leader
+      :keymaps '(normal visual emacs)
+      :prefix "SPC"
+      :global-prefix "M-SPC")
+
+    (user/leader
+      ;; Buffers
+      "b b" '(consult-buffer           :which-key "switch buffer")
+      "b d" '(kill-this-buffer         :which-key "kill buffer")
+      "b n" '(next-buffer              :which-key "next buffer")
+      "b p" '(previous-buffer          :which-key "prev buffer")
+
+      ;; Archivos
+      "f f" '(find-file                :which-key "find file")
+      "f r" '(consult-recent-file      :which-key "recent files")
+      "f s" '(save-buffer              :which-key "save file")
+
+      ;; Búsqueda
+      "s s" '(consult-line             :which-key "buscar en buffer")
+      "s i" '(consult-imenu            :which-key "imenu")
+      "s p" '(projectile-ripgrep       :which-key "ripgrep en proyecto")
+
+      ;; Proyectos
+      "p p" '(projectile-switch-project :which-key "switch proyecto")
+      "p f" '(projectile-find-file      :which-key "find file en proyecto")
+
+      ;; Git
+      "g g" '(magit-status             :which-key "magit")
+
+      ;; Ventanas
+      "w v" '(split-window-right       :which-key "split vertical")
+      "w s" '(split-window-below       :which-key "split horizontal")
+      "w d" '(delete-window            :which-key "cerrar ventana")
+      "w D" '(delete-other-windows     :which-key "cerrar resto")
+      "w b" '(balance-windows          :which-key "balancear")
+      "w w" '(ace-window               :which-key "saltar ventana")
+
+      ;; Workspaces (tabs)
+      "TAB n"   '(tab-bar-new-tab              :which-key "nuevo tab")
+      "TAB d"   '(tab-bar-close-tab            :which-key "cerrar tab")
+      "TAB r"   '(tab-bar-rename-tab           :which-key "renombrar tab")
+      "TAB ]"   '(tab-bar-switch-to-next-tab   :which-key "tab siguiente")
+      "TAB ["   '(tab-bar-switch-to-prev-tab   :which-key "tab anterior")
+      "TAB TAB" '(tab-bar-switch-to-recent-tab :which-key "tab reciente")
+
+      ;; LSP
+      "l r" '(eglot-rename             :which-key "renombrar")
+      "l a" '(eglot-code-actions       :which-key "code actions")
+      "l f" '(eglot-format-buffer      :which-key "formatear")
+      "l s" '(consult-eglot-symbols    :which-key "símbolos")
+
+      ;; Terminal
+      "t t" '(eat                      :which-key "terminal")
+      "t p" '(eat-project              :which-key "terminal proyecto")
+
+      ;; Help
+      "h f" '(helpful-callable         :which-key "describe función")
+      "h v" '(helpful-variable         :which-key "describe variable")
+      "h k" '(helpful-key              :which-key "describe key")
+
+      ;; Quit
+      "q q" '(save-buffers-kill-terminal :which-key "salir")))
+#+end_src
+
 * Ventanas y Workspaces
 ** Ace Window
 ;; Salta a cualquier ventana visible asignándole una letra.
@@ -469,7 +579,7 @@
 #+begin_src emacs-lisp
   (windmove-default-keybindings)   ; Shift + ←↑↓→
 
-  ;; Split, cierre y balance estilo Doom
+  ;; Split, cierre y balance (fallback sin leader)
   (global-set-key (kbd "C-c w v") #'split-window-right)
   (global-set-key (kbd "C-c w s") #'split-window-below)
   (global-set-key (kbd "C-c w d") #'delete-window)
@@ -513,7 +623,6 @@
     ("C-c TAB ]"   . tab-bar-switch-to-next-tab)
     ("C-c TAB ["   . tab-bar-switch-to-prev-tab)
     ("C-c TAB TAB" . tab-bar-switch-to-recent-tab)
-    ;; Saltar directo a tab por número (como SPC TAB 1/2/3 en Doom)
     ("C-c TAB 1"   . (lambda () (interactive) (tab-bar-select-tab 1)))
     ("C-c TAB 2"   . (lambda () (interactive) (tab-bar-select-tab 2)))
     ("C-c TAB 3"   . (lambda () (interactive) (tab-bar-select-tab 3)))

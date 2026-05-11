@@ -42,7 +42,14 @@
       # Lectura
       pdf-tools
       nov
+
+      # ventanas
       ace-window
+
+      # evil-mode
+      evil
+      evil-collection
+      general
     ];
   };
 
