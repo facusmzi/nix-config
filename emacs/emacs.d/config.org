@@ -34,10 +34,6 @@
   - [[#snippets-tempel][Snippets (Tempel)]]
   - [[#debug-dap][Debug (DAP)]]
   - [[#rust-rustic][Rust (Rustic)]]
-- [[#evil][Evil]]
-  - [[#evil-mode][Evil Mode]]
-  - [[#evil-collection][Evil Collection]]
-  - [[#general-leader-key][General (Leader key)]]
 - [[#ventanas-y-workspaces][Ventanas y Workspaces]]
   - [[#ace-window][Ace Window]]
   - [[#windmove][Windmove]]
@@ -450,124 +446,6 @@
                 ("C-c c d" . eldoc-doc-buffer)))
 #+end_src
 
-* Evil
-** Evil Mode
-#+begin_src emacs-lisp
-  (use-package evil
-    :init
-    ;; Estas tres variables tienen que ir ANTES de (evil-mode 1)
-    (setq evil-want-integration t)       ; requerido por evil-collection
-    (setq evil-want-keybinding nil)      ; requerido por evil-collection
-    (setq evil-want-C-u-scroll t)        ; C-u scrollea como en vim
-    (setq evil-want-C-d-scroll t)
-    (setq evil-undo-system 'undo-redo)   ; usa el undo nativo de Emacs 28+
-
-    :config
-    (evil-mode 1)
-
-    ;; C-g sale de insert mode (más cómodo que ESC)
-    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-
-    ;; j/k sobre líneas visuales (útil en org/markdown con wrap)
-    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-    (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
-#+end_src
-
-** Evil Collection
-;; Extiende evil a todos los modos que no soporta por defecto:
-;; magit, dired, corfu, pdf-tools, helpful, vertico, etc.
-#+begin_src emacs-lisp
-  (use-package evil-collection
-    :after evil
-    :config
-    (evil-collection-init))
-#+end_src
-
-** General (Leader key)
-;; General permite definir keybindings con SPC como leader, igual que Doom.
-;; SPC es el leader en normal/visual. M-SPC funciona en insert/emacs state.
-#+begin_src emacs-lisp
-  (use-package general
-    :after evil
-    :config
-    (general-evil-setup t)
-
-    (general-create-definer user/leader
-      :keymaps '(normal visual emacs)
-      :prefix "SPC"
-      :global-prefix "M-SPC")
-
-    (user/leader
-      ;; Buffers
-      "b b" '(consult-buffer           :which-key "switch buffer")
-      "b d" '(kill-this-buffer         :which-key "kill buffer")
-      "b n" '(next-buffer              :which-key "next buffer")
-      "b p" '(previous-buffer          :which-key "prev buffer")
-
-      ;; Archivos
-      "f f" '(find-file                :which-key "find file")
-      "f r" '(consult-recent-file      :which-key "recent files")
-      "f s" '(save-buffer              :which-key "save file")
-
-      ;; Búsqueda
-      "s s" '(consult-line             :which-key "buscar en buffer")
-      "s i" '(consult-imenu            :which-key "imenu")
-      "s p" '(projectile-ripgrep       :which-key "ripgrep en proyecto")
-
-      ;; Proyectos
-      "p p" '(projectile-switch-project :which-key "switch proyecto")
-      "p f" '(projectile-find-file      :which-key "find file en proyecto")
-
-      ;; Git
-      "g g" '(magit-status             :which-key "magit")
-
-      ;; Ventanas — foco (hjkl minúscula)
-      "w h" '(windmove-left                :which-key "foco izquierda")
-      "w j" '(windmove-down                :which-key "foco abajo")
-      "w k" '(windmove-up                  :which-key "foco arriba")
-      "w l" '(windmove-right               :which-key "foco derecha")
-
-      ;; Ventanas — mover ventana (HJKL mayúscula)
-      "w H" '(windmove-swap-states-left    :which-key "mover ventana izquierda")
-      "w J" '(windmove-swap-states-down    :which-key "mover ventana abajo")
-      "w K" '(windmove-swap-states-up      :which-key "mover ventana arriba")
-      "w L" '(windmove-swap-states-right   :which-key "mover ventana derecha")
-
-      ;; Ventanas — gestión
-      "w v" '(split-window-right           :which-key "split vertical")
-      "w s" '(split-window-below           :which-key "split horizontal")
-      "w d" '(delete-window                :which-key "cerrar ventana")
-      "w D" '(delete-other-windows         :which-key "cerrar resto")
-      "w b" '(balance-windows              :which-key "balancear")
-      "w w" '(ace-window                   :which-key "saltar ventana")
-
-      ;; Workspaces (tabs)
-      "TAB n"   '(tab-bar-new-tab              :which-key "nuevo tab")
-      "TAB d"   '(tab-bar-close-tab            :which-key "cerrar tab")
-      "TAB r"   '(tab-bar-rename-tab           :which-key "renombrar tab")
-      "TAB ]"   '(tab-bar-switch-to-next-tab   :which-key "tab siguiente")
-      "TAB ["   '(tab-bar-switch-to-prev-tab   :which-key "tab anterior")
-      "TAB TAB" '(tab-bar-switch-to-recent-tab :which-key "tab reciente")
-
-      ;; LSP
-      "l r" '(eglot-rename             :which-key "renombrar")
-      "l a" '(eglot-code-actions       :which-key "code actions")
-      "l f" '(eglot-format-buffer      :which-key "formatear")
-      "l s" '(consult-eglot-symbols    :which-key "símbolos")
-
-      ;; Terminal
-      "t t" '(eat                      :which-key "terminal")
-      "t p" '(eat-project              :which-key "terminal proyecto")
-
-      ;; Help
-      "h f" '(helpful-callable         :which-key "describe función")
-      "h v" '(helpful-variable         :which-key "describe variable")
-      "h k" '(helpful-key              :which-key "describe key")
-
-      ;; Quit
-      "q q" '(save-buffers-kill-terminal :which-key "salir")))
-#+end_src
-
 * Ventanas y Workspaces
 ** Ace Window
 ;; Salta a cualquier ventana visible asignándole una letra.
@@ -587,11 +465,46 @@
 #+end_src
 
 ** Windmove
-;; Moverse entre ventanas adyacentes (built-in).
-;; Los bindings principales están en el leader de SPC w hjkl/HJKL.
-;; Shift+flechas se mantiene como fallback fuera de normal mode.
+;; C-w como prefijo de ventanas, igual a vim nativo.
+;; C-w h/j/k/l   → mover foco
+;; C-w H/J/K/L   → mover ventana
+;; C-w v/s       → split vertical/horizontal
+;; C-w d/D       → cerrar ventana/resto
+;; C-w b         → balancear
+;; C-w w         → ace-window (saltar con letra)
 #+begin_src emacs-lisp
-  (windmove-default-keybindings)   ; Shift + ←↑↓→ como fallback
+  ;; Keymap explícito para el prefijo C-w.
+  ;; Asignarlo como keymap (no como comando) es lo que le dice a Emacs
+  ;; que C-w es un prefijo — esto resuelve el error "non-prefix key".
+  ;; eat y cualquier otro modo que pise C-w reciben el mismo keymap.
+  (defvar user/window-map (make-sparse-keymap)
+    "Prefix keymap para gestión de ventanas (C-w).")
+
+  ;; Foco
+  (define-key user/window-map (kbd "h") #'windmove-left)
+  (define-key user/window-map (kbd "j") #'windmove-down)
+  (define-key user/window-map (kbd "k") #'windmove-up)
+  (define-key user/window-map (kbd "l") #'windmove-right)
+
+  ;; Mover ventana
+  (define-key user/window-map (kbd "H") #'windmove-swap-states-left)
+  (define-key user/window-map (kbd "J") #'windmove-swap-states-down)
+  (define-key user/window-map (kbd "K") #'windmove-swap-states-up)
+  (define-key user/window-map (kbd "L") #'windmove-swap-states-right)
+
+  ;; Splits y gestión
+  (define-key user/window-map (kbd "v") #'split-window-right)
+  (define-key user/window-map (kbd "s") #'split-window-below)
+  (define-key user/window-map (kbd "d") #'delete-window)
+  (define-key user/window-map (kbd "D") #'delete-other-windows)
+  (define-key user/window-map (kbd "b") #'balance-windows)
+  (define-key user/window-map (kbd "w") #'ace-window)
+
+  ;; Registrar el prefijo globalmente
+  (global-set-key (kbd "C-w") user/window-map)
+
+  ;; Fallback con flechas
+  (windmove-default-keybindings)   ; Shift + ←↑↓→
 #+end_src
 
 ** Tab Bar (Workspaces)
@@ -667,7 +580,14 @@
 
     :bind
     ("C-c t t" . eat)
-    ("C-c t p" . eat-project))
+    ("C-c t p" . eat-project)
+
+    :config
+    ;; Sobreescribir eat-self-input en C-w con el keymap de ventanas.
+    ;; eat tiene C-w → eat-self-input en sus mapas; asignarle el keymap
+    ;; explícito hace que C-w actúe como prefijo también dentro del terminal.
+    (define-key eat-mode-map (kbd "C-w") user/window-map)
+    (define-key eat-semi-char-mode-map (kbd "C-w") user/window-map))
 #+end_src
 
 ** Sudo Edit
