@@ -42,6 +42,7 @@
       # Lectura
       pdf-tools
       nov
+      pdf-view-restore
 
       # ventanas
       ace-window

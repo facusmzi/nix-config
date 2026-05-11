@@ -93,6 +93,37 @@
         create-lockfiles nil
         custom-file (locate-user-emacs-file "custom-vars.el"))
   (load custom-file 'noerror 'nomessage)
+
+  ;; desktop-save-mode se encarga del restore al arrancar (after-init-hook).
+  ;; desktop-save nil desactiva el guardado automático al cerrar —
+  ;; solo se guarda cuando se usa C-c q explícitamente.
+  (desktop-save-mode 1)
+  (setq desktop-save nil
+        desktop-dirname (locate-user-emacs-file "")
+        desktop-restore-frames t
+        desktop-load-locked-desktop t)
+
+  (defun user/save-and-quit ()
+    "Guarda la sesión de desktop y cierra Emacs."
+    (interactive)
+    ;; Matar procesos de eat para que no pregunte al cerrar
+    (dolist (buf (buffer-list))
+      (when (eq (buffer-local-value 'major-mode buf) 'eat-mode)
+        (let ((proc (get-buffer-process buf)))
+          (when proc (delete-process proc)))))
+    (desktop-save (locate-user-emacs-file "") t)
+    (save-buffers-kill-terminal))
+
+  (defun user/clean-quit ()
+    "Borra la sesión guardada y cierra Emacs (arranca desde cero la próxima vez)."
+    (interactive)
+    (let ((f (desktop-full-file-name)))
+      (when (file-exists-p f)
+        (delete-file f)))
+    (save-buffers-kill-terminal))
+
+  (global-set-key (kbd "C-c q") #'user/save-and-quit)
+  (global-set-key (kbd "C-x C-c") #'user/clean-quit)
 #+end_src
 
 ** Historial
@@ -563,7 +594,10 @@
           dashboard-items '((recents  . 5)
                             (projects . 5)
                             (bookmarks . 5)))
-    (dashboard-setup-startup-hook))
+    ;; No arrancar dashboard si hay una sesión de desktop guardada.
+    ;; desktop-save-mode la restaura primero; dashboard la sobreescribiría.
+    (unless (file-exists-p (desktop-full-file-name))
+      (dashboard-setup-startup-hook)))
 #+end_src
 
 ** Eat
@@ -584,10 +618,25 @@
 
     :config
     ;; Sobreescribir eat-self-input en C-w con el keymap de ventanas.
-    ;; eat tiene C-w → eat-self-input en sus mapas; asignarle el keymap
-    ;; explícito hace que C-w actúe como prefijo también dentro del terminal.
     (define-key eat-mode-map (kbd "C-w") user/window-map)
-    (define-key eat-semi-char-mode-map (kbd "C-w") user/window-map))
+    (define-key eat-semi-char-mode-map (kbd "C-w") user/window-map)
+
+    ;; Restaurar buffers de eat al cargar el desktop
+    (defun user/eat-desktop-save (_desktop-dirname)
+      "Guarda el directorio del buffer de eat para desktop."
+      (list default-directory))
+
+    (defun user/eat-desktop-restore (_file-name _buffer-name misc)
+      "Restaura un buffer de eat desde el desktop."
+      (let ((default-directory (or (car misc) default-directory)))
+        (eat)))
+
+    (add-hook 'eat-mode-hook
+              (lambda ()
+                (setq-local desktop-save-buffer #'user/eat-desktop-save)))
+
+    (add-to-list 'desktop-buffer-mode-handlers
+                 '(eat-mode . user/eat-desktop-restore)))
 #+end_src
 
 ** Sudo Edit
@@ -602,13 +651,34 @@
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :magic ("%PDF" . pdf-view-mode)
+    :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
     :config
     (pdf-tools-install :no-query)
+    ;; Cerrar el buffer de pdf-occur al saltar a un resultado con Enter
+    (advice-add 'pdf-occur-goto-occurrence :after
+                (lambda (&rest _)
+                  (when-let (win (get-buffer-window "*PDF-Occur*"))
+                    (delete-window win))))
+    (add-to-list 'display-buffer-alist
+                 '("\\*PDF-Occur\\*"
+                   (display-buffer-reuse-window display-buffer-below-selected)
+                   (window-height . 0.3)
+                   (inhibit-same-window . t)))
+    (add-hook 'pdf-occur-buffer-mode-hook
+              (lambda ()
+                (select-window (get-buffer-window (current-buffer)))))
     :bind (:map pdf-view-mode-map
                 ("j"   . pdf-view-next-line-or-next-page)
                 ("k"   . pdf-view-previous-line-or-previous-page)
                 ("C-+" . pdf-view-enlarge)
                 ("C--" . pdf-view-shrink)))
+#+end_src
+
+** PDF Restore
+#+begin_src emacs-lisp
+  (use-package pdf-view-restore
+    :after pdf-tools
+    :hook (pdf-view-mode . pdf-view-restore-mode))
 #+end_src
 
 ** EPUB
