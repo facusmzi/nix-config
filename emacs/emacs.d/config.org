@@ -666,7 +666,10 @@
                    (inhibit-same-window . t)))
     (add-hook 'pdf-occur-buffer-mode-hook
               (lambda ()
-                (select-window (get-buffer-window (current-buffer)))))
+                (run-with-idle-timer 0 nil
+                  (lambda ()
+                    (when-let (win (get-buffer-window "*PDF-Occur*"))
+                      (select-window win))))))
     :bind (:map pdf-view-mode-map
                 ("j"   . pdf-view-next-line-or-next-page)
                 ("k"   . pdf-view-previous-line-or-previous-page)
