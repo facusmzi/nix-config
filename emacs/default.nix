@@ -33,6 +33,12 @@
       rustic        # modo principal: syntax, cargo commands, eglot integration
       cargo-mode    # comandos de cargo extra (cargo-execute-task, etc.)
 
+      consult-eglot
+      tempel
+      tempel-collection
+      breadcrumb
+      yasnippet
+
       # Lectura
       pdf-tools
       nov

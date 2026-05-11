@@ -21,13 +21,17 @@
   - [[#orderless][Orderless]]
   - [[#marginalia][Marginalia]]
   - [[#consult][Consult]]
+  - [[#consult-eglot][Consult Eglot]]
   - [[#helpful][Helpful]]
 - [[#proyectos][Proyectos]]
 - [[#git][Git]]
 - [[#desarrollo][Desarrollo]]
   - [[#direnv][Direnv]]
   - [[#lsp-eglot][LSP (Eglot)]]
+  - [[#breadcrumb][Breadcrumb]]
+  - [[#yasnippet][Yasnippet]]
   - [[#completion-inline-corfu][Completion Inline (Corfu)]]
+  - [[#snippets-tempel][Snippets (Tempel)]]
   - [[#debug-dap][Debug (DAP)]]
   - [[#rust-rustic][Rust (Rustic)]]
 - [[#misc][Misc]]
@@ -74,7 +78,7 @@
   (dolist (mode '(term-mode-hook
                   shell-mode-hook
                   eshell-mode-hook
-  		pdf-view-mode-hook))
+                  pdf-view-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 
@@ -165,14 +169,6 @@
 
 ** Tema
 #+begin_src emacs-lisp
-  ;; (use-package catppuccin-theme
-  ;;   :config
-  ;;   (setq catppuccin-flavor 'mocha
-  ;;         catppuccin-highlight-line-numbers t
-  ;;         catppuccin-italic-comments t
-  ;;         catppuccin-italic-keywords t)
-  ;;   (load-theme 'catppuccin t))
-
   (use-package doom-themes
     :config
     (setq doom-themes-enable-bold t
@@ -186,7 +182,7 @@
   (use-package doom-modeline
     :init (doom-modeline-mode 1)
     :config
-    (display-battery-mode 1) ;; Sacar esta línea si usás desktop sin batería
+    (display-battery-mode 1)
     (display-time-mode 1)
     :custom (doom-modeline-height 15))
 #+end_src
@@ -233,9 +229,19 @@
            ("C-x C-f" . find-file)
            ("C-c r"   . consult-recent-file)
            ("C-s"     . consult-line)
-           ("C-c i"   . consult-imenu)  ;; Lista filtrable de funciones/structs/traits del archivo
+           ("C-c i"   . consult-imenu)
            :map minibuffer-local-map
            ("C-r" . consult-history)))
+#+end_src
+
+** Consult Eglot
+;; Permite buscar símbolos (funciones, structs, traits, etc.) en todo el
+;; workspace usando el LSP. Equivalente a Ctrl+T en VSCode.
+#+begin_src emacs-lisp
+  (use-package consult-eglot
+    :after (consult eglot)
+    :bind (:map eglot-mode-map
+                ("C-c l s" . consult-eglot-symbols)))
 #+end_src
 
 ** Helpful
@@ -288,16 +294,24 @@
 #+begin_src emacs-lisp
   (use-package eglot
     :hook
-    ;; Antes: corría antes de envrc → clangd no encontrado
-    ;; (c-ts-mode   . eglot-ensure)
-    ;; (c++-ts-mode . eglot-ensure)
-
-    ;; Ahora: corre después de que envrc cargó el entorno
+    ;; Corre después de que envrc cargó el entorno
     (hack-local-variables . eglot-ensure)
 
     :custom
     (eglot-autoshutdown t)
     (eglot-sync-connect nil)
+    (eglot-confirm-server-initiated-edits nil)
+
+    :config
+    ;; rust-analyzer: insertar paréntesis automáticamente al completar funciones.
+    ;; Cuando seleccionás una función del popup, agrega fn() con el cursor adentro.
+    ;; Requiere yasnippet activo para expandir el snippet que manda el LSP.
+    (setq-default eglot-workspace-configuration
+                  '(:rust-analyzer
+                    (:completion
+                     (:callable
+                      (:snippets "add_parentheses")))))
+
     :bind (:map eglot-mode-map
                 ("C-c l r" . eglot-rename)
                 ("C-c l a" . eglot-code-actions)
@@ -307,16 +321,34 @@
                 ("M-,"     . xref-go-back)))
 #+end_src
 
+** Breadcrumb
+;; Muestra en qué función/struct/módulo estás en el header del buffer.
+;; Equivalente al breadcrumb de VSCode.
+#+begin_src emacs-lisp
+  (use-package breadcrumb
+    :hook (eglot-managed-mode . breadcrumb-local-mode))
+#+end_src
+
+** Yasnippet
+;; Requerido por eglot para expandir los snippets que manda el LSP.
+;; Sin esto, completar funciones no agrega paréntesis aunque rust-analyzer
+;; los envíe. No hace falta configurar snippets propios — tempel se encarga
+;; de eso. Yasnippet acá actúa solo como expansor para el LSP.
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :init (yas-global-mode 1))
+#+end_src
+
 ** Completion Inline (Corfu)
 #+begin_src emacs-lisp
   (use-package corfu
     :init (global-corfu-mode 1)
     :custom
-    (corfu-auto t)           ; mostrar sugerencias automáticamente
-    (corfu-auto-delay 0.2)   ; después de 200ms
-    (corfu-auto-prefix 2)    ; con al menos 2 caracteres
-    (corfu-cycle t)          ; ciclar entre candidatos
-    (corfu-quit-no-match t)) ; cerrar si no hay match
+    (corfu-auto t)
+    (corfu-auto-delay 0.2)
+    (corfu-auto-prefix 2)
+    (corfu-cycle t)
+    (corfu-quit-no-match t))
 
   (use-package cape
     :init
@@ -324,6 +356,20 @@
               (lambda ()
                 (add-to-list 'completion-at-point-functions #'cape-file)
                 (add-to-list 'completion-at-point-functions #'cape-keyword))))
+#+end_src
+
+** Snippets (Tempel)
+;; Tempel es un sistema de snippets integrado con completion-at-point,
+;; así que funciona con Corfu. tempel-collection agrega snippets predefinidos
+;; para Rust, C++, org, y otros modos.
+#+begin_src emacs-lisp
+  (use-package tempel
+    :bind (("M-+" . tempel-insert)
+           ("M-*" . tempel-complete))
+    :hook (prog-mode . tempel-abbrev-mode))
+
+  (use-package tempel-collection
+    :after tempel)
 #+end_src
 
 ** Debug (DAP)
@@ -336,8 +382,6 @@
     (dap-auto-configure-mode 1)
     (require 'dap-lldb)
 
-    ;; Buscar lldb-dap en el PATH del devshell (resuelto por envrc).
-    ;; nixpkgs puede llamarlo lldb-dap (>= 18) o lldb-vscode (< 18).
     (setq dap-lldb-debug-program
           (list (or (executable-find "lldb-dap")
                     (executable-find "lldb-vscode")
@@ -374,24 +418,13 @@
 #+begin_src emacs-lisp
   (use-package rustic
     :custom
-    ;; Usar eglot en vez del cliente LSP interno de rustic
     (rustic-lsp-client 'eglot)
-    ;; Formatear con rustfmt al guardar
     (rustic-format-on-save t)
 
     :config
     ;; FIX: usar eglot-managed-mode-hook en vez de rustic-mode-hook.
-    ;;
-    ;; rustic-mode-hook se dispara cuando el modo se activa, que puede ser
-    ;; ANTES de que eglot establezca la conexión (eglot-sync-connect nil →
-    ;; conexión async). Si eglot-inlay-hints-mode corre en ese momento intenta
-    ;; mandar una request al servidor y explota con:
-    ;;   "File mode specification error: jsonrpc-error No current JSON-RPC connection"
-    ;;
     ;; eglot-managed-mode-hook se dispara recién cuando eglot tomó control del
-    ;; buffer, así que la conexión está garantizada. El guard derived-mode-p
-    ;; limita el hook solo a buffers rustic (eglot-managed-mode-hook corre en
-    ;; todos los modos que eglot maneja).
+    ;; buffer, así que la conexión está garantizada.
     (add-hook 'eglot-managed-mode-hook
               (lambda ()
                 (when (and (derived-mode-p 'rustic-mode)
@@ -399,14 +432,13 @@
                   (eglot-inlay-hints-mode 1))))
 
     :bind (:map rustic-mode-map
-                ;; Cargo desde Emacs — sin salir del editor
                 ("C-c c r" . rustic-cargo-run)
                 ("C-c c b" . rustic-cargo-build)
                 ("C-c c t" . rustic-cargo-test)
                 ("C-c c c" . rustic-cargo-clippy)
                 ("C-c c f" . rustic-cargo-fmt)
                 ("C-c c a" . rustic-cargo-add)
-                ;; Ver documentación del símbolo bajo el cursor
+                ("C-c c e" . rustic-cargo-expand)
                 ("C-c c d" . eldoc-doc-buffer)))
 #+end_src
 
@@ -433,16 +465,12 @@
 #+begin_src emacs-lisp
   (use-package eat
     :hook
-    ;; Integración con eshell: eat reemplaza el manejo de programas de terminal
-    ;; (vim, htop, etc.) dentro de eshell, sin necesidad de abrir un buffer aparte
     (eshell-load . eat-eshell-mode)
 
     :custom
-    ;; Usar el shell definido en el sistema
     (eat-shell shell-file-name)
 
     :bind
-    ;; Abrir terminal en el directorio del proyecto actual
     ("C-c t t" . eat)
     ("C-c t p" . eat-project))
 #+end_src
@@ -456,8 +484,6 @@
 ** PDF
 ;; pdf-tools reemplaza el DocView built-in con un renderizado nativo de alta
 ;; calidad usando poppler. Abre automáticamente cualquier %PDF.
-;; El servidor epdfinfo viene incluido en el paquete de nixpkgs — no hay que
-;; compilar nada a mano.
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :magic ("%PDF" . pdf-view-mode)
@@ -472,7 +498,6 @@
 
 ** EPUB
 ;; nov.el renderiza EPUBs con fuente variable-pitch y ancho de texto configurable.
-;; nov-text-width controla cuántos caracteres por línea — ajustá a gusto.
 #+begin_src emacs-lisp
   (use-package nov
     :init
