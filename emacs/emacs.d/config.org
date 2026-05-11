@@ -521,13 +521,25 @@
       ;; Git
       "g g" '(magit-status             :which-key "magit")
 
-      ;; Ventanas
-      "w v" '(split-window-right       :which-key "split vertical")
-      "w s" '(split-window-below       :which-key "split horizontal")
-      "w d" '(delete-window            :which-key "cerrar ventana")
-      "w D" '(delete-other-windows     :which-key "cerrar resto")
-      "w b" '(balance-windows          :which-key "balancear")
-      "w w" '(ace-window               :which-key "saltar ventana")
+      ;; Ventanas — foco (hjkl minúscula)
+      "w h" '(windmove-left                :which-key "foco izquierda")
+      "w j" '(windmove-down                :which-key "foco abajo")
+      "w k" '(windmove-up                  :which-key "foco arriba")
+      "w l" '(windmove-right               :which-key "foco derecha")
+
+      ;; Ventanas — mover ventana (HJKL mayúscula)
+      "w H" '(windmove-swap-states-left    :which-key "mover ventana izquierda")
+      "w J" '(windmove-swap-states-down    :which-key "mover ventana abajo")
+      "w K" '(windmove-swap-states-up      :which-key "mover ventana arriba")
+      "w L" '(windmove-swap-states-right   :which-key "mover ventana derecha")
+
+      ;; Ventanas — gestión
+      "w v" '(split-window-right           :which-key "split vertical")
+      "w s" '(split-window-below           :which-key "split horizontal")
+      "w d" '(delete-window                :which-key "cerrar ventana")
+      "w D" '(delete-other-windows         :which-key "cerrar resto")
+      "w b" '(balance-windows              :which-key "balancear")
+      "w w" '(ace-window                   :which-key "saltar ventana")
 
       ;; Workspaces (tabs)
       "TAB n"   '(tab-bar-new-tab              :which-key "nuevo tab")
@@ -575,16 +587,11 @@
 #+end_src
 
 ** Windmove
-;; Moverse entre ventanas adyacentes con Shift+flechas (built-in).
+;; Moverse entre ventanas adyacentes (built-in).
+;; Los bindings principales están en el leader de SPC w hjkl/HJKL.
+;; Shift+flechas se mantiene como fallback fuera de normal mode.
 #+begin_src emacs-lisp
-  (windmove-default-keybindings)   ; Shift + ←↑↓→
-
-  ;; Split, cierre y balance (fallback sin leader)
-  (global-set-key (kbd "C-c w v") #'split-window-right)
-  (global-set-key (kbd "C-c w s") #'split-window-below)
-  (global-set-key (kbd "C-c w d") #'delete-window)
-  (global-set-key (kbd "C-c w D") #'delete-other-windows)
-  (global-set-key (kbd "C-c w b") #'balance-windows)
+  (windmove-default-keybindings)   ; Shift + ←↑↓→ como fallback
 #+end_src
 
 ** Tab Bar (Workspaces)
