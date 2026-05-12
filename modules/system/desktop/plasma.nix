@@ -28,7 +28,7 @@ in
                     chmod -R u+w $out/share
                   fi
                 done
-              )
+                )
             '';
           };
 
@@ -48,7 +48,7 @@ in
             '';
           };
         in
-        derivedPkg;
+          derivedPkg;
     };
   });
 
@@ -99,10 +99,6 @@ in
         };
       };
 
-      home.sessionVariables = {
-        EDITOR = "kate --block";
-        VISUAL = "kate --block";
-      };
 
       panels = [
         {
@@ -133,6 +129,11 @@ in
           ];
         }
       ];
+    };
+
+    home.sessionVariables = {
+      EDITOR = "kate --block";
+      VISUAL = "kate --block";
     };
 
     xdg.mimeApps = {
