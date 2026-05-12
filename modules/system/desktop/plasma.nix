@@ -99,6 +99,11 @@ in
         };
       };
 
+      home.sessionVariables = {
+        EDITOR = "kate --block";
+        VISUAL = "kate --block";
+      };
+
       panels = [
         {
           location = "bottom";

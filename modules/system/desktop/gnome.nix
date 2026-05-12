@@ -3,9 +3,8 @@
 let
   users = [ "facusmzi" ];
 
-  # Flameshot estable en GNOME Wayland (usa XWayland)
   flameshot-gui = pkgs.writeShellScriptBin "flameshot-gui" ''
-     QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot gui --clipboard
+    QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot gui --clipboard
   '';
 in
 {
@@ -15,7 +14,6 @@ in
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # 🔴 Portal necesario para clipboard / screenshots en Wayland
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
@@ -59,16 +57,46 @@ in
         accent-color = "purple";
       };
 
+      "org/gnome/shell" = {
+        enabled-extensions = with pkgs.gnomeExtensions; [
+          appindicator.extensionUuid
+          tray-icons-reloaded.extensionUuid
+          "drive-menu@gnome-shell-extensions.gcampax.github.com"
+          blur-my-shell.extensionUuid
+          dash-to-dock.extensionUuid
+          clipboard-indicator.extensionUuid
+          pop-shell.extensionUuid
+          caffeine.extensionUuid
+          user-themes.extensionUuid
+          transparent-window-moving.extensionUuid
+        ];
+
+        favorite-apps = [
+          "org.gnome.Console.desktop"
+          "org.gnome.Nautilus.desktop"
+          "firefox.desktop"
+        ];
+      };
+
+      "org/gnome/shell/extensions/dash-to-dock" = {
+        show-trash          = false;
+        show-mounts         = false;
+        show-mounts-network = false;
+      };
+
+      "org/gnome/shell/extensions/clipboard-indicator" = {
+        cache-images   = true;
+        notify-on-copy = false;
+      };
+
       "org/gnome/settings-daemon/plugins/media-keys" = {
         custom-keybindings = [
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot/"
         ];
       };
 
-      # ⚠️ Ctrl + Ñ es bonito pero inestable en Wayland
-      # 👉 por eso usamos Ctrl + Shift + S (recomendado)
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot" = {
-        name = "Flameshot";
+        name    = "Flameshot";
         command = "${flameshot-gui}/bin/flameshot-gui";
         binding = "<Control>ntilde";
       };
