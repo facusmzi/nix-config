@@ -97,6 +97,7 @@
     libreoffice-fresh
     ntfs3g p7zip
     qbittorrent
+    wl-clipboard
     bitwarden-desktop
     gnome-network-displays
   ];

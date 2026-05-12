@@ -18,6 +18,7 @@
       projectile
       magit
       org-modern
+      org-download
       markdown-mode
       nix-mode
       diminish
