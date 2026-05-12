@@ -4,7 +4,9 @@ let
   users = [ "facusmzi" ];
 
   flameshot-gui = pkgs.writeShellScriptBin "flameshot-gui" ''
-    QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot gui --clipboard
+    QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot gui
+    sleep 0.5
+    xclip -selection clipboard -t image/png -o 2>/dev/null | wl-copy --type image/png
   '';
 in
 {
@@ -46,6 +48,7 @@ in
 
     qt5.qtwayland
     wl-clipboard
+    xclip
   ];
 
   # ─── Home Manager ──────────────────────────────────────────
