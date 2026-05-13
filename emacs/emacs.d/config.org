@@ -549,6 +549,10 @@
   ;; Prefijos de secuencias de Emacs que el compositor redirige a Emacs
   ;; aunque una app Wayland tenga el foco. Solo van acá los prefijos de
   ;; comandos (C-x, M-x, etc.) — las multimedia keys y s- van en ewm-mode-map.
+
+  (setopt ewm-surface-emulate-keys nil)
+
+
   (setopt ewm-intercept-prefixes
           '("C-x" "C-u" "C-h" "M-x" "C-c" "C-w"))
 
