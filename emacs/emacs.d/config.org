@@ -503,14 +503,15 @@
 ;; para sus workspaces. Cada tab mantiene su propio layout de ventanas y buffers.
 ;; Los faces usan la paleta Catppuccin Mocha definida en la sección Colores,
 ;; así que este bloque tiene que cargarse después de que user/bg-* estén seteadas.
+** Tab Bar (Workspaces)
 #+begin_src emacs-lisp
   (use-package tab-bar
     :ensure nil   ; built-in
     :init (tab-bar-mode 1)
 
     :custom
-    (tab-bar-show 1)                        ; ocultar la barra si hay solo 1 tab
-    (tab-bar-new-tab-choice "*dashboard*")  ; abre dashboard al crear un tab nuevo
+    (tab-bar-show 1)
+    (tab-bar-new-tab-choice "*dashboard*")
     (tab-bar-close-button-show nil)
     (tab-bar-new-button-show nil)
     (tab-bar-tab-name-function #'tab-bar-tab-name-current)
@@ -525,22 +526,8 @@
                         :weight 'bold)
     (set-face-attribute 'tab-bar-tab-inactive nil
                         :background user/bg-0
-                        :foreground user/acc-2)
-
-    :bind
-    ("C-c TAB n"   . tab-bar-new-tab)
-    ("C-c TAB d"   . tab-bar-close-tab)
-    ("C-c TAB r"   . tab-bar-rename-tab)
-    ("C-c TAB ]"   . tab-bar-switch-to-next-tab)
-    ("C-c TAB ["   . tab-bar-switch-to-prev-tab)
-    ("C-c TAB TAB" . tab-bar-switch-to-recent-tab)
-    ("C-c TAB 1"   . (lambda () (interactive) (tab-bar-select-tab 1)))
-    ("C-c TAB 2"   . (lambda () (interactive) (tab-bar-select-tab 2)))
-    ("C-c TAB 3"   . (lambda () (interactive) (tab-bar-select-tab 3)))
-    ("C-c TAB 4"   . (lambda () (interactive) (tab-bar-select-tab 4)))
-    ("C-c TAB 5"   . (lambda () (interactive) (tab-bar-select-tab 5))))
+                        :foreground user/acc-2))
 #+end_src
-
 ** EWM
 ;; EWM usa Emacs como compositor Wayland. Los keybinds con Super (s-)
 ;; se interceptan antes de llegar a las apps Wayland, por lo que funcionan
@@ -615,8 +602,14 @@
                 ("s-m"         . magit-status)
                 ;; Tabs / workspaces
                 ("s-n"         . tab-bar-new-tab)
-                ("s-<tab>"     . ewm-next-surface-buffer)
-                ("s-<backtab>" . ewm-prev-surface-buffer)
+                ("s-i"         . tab-bar-close-tab)
+                ("s-1"         . (lambda () (interactive) (tab-bar-select-tab 1)))
+                ("s-2"         . (lambda () (interactive) (tab-bar-select-tab 2)))
+                ("s-3"         . (lambda () (interactive) (tab-bar-select-tab 3)))
+                ("s-4"         . (lambda () (interactive) (tab-bar-select-tab 4)))
+                ("s-5"         . (lambda () (interactive) (tab-bar-select-tab 5)))
+                ("s-6"         . (lambda () (interactive) (tab-bar-select-tab 6)))
+                ("s-7"         . (lambda () (interactive) (tab-bar-select-tab 7)))
                 ;; Sistema
                 ("s-<escape>"  . ewm-lock-session)
                 ("s-<return>"  . ewm-toggle-fullscreen)))
