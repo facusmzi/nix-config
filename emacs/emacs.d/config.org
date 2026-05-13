@@ -35,8 +35,8 @@
   - [[#debug-dap][Debug (DAP)]]
   - [[#rust-rustic][Rust (Rustic)]]
 - [[#ventanas-y-workspaces][Ventanas y Workspaces]]
-  - [[#ace-window][Ace Window]]
   - [[#windmove][Windmove]]
+  - [[#ace-window][Ace Window]]
   - [[#tab-bar-workspaces][Tab Bar (Workspaces)]]
 - [[#misc][Misc]]
   - [[#dashboard][Dashboard]]
@@ -478,6 +478,27 @@
 #+end_src
 
 * Ventanas y Workspaces
+** Windmove
+;; C-w restaurado a kill-region (cortar).
+;; Splits y cierre quedan vainilla: C-x 2, C-x 3, C-x 0, C-x 1.
+;; M-hjkl mueve el foco entre ventanas.
+;; M-HJKL intercambia la ventana con su vecina.
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-w") #'kill-region)
+
+  ;; Foco
+  (global-set-key (kbd "M-h") #'windmove-left)
+  (global-set-key (kbd "M-j") #'windmove-down)
+  (global-set-key (kbd "M-k") #'windmove-up)
+  (global-set-key (kbd "M-l") #'windmove-right)
+
+  ;; Mover ventana
+  (global-set-key (kbd "M-H") #'windmove-swap-states-left)
+  (global-set-key (kbd "M-J") #'windmove-swap-states-down)
+  (global-set-key (kbd "M-K") #'windmove-swap-states-up)
+  (global-set-key (kbd "M-L") #'windmove-swap-states-right)
+#+end_src
+
 ** Ace Window
 ;; Salta a cualquier ventana visible asignándole una letra.
 ;; C-u M-o: swap de ventanas. C-u C-u M-o: mover buffer a otra ventana.
@@ -493,49 +514,6 @@
                         :foreground user/acc-0
                         :height 2.5
                         :weight 'bold))
-#+end_src
-
-** Windmove
-;; C-w como prefijo de ventanas, igual a vim nativo.
-;; C-w h/j/k/l   → mover foco
-;; C-w H/J/K/L   → mover ventana
-;; C-w v/s       → split vertical/horizontal
-;; C-w d/D       → cerrar ventana/resto
-;; C-w b         → balancear
-;; C-w w         → ace-window (saltar con letra)
-#+begin_src emacs-lisp
-  ;; Keymap explícito para el prefijo C-w.
-  ;; Asignarlo como keymap (no como comando) es lo que le dice a Emacs
-  ;; que C-w es un prefijo — esto resuelve el error "non-prefix key".
-  ;; eat y cualquier otro modo que pise C-w reciben el mismo keymap.
-  (defvar user/window-map (make-sparse-keymap)
-    "Prefix keymap para gestión de ventanas (C-w).")
-
-  ;; Foco
-  (define-key user/window-map (kbd "h") #'windmove-left)
-  (define-key user/window-map (kbd "j") #'windmove-down)
-  (define-key user/window-map (kbd "k") #'windmove-up)
-  (define-key user/window-map (kbd "l") #'windmove-right)
-
-  ;; Mover ventana
-  (define-key user/window-map (kbd "H") #'windmove-swap-states-left)
-  (define-key user/window-map (kbd "J") #'windmove-swap-states-down)
-  (define-key user/window-map (kbd "K") #'windmove-swap-states-up)
-  (define-key user/window-map (kbd "L") #'windmove-swap-states-right)
-
-  ;; Splits y gestión
-  (define-key user/window-map (kbd "v") #'split-window-right)
-  (define-key user/window-map (kbd "s") #'split-window-below)
-  (define-key user/window-map (kbd "d") #'delete-window)
-  (define-key user/window-map (kbd "D") #'delete-other-windows)
-  (define-key user/window-map (kbd "b") #'balance-windows)
-  (define-key user/window-map (kbd "w") #'ace-window)
-
-  ;; Registrar el prefijo globalmente
-  (global-set-key (kbd "C-w") user/window-map)
-
-  ;; Fallback con flechas
-  (windmove-default-keybindings)   ; Shift + ←↑↓→
 #+end_src
 
 ** Tab Bar (Workspaces)
@@ -617,10 +595,6 @@
     ("C-c t p" . eat-project)
 
     :config
-    ;; Sobreescribir eat-self-input en C-w con el keymap de ventanas.
-    (define-key eat-mode-map (kbd "C-w") user/window-map)
-    (define-key eat-semi-char-mode-map (kbd "C-w") user/window-map)
-
     ;; Restaurar buffers de eat al cargar el desktop
     (defun user/eat-desktop-save (_desktop-dirname)
       "Guarda el directorio del buffer de eat para desktop."
