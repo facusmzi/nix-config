@@ -9,6 +9,7 @@
 
   environment.systemPackages = with pkgs; [
     wl-clipboard brightnessctl
+    grim slurp
   ];
 
   programs.ewm = {

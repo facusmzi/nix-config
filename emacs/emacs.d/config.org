@@ -47,6 +47,7 @@
   - [[#epub][EPUB]]
 - [[#org][Org]]
   - [[#imagenes][imágenes]]
+
 * General
 ** UI Básica
 #+begin_src emacs-lisp
@@ -499,19 +500,17 @@
 #+end_src
 
 ** Tab Bar (Workspaces)
-;; tab-bar-mode es built-in desde Emacs 27 y es lo que Doom usa bajo el capó
-;; para sus workspaces. Cada tab mantiene su propio layout de ventanas y buffers.
-;; Los faces usan la paleta Catppuccin Mocha definida en la sección Colores,
-;; así que este bloque tiene que cargarse después de que user/bg-* estén seteadas.
-** Tab Bar (Workspaces)
+;; tab-bar-mode es built-in desde Emacs 27. Cada tab mantiene su propio
+;; layout de ventanas y buffers. Los faces usan la paleta Catppuccin Mocha
+;; definida en la sección Colores.
 #+begin_src emacs-lisp
   (use-package tab-bar
     :ensure nil   ; built-in
     :init (tab-bar-mode 1)
 
     :custom
-    (tab-bar-show 1)
-    (tab-bar-new-tab-choice "*dashboard*")
+    (tab-bar-show 1)                        ; ocultar la barra si hay solo 1 tab
+    (tab-bar-new-tab-choice "*dashboard*")  ; abre dashboard al crear un tab nuevo
     (tab-bar-close-button-show nil)
     (tab-bar-new-button-show nil)
     (tab-bar-tab-name-function #'tab-bar-tab-name-current)
@@ -528,17 +527,13 @@
                         :background user/bg-0
                         :foreground user/acc-2))
 #+end_src
+
 ** EWM
 ;; EWM usa Emacs como compositor Wayland. Los keybinds con Super (s-)
 ;; se interceptan antes de llegar a las apps Wayland, por lo que funcionan
 ;; globalmente igual que los de un WM tradicional.
 #+begin_src emacs-lisp
-  ;; Prefijos de secuencias de Emacs que el compositor redirige a Emacs
-  ;; aunque una app Wayland tenga el foco. Solo van acá los prefijos de
-  ;; comandos (C-x, M-x, etc.) — las multimedia keys y s- van en ewm-mode-map.
-
   (setopt ewm-surface-emulate-keys nil)
-
 
   (setopt ewm-intercept-prefixes
           '("C-x" "C-u" "C-h" "M-x"))
@@ -574,47 +569,55 @@
 
     :bind (:map ewm-mode-map
                 ;; Navegación de ventanas (vim-style)
-                ("s-h"         . windmove-left)
-                ("s-l"         . windmove-right)
-                ("s-k"         . windmove-up)
-                ("s-j"         . windmove-down)
+                ("s-h"        . windmove-left)
+                ("s-l"        . windmove-right)
+                ("s-k"        . windmove-up)
+                ("s-j"        . windmove-down)
                 ;; Mover ventanas
-                ("s-H"         . windmove-swap-states-left)
-                ("s-L"         . windmove-swap-states-right)
-                ("s-K"         . windmove-swap-states-up)
-                ("s-J"         . windmove-swap-states-down)
+                ("s-H"        . windmove-swap-states-left)
+                ("s-L"        . windmove-swap-states-right)
+                ("s-K"        . windmove-swap-states-up)
+                ("s-J"        . windmove-swap-states-down)
                 ;; Splits y ventanas
-                ("s-v"         . split-window-right)
-                ("s-s"         . split-window-below)
-                ("s-w"         . delete-window)
-                ("s-="         . balance-windows)
-                ;; Clipboard (s-v ocupado por split, s-c ocupado — los redefinimos)
-                ("s-c"         . kill-ring-save)   ; copy
-                ("s-y"         . yank)             ; paste
+                ("s-v"        . (lambda () (interactive) (split-window-right) (other-window 1) (eat)))
+                ("s-s"        . (lambda () (interactive) (split-window-below) (other-window 1) (eat)))
+                ("s-w"        . delete-window)
+                ("s-="        . balance-windows)
+                ;; Clipboard
+                ("s-c"        . kill-ring-save)
+                ("s-y"        . yank)
                 ;; Buffers y proyectos
-                ("s-d"         . consult-buffer)
-                ("s-f"         . projectile-find-file)
-                ("s-p"         . projectile-switch-project)
+                ("s-d"        . consult-buffer)
+                ("s-f"        . projectile-find-file)
+                ("s-p"        . projectile-switch-project)
                 ;; Apps
-                ("s-t"         . eat)
-                ("s-b"         . (lambda () (interactive)
-                                   (start-process "firefox" nil "firefox")))
-                ("s-m"         . magit-status)
+                ("s-t"        . eat)
+                ("s-b"        . (lambda () (interactive)
+                                  (start-process "firefox" nil "firefox")))
+                ("s-m"        . magit-status)
                 ;; Tabs / workspaces
-                ("s-n"         . tab-bar-new-tab)
-                ("s-i"         . tab-bar-close-tab)
-                ("s-1"         . (lambda () (interactive) (tab-bar-select-tab 1)))
-                ("s-2"         . (lambda () (interactive) (tab-bar-select-tab 2)))
-                ("s-3"         . (lambda () (interactive) (tab-bar-select-tab 3)))
-                ("s-4"         . (lambda () (interactive) (tab-bar-select-tab 4)))
-                ("s-5"         . (lambda () (interactive) (tab-bar-select-tab 5)))
-                ("s-6"         . (lambda () (interactive) (tab-bar-select-tab 6)))
-                ("s-7"         . (lambda () (interactive) (tab-bar-select-tab 7)))
+                ("s-n"        . tab-bar-new-tab)
+                ("s-i"        . tab-bar-close-tab)
+                ("s-1"        . (lambda () (interactive) (tab-bar-select-tab 1)))
+                ("s-2"        . (lambda () (interactive) (tab-bar-select-tab 2)))
+                ("s-3"        . (lambda () (interactive) (tab-bar-select-tab 3)))
+                ("s-4"        . (lambda () (interactive) (tab-bar-select-tab 4)))
+                ("s-5"        . (lambda () (interactive) (tab-bar-select-tab 5)))
+                ("s-6"        . (lambda () (interactive) (tab-bar-select-tab 6)))
+                ("s-7"        . (lambda () (interactive) (tab-bar-select-tab 7)))
                 ;; Sistema
-                ("s-<escape>"  . ewm-lock-session)
-                ("s-<return>"  . ewm-toggle-fullscreen)))
+                ("s-<escape>" . ewm-lock-session)
+                ("s-<return>" . ewm-toggle-fullscreen)
+                ;; Capturas
+                ("<Print>"    . (lambda () (interactive)
+                                  (start-process-shell-command
+                                   "screenshot" nil
+                                   "grim -g \"$(slurp)\" ~/Imágenes/screenshot-$(date +%Y%m%d-%H%M%S).png")))
+                ("S-<Print>"  . (lambda () (interactive)
+                                  (start-process-shell-command
+                                   "screenshot" nil
+                                   "grim ~/Imágenes/screenshot-$(date +%Y%m%d-%H%M%S).png")))))
 #+end_src
-
 * Misc
 ** Dashboard
 #+begin_src emacs-lisp
@@ -738,7 +741,7 @@
 
 ** Imágenes
 ;; org-download permite pegar imágenes del clipboard directamente en el .org.
-;; Flujo: sacar captura con Spectacle → C-c i p → imagen guardada en ./img/ e insertada.
+;; Flujo: sacar captura con grim → C-c i p → imagen guardada en ./img/ e insertada.
 #+begin_src emacs-lisp
   (use-package org-download
     :after org
