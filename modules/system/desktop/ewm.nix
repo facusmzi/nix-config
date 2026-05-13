@@ -2,6 +2,12 @@
 {
   imports = [ inputs.ewm.nixosModules.default ];
 
+  environment.systemPackages = with pkgs; [
+
+    wl-clipboard brightnessctl
+
+  ];
+
   programs.ewm = {
     enable = true;
     screencast.enable = true;

@@ -27,7 +27,7 @@
     };
 
     ewm = {
-      url = "github:ezemtsov/ewm";
+      url = "https://codeberg.org/ezemtsov/ewm/archive/master.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };

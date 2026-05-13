@@ -22,6 +22,24 @@
         "type": "github"
       }
     },
+    "ewm": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1778243000,
+        "narHash": "sha256-D4JEH8ZMbUP8YWiwE5PN8QdYG1xbGHGdZfed/kr+8UI=",
+        "rev": "dba66bbac725dc23c0c30bcecdee9fd1686db250",
+        "type": "tarball",
+        "url": "https://codeberg.org/api/v1/repos/ezemtsov/ewm/archive/dba66bbac725dc23c0c30bcecdee9fd1686db250.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://codeberg.org/ezemtsov/ewm/archive/master.tar.gz"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -123,6 +141,7 @@
     "root": {
       "inputs": {
         "dms": "dms",
+        "ewm": "ewm",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
