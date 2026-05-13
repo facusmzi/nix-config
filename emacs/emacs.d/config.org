@@ -554,7 +554,7 @@
 
 
   (setopt ewm-intercept-prefixes
-          '("C-x" "C-u" "C-h" "M-x" "C-c" "C-w"))
+          '("C-x" "C-u" "C-h" "M-x"))
 
   ;; Dispositivos de entrada — EWM gestiona su propio teclado,
   ;; el xkb de configuration.nix no aplica acá.
