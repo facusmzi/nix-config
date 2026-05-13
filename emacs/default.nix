@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, osConfig, ... }:
 {
   programs.emacs = {
     enable = true;
@@ -47,7 +47,8 @@
 
       # ventanas
       ace-window
-    ];
+    ] ++ lib.optional (osConfig.programs.ewm.enable or false)
+        osConfig.programs.ewm.ewmPackage;  # ewm.el + libewm_core.so
   };
 
   home.file.".config/emacs" = {

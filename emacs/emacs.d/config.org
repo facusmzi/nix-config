@@ -35,9 +35,9 @@
   - [[#debug-dap][Debug (DAP)]]
   - [[#rust-rustic][Rust (Rustic)]]
 - [[#ventanas-y-workspaces][Ventanas y Workspaces]]
-  - [[#windmove][Windmove]]
   - [[#ace-window][Ace Window]]
   - [[#tab-bar-workspaces][Tab Bar (Workspaces)]]
+  - [[#ewm][EWM]]
 - [[#misc][Misc]]
   - [[#dashboard][Dashboard]]
   - [[#eat][Eat]]
@@ -84,6 +84,9 @@
                   eshell-mode-hook
                   pdf-view-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+  ;; C-w para cortar texto (kill-region)
+  (global-set-key (kbd "C-w") #'kill-region)
 #+end_src
 
 ** Archivos
@@ -478,27 +481,6 @@
 #+end_src
 
 * Ventanas y Workspaces
-** Windmove
-;; C-w restaurado a kill-region (cortar).
-;; Splits y cierre quedan vainilla: C-x 2, C-x 3, C-x 0, C-x 1.
-;; M-hjkl mueve el foco entre ventanas.
-;; M-HJKL intercambia la ventana con su vecina.
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-w") #'kill-region)
-
-  ;; Foco
-  (global-set-key (kbd "M-h") #'windmove-left)
-  (global-set-key (kbd "M-j") #'windmove-down)
-  (global-set-key (kbd "M-k") #'windmove-up)
-  (global-set-key (kbd "M-l") #'windmove-right)
-
-  ;; Mover ventana
-  (global-set-key (kbd "M-H") #'windmove-swap-states-left)
-  (global-set-key (kbd "M-J") #'windmove-swap-states-down)
-  (global-set-key (kbd "M-K") #'windmove-swap-states-up)
-  (global-set-key (kbd "M-L") #'windmove-swap-states-right)
-#+end_src
-
 ** Ace Window
 ;; Salta a cualquier ventana visible asignándole una letra.
 ;; C-u M-o: swap de ventanas. C-u C-u M-o: mover buffer a otra ventana.
@@ -557,6 +539,83 @@
     ("C-c TAB 3"   . (lambda () (interactive) (tab-bar-select-tab 3)))
     ("C-c TAB 4"   . (lambda () (interactive) (tab-bar-select-tab 4)))
     ("C-c TAB 5"   . (lambda () (interactive) (tab-bar-select-tab 5))))
+#+end_src
+
+** EWM
+;; EWM usa Emacs como compositor Wayland. Los keybinds con Super (s-)
+;; se interceptan antes de llegar a las apps Wayland, por lo que funcionan
+;; globalmente igual que los de un WM tradicional.
+#+begin_src emacs-lisp
+  ;; Prefijos de secuencias de Emacs que el compositor redirige a Emacs
+  ;; aunque una app Wayland tenga el foco. Solo van acá los prefijos de
+  ;; comandos (C-x, M-x, etc.) — las multimedia keys y s- van en ewm-mode-map.
+  (setopt ewm-intercept-prefixes
+          '("C-x" "C-u" "C-h" "M-x" "C-c" "C-w"))
+
+  ;; Dispositivos de entrada — EWM gestiona su propio teclado,
+  ;; el xkb de configuration.nix no aplica acá.
+  (setopt ewm-input-config
+          '((touchpad :natural-scroll t
+                      :tap t
+                      :dwt t)
+            (mouse :accel-profile "flat")
+            (keyboard :repeat-delay 200
+                      :repeat-rate 30
+                      :xkb-layouts  "latam"
+                      :xkb-options  "ctrl:nocaps")))
+
+  (use-package ewm
+    :config
+    ;; Activar input method automático en campos de texto de apps Wayland
+    ;; (Firefox URL bar, Discord, etc.) — sin esto no podés tipear en ellas.
+    (ewm-text-input-auto-mode-enable)
+
+    :custom
+    ;; El puntero se mueve al centro de la ventana que recibe foco por teclado
+    (ewm-mouse-follows-focus t)
+    ;; Atenuar ventanas sin foco (1.0 = desactivado, 0.0 = invisible)
+    (ewm-unfocused-alpha 0.85)
+
+    ;; Ajustá los nombres de salida con: wlr-randr
+    (ewm-output-config
+     '(("eDP-1"    :x 0    :y 0 :scale 1.0)
+       ("HDMI-A-1" :x 1920 :y 0 :scale 1.0)))
+
+    :bind (:map ewm-mode-map
+                ;; Navegación de ventanas (vim-style)
+                ("s-h"         . windmove-left)
+                ("s-l"         . windmove-right)
+                ("s-k"         . windmove-up)
+                ("s-j"         . windmove-down)
+                ;; Mover ventanas
+                ("s-H"         . windmove-swap-states-left)
+                ("s-L"         . windmove-swap-states-right)
+                ("s-K"         . windmove-swap-states-up)
+                ("s-J"         . windmove-swap-states-down)
+                ;; Splits y ventanas
+                ("s-v"         . split-window-right)
+                ("s-s"         . split-window-below)
+                ("s-w"         . delete-window)
+                ("s-="         . balance-windows)
+                ;; Clipboard (s-v ocupado por split, s-c ocupado — los redefinimos)
+                ("s-c"         . kill-ring-save)   ; copy
+                ("s-y"         . yank)             ; paste
+                ;; Buffers y proyectos
+                ("s-d"         . consult-buffer)
+                ("s-f"         . projectile-find-file)
+                ("s-p"         . projectile-switch-project)
+                ;; Apps
+                ("s-t"         . eat)
+                ("s-b"         . (lambda () (interactive)
+                                   (start-process "firefox" nil "firefox")))
+                ("s-m"         . magit-status)
+                ;; Tabs / workspaces
+                ("s-n"         . tab-bar-new-tab)
+                ("s-<tab>"     . ewm-next-surface-buffer)
+                ("s-<backtab>" . ewm-prev-surface-buffer)
+                ;; Sistema
+                ("s-<escape>"  . ewm-lock-session)
+                ("s-<return>"  . ewm-toggle-fullscreen)))
 #+end_src
 
 * Misc
