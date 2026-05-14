@@ -75,7 +75,6 @@
   services.xserver.xkb = {
     layout = "latam";
     variant = "";
-    options = "ctrl:nocaps";
   };
 
   
