@@ -4,8 +4,6 @@
 
 (add-to-list 'load-path "~/.emacs.d/colonq/ui")
 (require 'colonq-ewm)
-(require 'ewm-config)
-(require 'ewm-compat)
 (require 'colonq-theme)
 (require 'colonq-window)
 (require 'colonq-shell)

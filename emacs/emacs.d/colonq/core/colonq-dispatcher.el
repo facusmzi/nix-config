@@ -51,14 +51,14 @@
       (cd "~")
       (eshell-mode))))
 
-(defhydra colonq/repl-dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+(defhydra colonq/repl-dispatcher (:color teal :hint nil)
   "Dispatcher > REPLs"
   ("<f12>" 'keyboard-escape-quit)
   ("l" ielm "elisp")
   ("x" nix-repl "nix")
   ("y" (switch-to-buffer (make-comint "Python REPL" "python3" nil)) "python"))
 
-(defhydra colonq/layout-dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+(defhydra colonq/layout-dispatcher (:color teal :hint nil)
   "Dispatcher > Layout"
   ("<f12>" 'keyboard-escape-quit)
   ("l" colonq/reload-eyebrowse-config "load")
@@ -87,10 +87,9 @@
 (defun colonq/switch-to-new-form ()
   "Switch to the new form."
   (interactive)
-  ;; (fig//toggle-explosion)
   (fig//model-toggle "new"))
 
-(defhydra colonq/stream-dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+(defhydra colonq/stream-dispatcher (:color teal :hint nil)
   "Dispatcher > Stream"
   ("<f12>" 'keyboard-escape-quit)
   ("c" fig/critical-hit "crit")
@@ -100,10 +99,9 @@
   ("f" colonq/toggle-saiyan "further")
   ("r" (soundboard//play-clip "timestop.ogg") "clock"))
 
-(defhydra colonq/dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+(defhydra colonq/dispatcher (:color teal :hint nil)
   "Dispatcher"
   ("<f12>" 'keyboard-escape-quit)
-  ;; ("<tab>" balance-windows)
   ("<print>" colonq/snip)
   (":" selector-M-x)
   ("?" selector-apropos)
@@ -172,7 +170,6 @@
 (defun colonq/dispatcher ()
   "Open Dispatcher menu."
   (interactive)
-  ;; (let ((hydra-is-helpful t))
   (let ((hydra-is-helpful nil))
     (call-interactively 'colonq/dispatcher/body)))
 

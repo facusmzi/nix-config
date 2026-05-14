@@ -16,7 +16,7 @@
   (magit-no-message '("Turning on"))
   (magit-completing-read-function #'selector-completing-read)
   :config
-  (defhydra colonq/vc-dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+  (defhydra colonq/vc-dispatcher (:color teal :hint nil)
     "Dispatcher > Version Control"
     ("<f12>" keyboard-escape-quit)
     ("v" magit-status "status")

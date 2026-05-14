@@ -146,7 +146,7 @@
         (colonq/selector-bookmarks)
         (colonq/selector-search)))))
 
-(defhydra colonq/browser-dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+(defhydra colonq/browser-dispatcher (:color teal :hint nil)
   "Dispatcher > Browser"
   ("<f12>" keyboard-escape-quit)
   ("b" colonq/visit-bookmark "bookmarks")

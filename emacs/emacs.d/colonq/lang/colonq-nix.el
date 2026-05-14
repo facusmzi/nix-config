@@ -18,7 +18,7 @@
 
 (use-package nix-mode
   :config
-  (defhydra colonq/nix-dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+  (defhydra colonq/nix-dispatcher (:color teal :hint nil)
     "Dispatcher > Nix"
     ("<f12>" 'keyboard-escape-quit)
     ("x" nix-repl "repl")

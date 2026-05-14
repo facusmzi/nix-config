@@ -65,7 +65,7 @@
 (use-package soundboard
   :load-path "~/src/soundboard")
 
-(defhydra colonq/music-dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+(defhydra colonq/music-dispatcher (:color teal :hint nil)
   "Dispatcher > Music"
   ("<f12>" keyboard-escape-quit)
   ("s" soundboard/hydra/body "soundboard")

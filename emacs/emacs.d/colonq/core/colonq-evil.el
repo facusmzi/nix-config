@@ -37,7 +37,7 @@
   (evil-set-initial-state 'fuel-debug-mode 'motion)
 
   (evil-set-initial-state 'magit-popup-mode 'emacs)
-  (evil-set-initial-state 'exwm-mode 'emacs)
+  (evil-set-initial-state 'ewm-surface-mode 'emacs)
 
   (define-key evil-motion-state-map (kbd "RET") nil)
 

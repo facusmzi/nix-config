@@ -4,7 +4,6 @@
 
 (require 'colonq-package)
 (require 'colonq-hydra)
-(require 'colonq-exwm)
 
 (use-package pinentry
   :config

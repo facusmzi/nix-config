@@ -137,8 +137,3 @@
 
 (provide 'init)
 ;;; init.el ends here
-
-;;; EWM environment variables
-(setenv "WAYLAND_DISPLAY" "wayland-ewm")
-(setenv "XDG_SESSION_TYPE" "wayland")
-(setenv "XDG_CURRENT_DESKTOP" "ewm")
