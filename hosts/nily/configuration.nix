@@ -7,6 +7,7 @@
     ../../modules/system/packages
     ../../modules/system/editors
     ../../modules/system/virtualisation
+    ../../emacs
   ];
 
   services.btrfs.autoScrub = {
@@ -75,7 +76,6 @@
   services.xserver.xkb = {
     layout = "latam";
     variant = "";
-    options = "ctrl:nocaps";
   };
 
   
@@ -102,14 +102,8 @@
     qbittorrent
     wl-clipboard
     bitwarden-desktop
-    gnome-network-displays
   ];
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.fira-code
-    roboto
-  ];
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];

@@ -6,6 +6,8 @@
     ../../modules/system/dev
     ../../modules/system/packages
     ../../modules/system/editors
+
+    ../../emacs
   ];
 
   # Configuración básica del host

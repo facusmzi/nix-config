@@ -1,58 +1,52 @@
-{ pkgs, lib, osConfig, ... }:
+{ config, pkgs, lib, inputs, ... }:
+
+let
+  users = [ "facusmzi" ];
+in
 {
-  programs.emacs = {
-    enable = true;
-    package = pkgs.emacs30-pgtk;
-    extraPackages = epkgs: with epkgs; [
-      catppuccin-theme
-      doom-themes
-      vertico
-      orderless
-      marginalia
-      consult
-      helpful
-      all-the-icons
-      doom-modeline
-      rainbow-delimiters
-      which-key
-      projectile
-      magit
-      org-modern
-      org-download
-      markdown-mode
-      nix-mode
-      diminish
-      sudo-edit
-      dashboard
-      corfu
-      cape
-      dap-mode   
-      envrc      
-      eat
+  fonts.packages = with pkgs; [
+    symbola
+    nerd-fonts.terminess-ttf
+    nerd-fonts.symbols-only
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    roboto
+  ];
 
-      # Rust
-      rustic        # modo principal: syntax, cargo commands, eglot integration
-      cargo-mode    # comandos de cargo extra (cargo-execute-task, etc.)
+  environment.systemPackages = with pkgs; [
+    cmake
+    libtool
+    libvterm-neovim
+    coreutils
+  ];
 
-      consult-eglot
-      tempel
-      tempel-collection
-      breadcrumb
-      yasnippet
+  home-manager.users = lib.genAttrs users (
+    username:
+    { config, ... }:
+    {
+      programs.doom-emacs = {
+        enable = true;
+        doomDir = ./doom;
+        doomLocalDir = "${config.home.homeDirectory}/.local/share/doom";
+        emacs = pkgs.emacs30-pgtk;
+        experimentalFetchTree = true;
 
-      # Lectura
-      pdf-tools
-      nov
-      pdf-view-restore
+        extraPackages = epkgs: [
+          epkgs.treesit-grammars.with-all-grammars
+          epkgs.vterm
+        ];
 
-      # ventanas
-      ace-window
-    ] ++ lib.optional (osConfig.programs.ewm.enable or false)
-        osConfig.programs.ewm.ewmPackage;  # ewm.el + libewm_core.so
-  };
-
-  home.file.".config/emacs" = {
-    source = ./emacs.d;
-    recursive = true;
-  };
+        extraBinPackages = with pkgs; [
+          fd
+          (ripgrep.override { withPCRE2 = true; })
+          gnumake
+          sqlite
+          pandoc
+          graphviz
+          shfmt
+          shellcheck
+        ];
+      };
+    }
+  );
 }
