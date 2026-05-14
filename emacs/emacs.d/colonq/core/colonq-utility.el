@@ -61,7 +61,7 @@
   "Check if BUF is an EXWM buffer."
   (member
    (buffer-local-value 'major-mode (get-buffer buf))
-   '(exwm-mode)))
+   '(ewm-surface-mode)))
 
 (defun colonq/minor-modes ()
   "Return all the minor modes of the current buffer."

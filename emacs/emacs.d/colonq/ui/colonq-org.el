@@ -155,7 +155,7 @@
           :target (file+head "private/%<%Y%m%d%H%M%S>-note.org.gpg" "#+title: ${title}\n#+filetags: private")
           :unnarrowed t
           :immediate-finish t)))))
-  (defhydra colonq/agenda-dispatcher (:color teal :hint nil :body-pre (setq exwm-input-line-mode-passthrough t) :post (setq exwm-input-line-mode-passthrough nil))
+  (defhydra colonq/agenda-dispatcher (:color teal :hint nil)
     "Quinine > Notes"
     ("<f12>" keyboard-escape-quit)
     ("a" org-roam-buffer-toggle "display")
