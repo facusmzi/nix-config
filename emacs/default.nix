@@ -1,17 +1,12 @@
 { config, pkgs, lib, inputs, ... }:
-
 let
   users = [ "facusmzi" ];
 in
 {
   fonts.packages = with pkgs; [
     iosevka-comfy.comfy
-    nerd-fonts.terminess-ttf
-    nerd-fonts.symbols-only
-    nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
     roboto
-    symbola
   ];
 
   environment.systemPackages = with pkgs; [
@@ -23,13 +18,28 @@ in
       enable = true;
       package = pkgs.emacs30-pgtk;
       extraPackages = epkgs: with epkgs; [
+        # UI
         doom-themes
         doom-modeline
+        nerd-icons
+        nerd-icons-dired
 
+        # Evil
+        evil
+        undo-tree
+
+        # Editor
         envrc
+        which-key
+
+        hydra
+        eat
       ];
     };
 
-    home.file.".config/emacs".source = ./emacs.d;
+    home.file.".config/emacs" = {
+      source = ./emacs.d;
+      recursive = true;
+    };
   });
 }
