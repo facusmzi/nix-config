@@ -62,6 +62,7 @@ in
         #ui
         org-roam
         emacsql
+        ox-reveal
 
         #media
         pdf-tools

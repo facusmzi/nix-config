@@ -17,7 +17,7 @@
   (org-todo-keywords '((sequence "TODO" "STUCK" "|" "DONE" "DROPPED")))
   (org-src-preserve-indentation t)
   (org-src-window-setup 'current-window)
-  (org-export-date-timestamp-format "%Y/%m/%d")
+  (org-export-date-timestamp-format "%d/%m/%y")
   (org-confirm-babel-evaluate nil)
   (org-refile-targets '((nil :maxlevel . 9)
                         (org-agenda-files :maxlevel . 9)))
@@ -29,9 +29,12 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
-     (shell . t)
-     (python . t)
-     (C . t)))
+     (shell      . t)
+     (python     . t)
+     (C          . t)
+     (sqlite     . t)   ; útil para explorar bases de datos
+     (gnuplot    . t)   ; gráficos desde bloques org
+     (latex      . t))) ; fragmentos LaTeX inline
 
   ;; ─── Evil bindings ───────────────────────────────────────
   (evil-define-key 'normal org-mode-map
@@ -98,6 +101,32 @@
   :custom
   (org-attach-id-dir "~/notes/attach"))
 
+
+
+
+
+
+
+
+;; ─── GPG / epa ─────────────────────────────────────────────
+;; loopback: GnuPG pide la passphrase a través del minibuffer de Emacs
+;; en vez de una ventana X/Qt separada. Funciona bien en Wayland + KDE.
+(use-package epa-file
+  :config
+  (setq epg-pinentry-mode 'loopback)
+  (epa-file-enable))
+
+
+
+
+
+;; ─── ox-reveal ─────────────────────────────────────────────
+(use-package ox-reveal
+  :custom
+  (org-reveal-title-slide nil)
+  (org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
+
+
 ;; ─── Org roam ──────────────────────────────────────────────
 (defvar org-roam-v2-ack t)
 
@@ -108,18 +137,30 @@
   (org-roam-directory "~/notes")
   (org-roam-completion-everywhere t)
   (org-roam-link-auto-replace t)
+  (org-roam-encrypt-files t)
+
   (org-roam-capture-templates
-   '(("d" "default" plain "%?"
-      :target (file+head "%<%Y%m%d%H%M%S>-note.org" "#+title: ${title}\n")
+   '(("p" "público" plain "%?"
+      :target (file+head "public/%<%d-%m-%Y_%H-%M-%S>-note.org"
+                         "#+title: ${title}\n#+filetags:")
+      :unnarrowed t
+      :immediate-finish t)
+
+     ("v" "privado" plain "%?"
+      :target (file+head "private/%<%d-%m-%Y_%H-%M-%S>-note.org.gpg"
+                         "#+title: ${title}\n#+filetags: private")
       :unnarrowed t
       :immediate-finish t)))
+
   (org-roam-dailies-capture-templates
    '(("d" "daily" plain "%?"
-      :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: log")
+      :target (file+head "%<%d-%m-%Y>.org.gpg"
+                         "#+title: %<%d-%m-%Y>\n#+filetags: log")
       :unnarrowed t
       :immediate-finish t)))
+
   :config
-  (org-roam-db-autosync-mode)
+  (org-roam-db-autosync-mode))
 
   ;; ─── Agenda dispatcher ───────────────────────────────────
   (defhydra facusmzi/agenda-dispatcher (:color teal :hint nil)
@@ -127,10 +168,24 @@
     ("<f12>" keyboard-escape-quit)
     ("a" org-roam-buffer-toggle "display")
     ("i" org-roam-node-insert "insertar link")
-    ("f" org-roam-node-find "buscar nota")
+    ("f" facusmzi/org-roam-node-find-public "público")   ; ← nuevo
+    ("F" facusmzi/org-roam-node-find-private "privado")  ; ← nuevo
     ("t" org-roam-dailies-find-today "hoy")
     ("T" org-roam-dailies-find-date "fecha")
-    ("p" org-publish "publicar")))
+    ("p" org-publish "publicar"))
+
+    ;; Buscar solo notas públicas (sin tag "private")
+  (defun facusmzi/org-roam-node-find-public ()
+    (interactive)
+    (org-roam-node-find
+     nil nil
+     (lambda (node)
+       (not (member "private" (org-roam-node-tags node))))))
+
+  ;; Buscar todas las notas incluyendo privadas
+  (defun facusmzi/org-roam-node-find-private ()
+    (interactive)
+    (org-roam-node-find))
 
 (provide 'facusmzi-org)
 ;;; facusmzi-org.el ends here
