@@ -17,12 +17,12 @@
 
 ;; Fuente
 (set-frame-font "Iosevka Comfy:pixelsize=20")
-(set-face-attribute 'line-number nil :height 1.2)  ; mejor que custom-set-faces
+(set-face-attribute 'line-number nil :height 1.2)
 
 ;; Historial
 (recentf-mode 1)
 (global-set-key (kbd "C-c r") 'recentf-open-files)
-(setq history-length 25)
+(setq savehist-file "~/.local/share/emacs/history")
 (savehist-mode 1)
 
 ;; Desactivar line-numbers en terminales
@@ -33,9 +33,28 @@
 (require 'use-package)
 (setq use-package-always-ensure nil)
 
-;; Tema (después de todo)
+;; Tema
 (load-theme 'ef-duo-dark t)
 
-;; Custom file AL FINAL (para que no sobrescriba)
+;; Custom file
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
+
+;; modeline
+(defun mode-line-render (left right)
+  "Return a string of `window-width' length containing LEFT and RIGHT aligned respectively."
+  (let* ((available-width (- (window-width) (length left) 3)))
+    (format (format " %%s %%%ds " available-width) left right)))
+
+(setq-default
+ mode-line-format
+ '((:eval
+    (mode-line-render
+     (concat
+      (propertize (format-mode-line (buffer-name)) 'face 'bold)
+      " - "
+      (format-mode-line mode-name)
+      " - "
+      (abbreviate-file-name default-directory))
+     (format-mode-line '(line-number-mode (" line %l" (column-number-mode " column %c"))))))))
+
