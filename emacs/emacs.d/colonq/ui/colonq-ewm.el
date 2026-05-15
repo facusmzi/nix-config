@@ -37,36 +37,6 @@
         (select-frame-set-input-focus other-frame)
       (message "No other monitor found"))))
 
-;;; Eyebrowse helpers (sin cambios respecto a colonq-exwm)
-
-(defvar colonq/saved-eyebrowse-config nil)
-
-(defun colonq/save-eyebrowse-config ()
-  "Save the current eyebrowse window config."
-  (interactive)
-  (let* ((current-slot (eyebrowse--get 'current-slot))
-         (window-configs (eyebrowse--get 'window-configs))
-         (current-tag (nth 2 (assoc current-slot window-configs))))
-    (setq colonq/saved-eyebrowse-config
-          (eyebrowse--current-window-config current-slot current-tag))))
-
-(defun colonq/reload-eyebrowse-config ()
-  "Reload the saved eyebrowse window config."
-  (interactive)
-  (when colonq/saved-eyebrowse-config
-    (let ((current-slot (eyebrowse--get 'current-slot)))
-      (eyebrowse--update-window-config-element
-       (cons current-slot (cdr colonq/saved-eyebrowse-config)))
-      (eyebrowse--load-window-config current-slot))))
-
-(defun colonq/lock-window ()
-  "Toggle whether the current window is dedicated."
-  (interactive)
-  (let* ((win (get-buffer-window (current-buffer)))
-         (new (not (window-dedicated-p win))))
-    (set-window-dedicated-p win new)
-    (message "Window dedicated: %s" (if new "yes" "no"))))
-
 ;;; Keybindings
 
 ;; q abre el dispatcher desde cualquier superficie
@@ -88,8 +58,8 @@
         (append ewm-intercept-prefixes
                 '(?\q)))
 
-;;; Iniciar EWM
-(ewm-start-module)
+;;; Iniciar EWM después de que todo init.el haya cargado
+(add-hook 'after-init-hook #'ewm-start-module)
 
 (provide 'colonq-ewm)
 ;;; colonq-ewm ends here
