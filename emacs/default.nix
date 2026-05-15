@@ -12,6 +12,7 @@ in
     nerd-fonts.fira-code
     roboto
     symbola
+    noto-fonts-color-emoji
   ];
 
   environment.systemPackages = with pkgs; [
@@ -27,6 +28,7 @@ in
         evil
         undo-tree
         hydra
+        outshine
       ];
     };
 
