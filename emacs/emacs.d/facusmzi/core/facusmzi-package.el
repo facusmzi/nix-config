@@ -2,6 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
+(add-to-list 'load-path "~/.config/emacs/lisp")
+
 (require 'use-package)
 (setq use-package-always-ensure nil)
 

@@ -36,6 +36,7 @@ in
         f      # file/path utilities: f-join, f-ext, f-relative, etc.
 
         projectile
+        magit
 
       ];
     };

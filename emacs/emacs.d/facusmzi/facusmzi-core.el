@@ -10,6 +10,8 @@
 (require 'facusmzi-hydra)
 (require 'facusmzi-dispatcher)
 (require 'facusmzi-projectile)
+(require 'facusmzi-selector)
+(require 'facusmzi-vc)
 
 (provide 'facusmzi-core)
 ;;; facusmzi-core.el ends here
