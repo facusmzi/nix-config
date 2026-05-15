@@ -16,6 +16,8 @@
   ("w" delete-window "cerrar ventana")
   ;; Terminal
   ("t" mu/term-here "terminal")
+  ;; Version control
+  ("v" magit-status "magit")
   ;; Utilidades
   ("s" save-buffer "guardar")
   ("q" (switch-to-buffer (other-buffer (current-buffer))) "anterior"))

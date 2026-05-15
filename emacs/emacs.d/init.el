@@ -44,6 +44,7 @@
 (require 'facusmzi-editor)
 (require 'facusmzi-terminal)
 (require 'facusmzi-dispatcher)
+(require 'facusmzi-vc)
 ;; Restaurar GC
 (setq gc-cons-threshold 16777216
       gc-cons-percentage 0.1)

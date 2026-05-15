@@ -32,6 +32,9 @@ in
         envrc
         which-key
 
+        # VC
+        magit
+
         hydra
         eat
       ];
