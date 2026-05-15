@@ -5,6 +5,7 @@
 (add-to-list 'load-path "~/.config/emacs/facusmzi/ui")
 (require 'facusmzi-theme)
 (require 'facusmzi-modeline)
+(require 'facusmzi-shell)
 
 (provide 'facusmzi-ui)
 ;;; facusmzi-ui.el ends here

@@ -37,6 +37,7 @@ in
 
         projectile
         magit
+        envrc
 
       ];
     };

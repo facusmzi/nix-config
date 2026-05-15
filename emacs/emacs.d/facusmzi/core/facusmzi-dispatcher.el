@@ -94,7 +94,7 @@
   ("o" facusmzi/navigate "buf")
   ("O" selector-for-buffers)
   ("p" projectile-switch-project "proyecto")
-  ;; ("s" facusmzi/shell-here "shell")
+  ("s" facusmzi/shell-here "shell")
   ;; ("t" facusmzi/term-here "term")
   ("v" facusmzi/vc-dispatcher/body "vc")
   ("V" magit-status)
