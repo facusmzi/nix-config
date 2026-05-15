@@ -35,6 +35,8 @@ in
         dash   # list utilities: -map, -filter, --map, -first, etc.
         f      # file/path utilities: f-join, f-ext, f-relative, etc.
 
+        projectile
+
       ];
     };
 

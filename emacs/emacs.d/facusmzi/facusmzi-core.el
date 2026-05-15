@@ -9,6 +9,7 @@
 (require 'facusmzi-evil)
 (require 'facusmzi-hydra)
 (require 'facusmzi-dispatcher)
+(require 'facusmzi-projectile)
 
 (provide 'facusmzi-core)
 ;;; facusmzi-core.el ends here
