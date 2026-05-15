@@ -30,8 +30,8 @@
   (define-key evil-visual-state-map (kbd "#") #'comment-dwim)
 
   ;; Ventanas
-  (define-key evil-normal-state-map (kbd "\"") #'evil-window-vsplit)
-  (define-key evil-normal-state-map (kbd "%") #'evil-window-split)
+  (define-key evil-normal-state-map (kbd "\"") (lambda () (interactive) (evil-window-vsplit) (windmove-right)))
+  (define-key evil-normal-state-map (kbd "%") (lambda () (interactive) (evil-window-split) (windmove-down)))
 
   (global-set-key (kbd "M-h") #'windmove-left)
   (global-set-key (kbd "M-l") #'windmove-right)

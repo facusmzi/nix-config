@@ -9,19 +9,16 @@
   ("f" find-file "archivo")
   ("r" recentf-open-files "recientes")
   ("k" (let ((kill-buffer-query-functions '(buffer-modified-p)))
-       (kill-buffer (current-buffer))) "cerrar")
-
+         (kill-buffer (current-buffer))) "cerrar")
   ;; Ventanas
-  ("\"" evil-window-vsplit "vsplit")
-  ("%" evil-window-split "split")
+  ("\"" (progn (evil-window-vsplit) (windmove-right)) "vsplit")
+  ("%" (progn (evil-window-split) (windmove-down)) "split")
   ("w" delete-window "cerrar ventana")
-
   ;; Terminal
   ("t" mu/term-here "terminal")
-
   ;; Utilidades
   ("s" save-buffer "guardar")
-  ("q" keyboard-escape-quit "salir"))
+  ("q" (switch-to-buffer (other-buffer (current-buffer))) "anterior"))
 
 (defun mu/open-dispatcher ()
   "Abrir el dispatcher."
