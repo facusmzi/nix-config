@@ -26,6 +26,7 @@ in
         ef-themes
         evil
         undo-tree
+        hydra
       ];
     };
 

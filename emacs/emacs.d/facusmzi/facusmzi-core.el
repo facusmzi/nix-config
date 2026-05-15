@@ -6,6 +6,7 @@
 (require 'facusmzi-package)
 (require 'facusmzi-defaults)
 (require 'facusmzi-evil)
+(require 'facusmzi-hydra)
 
 (provide 'facusmzi-core)
 ;;; facusmzi-core.el ends here
