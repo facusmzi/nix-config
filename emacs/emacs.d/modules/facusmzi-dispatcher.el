@@ -16,6 +16,8 @@
   ("w" delete-window "cerrar ventana")
   ;; Terminal
   ("t" mu/term-here "terminal")
+  ;; En el defhydra de facusmzi-dispatcher.el
+  ("i" (call-interactively mu/contextual-ide) "ide")
   ;; Version control
   ("v" magit-status "magit")
   ;; Utilidades

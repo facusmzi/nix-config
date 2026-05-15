@@ -35,6 +35,16 @@ in
         # VC
         magit
 
+        # LSP
+        lsp-mode
+        lsp-ui
+        yasnippet
+
+        # Lenguajes
+        rust-mode
+        nix-mode
+        corfu
+
         hydra
         eat
       ];
