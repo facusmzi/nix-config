@@ -1,15 +1,16 @@
-;;; mu-term.el --- terminal -*- lexical-binding: t; -*-
+;;; facusmzi-terminal.el --- terminal -*- lexical-binding: t; -*-
+
+(defun mu/term-here ()
+  "Abrir terminal en el directorio actual."
+  (interactive)
+  (let ((default-directory default-directory))
+    (eat)))
 
 (use-package eat
   :hook
   (eshell-mode . eat-eshell-mode)
   :config
-  (setq eat-kill-buffer-on-exit t)
-
-  (defun mu/term-here ()
-    "Abrir terminal en el directorio actual."
-    (interactive)
-    (eat default-directory)))
+  (setq eat-kill-buffer-on-exit t))
 
 (provide 'facusmzi-terminal)
-;;; mu-term.el ends here
+;;; facusmzi-terminal.el ends here

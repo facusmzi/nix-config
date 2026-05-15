@@ -8,7 +8,8 @@
   ("o" switch-to-buffer "buffer")
   ("f" find-file "archivo")
   ("r" recentf-open-files "recientes")
-  ("k" kill-this-buffer "cerrar")
+  ("k" (let ((kill-buffer-query-functions '(buffer-modified-p)))
+       (kill-buffer (current-buffer))) "cerrar")
 
   ;; Ventanas
   ("\"" evil-window-vsplit "vsplit")
