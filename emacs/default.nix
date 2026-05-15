@@ -24,7 +24,8 @@ in
       package = pkgs.emacs30-pgtk;
       extraPackages = epkgs: with epkgs; [
         ef-themes
-        use-package
+        evil
+        undo-tree
       ];
     };
 
