@@ -7,6 +7,7 @@
 (require 'facusmzi-core)
 (require 'facusmzi-ui)
 (require 'facusmzi-editor)
+(require 'facusmzi-media)
 (require 'facusmzi-lang)
 
 (provide 'init)

@@ -6,6 +6,7 @@
 (require 'facusmzi-theme)
 (require 'facusmzi-modeline)
 (require 'facusmzi-shell)
+(require 'facusmzi-term)
 
 (provide 'facusmzi-ui)
 ;;; facusmzi-ui.el ends here

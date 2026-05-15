@@ -17,6 +17,7 @@ in
 
   environment.systemPackages = with pkgs; [
     ripgrep
+    libvterm
   ];
 
   home-manager.users = lib.genAttrs users (username: {
@@ -38,6 +39,8 @@ in
         projectile
         magit
         envrc
+
+        vterm
 
       ];
     };
