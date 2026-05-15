@@ -61,6 +61,7 @@ in
 
         #ui
         org-roam
+        emacsql
 
         #media
         pdf-tools

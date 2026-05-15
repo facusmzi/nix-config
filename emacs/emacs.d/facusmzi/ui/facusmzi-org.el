@@ -103,6 +103,8 @@
 
 (use-package org-roam
   :custom
+  (org-roam-database-connector 'sqlite-builtin)
+  (org-roam-db-location "~/.local/share/org-roam/org-roam.db")
   (org-roam-directory "~/notes")
   (org-roam-completion-everywhere t)
   (org-roam-link-auto-replace t)
