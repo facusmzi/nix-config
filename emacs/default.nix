@@ -29,6 +29,12 @@ in
         undo-tree
         hydra
         outshine
+
+        # Librerías de utilidad — base para todo lo demás
+        s      # string utilities: s-replace, s-concat, s-blank?, etc.
+        dash   # list utilities: -map, -filter, --map, -first, etc.
+        f      # file/path utilities: f-join, f-ext, f-relative, etc.
+
       ];
     };
 

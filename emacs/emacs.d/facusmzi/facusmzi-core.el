@@ -5,6 +5,7 @@
 (add-to-list 'load-path "~/.config/emacs/facusmzi/core")
 (require 'facusmzi-package)
 (require 'facusmzi-defaults)
+(require 'facusmzi-utility)
 (require 'facusmzi-evil)
 (require 'facusmzi-hydra)
 (require 'facusmzi-dispatcher)

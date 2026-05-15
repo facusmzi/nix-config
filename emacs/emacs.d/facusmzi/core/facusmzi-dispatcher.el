@@ -100,7 +100,7 @@
   ;; ("V" magit-status)
   ;; ("/" facusmzi/selector-rg)
   ;; (":" selector-M-x)
-  ;; ("q" facusmzi/previous-buffer)
+  ("q" facusmzi/previous-buffer)
   ;; ("B" facusmzi/visit-bookmark)
 
   ("?" describe-key "ayuda"))
