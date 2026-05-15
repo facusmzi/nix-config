@@ -7,6 +7,7 @@
 (require 'facusmzi-modeline)
 (require 'facusmzi-shell)
 (require 'facusmzi-term)
+(require 'facusmzi-org)
 
 (provide 'facusmzi-ui)
 ;;; facusmzi-ui.el ends here

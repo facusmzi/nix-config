@@ -42,6 +42,29 @@ in
 
         vterm
 
+        # editor
+        corfu
+        cape
+        flycheck
+        lsp-mode
+        lsp-ui
+        yasnippet
+
+
+        # lang
+        nix-mode
+        rustic
+        lsp-ui        # si no lo agregaste ya
+        yasnippet     # ídem
+        lsp-haskell
+        haskell-mode
+
+        #ui
+        org-roam
+
+        #media
+        pdf-tools
+
       ];
     };
 

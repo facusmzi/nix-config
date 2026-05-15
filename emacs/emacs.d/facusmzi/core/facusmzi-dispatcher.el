@@ -97,6 +97,7 @@
   ("p" projectile-switch-project "proyecto")
   ("s" facusmzi/shell-here "shell")
   ("t" facusmzi/term-here "term")
+  ("a" facusmzi/agenda-dispatcher/body "notas")
   ("v" facusmzi/vc-dispatcher/body "vc")
   ("V" magit-status)
   ("/" facusmzi/selector-rg)
