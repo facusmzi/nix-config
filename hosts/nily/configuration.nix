@@ -76,7 +76,15 @@
   services.xserver.xkb = {
     layout = "latam";
     variant = "";
-    options = "caps:f12";
+  };
+
+  services.kanata = {
+    enable = true;
+    keyboards."default".config = ''
+      (defsrc caps)
+      (deflayermap (default-layer)
+        caps f12)
+    '';
   };
 
   
