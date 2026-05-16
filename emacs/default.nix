@@ -47,6 +47,14 @@ in
 
         hydra
         eat
+
+
+        # Completion
+        vertico
+        orderless
+        consult
+        marginalia
+
       ];
     };
 

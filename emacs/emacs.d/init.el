@@ -43,6 +43,7 @@
 (require 'facusmzi-evil)
 (require 'facusmzi-editor)
 (require 'facusmzi-terminal)
+(require 'facusmzi-completion)
 (require 'facusmzi-dispatcher)
 (require 'facusmzi-vc)
 (require 'facusmzi-lsp)

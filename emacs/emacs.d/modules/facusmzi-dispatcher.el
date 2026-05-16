@@ -5,9 +5,10 @@
 (defhydra mu/dispatcher (:color teal :hint nil)
   "Dispatcher"
   ;; Buffers
-  ("o" switch-to-buffer "buffer")
+  ("o" consult-buffer "buffer")          ;; era switch-to-buffer
   ("f" find-file "archivo")
-  ("r" recentf-open-files "recientes")
+  ("r" consult-recent-file "recientes")  ;; era recentf-open-files
+  ("/" consult-ripgrep "buscar")         ;; nuevo: rg en el proyecto
   ("k" (let ((kill-buffer-query-functions '(buffer-modified-p)))
          (kill-buffer (current-buffer))) "cerrar")
   ;; Ventanas
