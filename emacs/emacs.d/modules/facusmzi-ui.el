@@ -1,7 +1,6 @@
 ;;; mu-ui.el --- interfaz -*- lexical-binding: t; -*-
 
 ;; UI básica
-
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Transparencia del frame
@@ -16,7 +15,20 @@
 (menu-bar-mode -1)
 (blink-cursor-mode -1)
 
+;; Cursor solo visible en ventana activa
+(setq cursor-in-non-selected-windows nil)
+
+;; Sin parpadeo visual del cursor
+(setq visible-cursor nil)
+
+;; Performance visual
+(setq-default bidi-display-reordering nil)
+
+;; Fringe
 (set-fringe-mode 12)
+
+;; Separación entre líneas
+(setq-default line-spacing 2)
 
 (global-display-line-numbers-mode 1)
 (column-number-mode)
@@ -26,6 +38,7 @@
 (dolist (mode '(term-mode-hook
                 shell-mode-hook
                 eshell-mode-hook
+                eat-mode-hook
                 pdf-view-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -44,7 +57,6 @@
                     :weight 'medium)
 
 (set-language-environment "UTF-8")
-(setq-default line-spacing 0)
 
 ;; Tema
 (use-package doom-themes
@@ -52,7 +64,19 @@
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
   (load-theme 'doom-dracula t)
-  (doom-themes-org-config))
+  (doom-themes-org-config)
+
+  ;; Colores doom-dracula
+  ;; bg-main = "#282a36"
+  ;; bg-alt  = "#21222c"
+  (let ((bg-main "#282a36")
+        (bg-alt  "#21222c"))
+    (set-face-attribute 'vertical-border nil
+                        :foreground bg-alt
+                        :background bg-alt)
+    (set-face-attribute 'fringe nil
+                        :foreground bg-alt
+                        :background bg-alt)))
 
 ;; Icons
 (use-package nerd-icons)

@@ -27,5 +27,10 @@
   (which-key-mode 1)
   (setq which-key-idle-delay 0.5))
 
+
+(use-package outshine
+  :config
+  (add-hook 'outline-minor-mode-hook #'outshine-mode))
+
 (provide 'facusmzi-editor)
 ;;; mu-editor.el ends here

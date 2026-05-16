@@ -39,9 +39,11 @@ in
         lsp-mode
         lsp-ui
         yasnippet
+        quick-peek
+        dap-mode
 
         # Lenguajes
-        rust-mode
+        rustic
         nix-mode
         corfu
 
@@ -54,6 +56,11 @@ in
         orderless
         consult
         marginalia
+        flycheck
+        flycheck-inline
+
+        outshine
+        pdf-tools
 
         projectile
 
