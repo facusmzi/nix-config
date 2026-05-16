@@ -5,20 +5,23 @@
 (defhydra mu/dispatcher (:color teal :hint nil)
   "Dispatcher"
   ;; Buffers
-  ("o" consult-buffer "buffer")          ;; era switch-to-buffer
+  ("o" consult-buffer "buffer")
   ("f" find-file "archivo")
-  ("r" consult-recent-file "recientes")  ;; era recentf-open-files
-  ("/" consult-ripgrep "buscar")         ;; nuevo: rg en el proyecto
+  ("r" consult-recent-file "recientes")
   ("k" (let ((kill-buffer-query-functions '(buffer-modified-p)))
          (kill-buffer (current-buffer))) "cerrar")
+  ;; Proyectos
+  ("p" projectile-switch-project "proyecto")
+  ("F" projectile-find-file "archivo en proyecto")
+  ("/" consult-ripgrep "buscar")
   ;; Ventanas
   ("\"" (progn (evil-window-vsplit) (windmove-right)) "vsplit")
   ("%" (progn (evil-window-split) (windmove-down)) "split")
   ("w" delete-window "cerrar ventana")
   ;; Terminal
   ("t" mu/term-here "terminal")
-  ;; En el defhydra de facusmzi-dispatcher.el
-  ("i" (call-interactively mu/contextual-ide) "ide")
+  ;; IDE contextual
+  ("i" mu/open-ide "ide")  ;; era (call-interactively mu/contextual-ide)
   ;; Version control
   ("v" magit-status "magit")
   ;; Utilidades

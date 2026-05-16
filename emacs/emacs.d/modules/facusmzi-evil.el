@@ -38,5 +38,22 @@
   (global-set-key (kbd "M-k") #'windmove-up)
   (global-set-key (kbd "M-j") #'windmove-down))
 
+
+  ;; Escape inteligente
+(defun mu/escape ()
+  "Escapar según el contexto."
+  (interactive)
+  (cond
+   ((evil-insert-state-p)  (evil-normal-state))
+   ((evil-visual-state-p)  (evil-exit-visual-state))
+   ((evil-replace-state-p) (evil-normal-state))
+   (t (keyboard-quit))))
+
+(global-set-key (kbd "<f12>") #'mu/escape)
+(define-key evil-insert-state-map  (kbd "<f12>") #'mu/escape)
+(define-key evil-visual-state-map  (kbd "<f12>") #'mu/escape)
+(define-key evil-normal-state-map  (kbd "<f12>") #'mu/escape)
+(define-key evil-motion-state-map  (kbd "<f12>") #'mu/escape)
+
 (provide 'facusmzi-evil)
 ;;; mu-evil.el ends here

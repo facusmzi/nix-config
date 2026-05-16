@@ -13,6 +13,8 @@
   (lsp-prefer-flymake nil)
   (lsp-enable-snippet t)
   (lsp-eldoc-render-all t)
+  (lsp-auto-guess-root t)
+  (lsp-keymap-prefix nil)
   :config
   (defun mu/lsp-setup ()
     (setq-local eldoc-display-functions '(eldoc-display-in-buffer)))

@@ -76,6 +76,7 @@
   services.xserver.xkb = {
     layout = "latam";
     variant = "";
+    options = "caps:f12";
   };
 
   

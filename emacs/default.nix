@@ -55,6 +55,8 @@ in
         consult
         marginalia
 
+        projectile
+
       ];
     };
 
