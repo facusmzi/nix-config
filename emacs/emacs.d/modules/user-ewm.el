@@ -4,28 +4,21 @@
 ;; se interceptan antes de llegar a las apps Wayland, funcionando
 ;; globalmente igual que los de un WM tradicional.
 
-(setopt ewm-surface-emulate-keys nil)
 
-;; Prefijos interceptados globalmente (aplican en cualquier app Wayland)
-(setopt ewm-intercept-prefixes
-        '("C-x" "C-u" "C-h" "M-x"))
-
-;; Teclas individuales interceptadas globalmente.
-;; M-w: copia desde Emacs al clipboard del sistema → pegable en Firefox etc.
-;; s-c/s-y: atajos de estilo WM para copy/paste entre apps.
-(setopt ewm-intercept-keys
-        '("M-w" "s-c" "s-y"))
 
 ;; EWM gestiona su propio teclado; el xkb de configuration.nix no aplica acá.
 (setopt ewm-input-config
         '((touchpad :natural-scroll t
                     :tap t
                     :dwt t)
-          (mouse :accel-profile "flat")
+          (mouse :accel-profile "adaptive")
+	  (trackpoint :accel-speed 0.3)
           (keyboard :repeat-delay 200
-                    :repeat-rate 30
-                    :xkb-layouts  "latam"
+                    :repeat-rate 30  
+                    :xkb-layouts  "latam" 
                     :xkb-options  "ctrl:nocaps")))
+
+
 
 (use-package ewm
   :config
@@ -36,6 +29,17 @@
   :custom
   (ewm-mouse-follows-focus t)
   (ewm-unfocused-alpha 0.85)
+  ;; Prefijos interceptados globalmente (aplican en cualquier app Wayland)
+  (setopt ewm-surface-emulate-keys
+          '((?\s-c . "ctrl")
+            (?\s-v . "ctrl")))
+
+  ;; Teclas individuales interceptadas globalmente.
+  ;; M-w: copia desde Emacs al clipboard del sistema → pegable en Firefox etc.
+  ;; s-c/s-y: atajos de estilo WM para copy/paste entre apps.
+  (setopt ewm-intercept-prefixes
+          '("C-x" "C-u" "C-h" "M-x"))
+
 
   ;; Ajustá los nombres de salida con: wlr-randr
   (ewm-output-config

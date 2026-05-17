@@ -31,6 +31,7 @@
 (dolist (mode '(term-mode-hook
                 shell-mode-hook
                 eshell-mode-hook
+		eat-mode-hook 
                 pdf-view-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -93,7 +94,9 @@
   :config
   (display-battery-mode 1)
   (display-time-mode 1)
-  :custom (doom-modeline-height 15))
+
+  :custom
+  (display-time-default-load-average nil))
 
 ;;; Rainbow Delimiters
 (use-package rainbow-delimiters
