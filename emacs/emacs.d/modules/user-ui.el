@@ -21,6 +21,7 @@
 (save-place-mode)
 (global-display-line-numbers-mode 1)
 (blink-cursor-mode -1)
+(setq-default cursor-in-non-selected-windows nil)
 
 (setq scroll-conservatively 101
       mouse-wheel-scroll-amount '(1 ((shift) . 1))
