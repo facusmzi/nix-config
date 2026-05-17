@@ -54,13 +54,13 @@
               ("s-K"        . windmove-swap-states-up)
               ("s-J"        . windmove-swap-states-down)
               ;; Splits
-              ("s-v"        . (lambda () (interactive) (split-window-right) (other-window 1) (eat)))
-              ("s-s"        . (lambda () (interactive) (split-window-below) (other-window 1) (eat)))
+              ("s-|"        . (lambda () (interactive) (split-window-right) (other-window 1) (eat)))
+              ("s--"        . (lambda () (interactive) (split-window-below) (other-window 1) (eat)))
               ("s-w"        . delete-window)
               ("s-="        . balance-windows)
               ;; Copy/paste entre apps Wayland (pgtk sincroniza con wl-clipboard)
               ("s-c"        . kill-ring-save)
-              ("s-y"        . yank)
+              ("s-v"        . yank)
               ;; Buffers y proyectos
               ("s-d"        . consult-buffer)
               ("s-f"        . projectile-find-file)

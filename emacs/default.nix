@@ -62,7 +62,7 @@ in
 
         # ventanas
         ace-window
-      ];
+      ] ++ [ config.programs.ewm.ewmPackage ];  # ← esto agrega ewm.el + libewm_core.so
     };
 
     home.file.".config/emacs" = {
