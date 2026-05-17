@@ -6,8 +6,15 @@
 
 (setopt ewm-surface-emulate-keys nil)
 
+;; Prefijos interceptados globalmente (aplican en cualquier app Wayland)
 (setopt ewm-intercept-prefixes
         '("C-x" "C-u" "C-h" "M-x"))
+
+;; Teclas individuales interceptadas globalmente.
+;; M-w: copia desde Emacs al clipboard del sistema → pegable en Firefox etc.
+;; s-c/s-y: atajos de estilo WM para copy/paste entre apps.
+(setopt ewm-intercept-keys
+        '("M-w" "s-c" "s-y"))
 
 ;; EWM gestiona su propio teclado; el xkb de configuration.nix no aplica acá.
 (setopt ewm-input-config
@@ -51,7 +58,7 @@
               ("s-s"        . (lambda () (interactive) (split-window-below) (other-window 1) (eat)))
               ("s-w"        . delete-window)
               ("s-="        . balance-windows)
-              ;; Clipboard
+              ;; Copy/paste entre apps Wayland (pgtk sincroniza con wl-clipboard)
               ("s-c"        . kill-ring-save)
               ("s-y"        . yank)
               ;; Buffers y proyectos

@@ -76,16 +76,9 @@
   services.xserver.xkb = {
     layout = "latam";
     variant = "";
+    options = "ctrl:nocaps";
   };
 
-  services.kanata = {
-    enable = true;
-    keyboards."default".config = ''
-      (defsrc caps)
-      (deflayermap (default-layer)
-        caps f12)
-    '';
-  };
 
   
   console.keyMap = "la-latin1";

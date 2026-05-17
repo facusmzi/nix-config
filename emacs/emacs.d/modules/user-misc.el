@@ -7,7 +7,7 @@
         dashboard-vertically-center-content t
         dashboard-startup-banner 'logo
         dashboard-projects-backend 'projectile
-        dashboard-projects-switch-function 'projectile-switch-project
+        dashboard-projects-switch-function 'projectile-find-file
         dashboard-items '((recents   . 5)
                           (projects  . 5)
                           (bookmarks . 5)))

@@ -1,110 +1,51 @@
-;;; user-ui.el --- UI básica y apariencia -*- lexical-binding: t -*-
+;;; user-files.el --- Archivos, sesión e historial -*- lexical-binding: t -*-
 
-;;; UI Básica
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(setq make-backup-files nil
+      auto-save-default nil
+      create-lockfiles nil
+      custom-file (locate-user-emacs-file "custom-vars.el"))
+(load custom-file 'noerror 'nomessage)
 
-(let ((opacity 100))
-  (set-frame-parameter nil 'alpha-background opacity)
-  (add-to-list 'default-frame-alist `(alpha-background . ,opacity)))
+;; desktop-save nil desactiva el guardado automático al cerrar —
+;; solo se guarda cuando se usa C-c q explícitamente.
+(desktop-save-mode 1)
+(setq desktop-save nil
+      desktop-dirname (locate-user-emacs-file "")
+      desktop-restore-frames t
+      desktop-load-locked-desktop t)
 
-(setq inhibit-startup-message t
-      use-short-answers t
-      frame-resize-pixelwise t)
+(defun user/save-and-quit ()
+  "Guarda la sesión de desktop y cierra Emacs."
+  (interactive)
+  (dolist (buf (buffer-list))
+    (when (eq (buffer-local-value 'major-mode buf) 'eat-mode)
+      (let ((proc (get-buffer-process buf)))
+        (when proc (delete-process proc)))))
+  (desktop-save user-emacs-directory t)
+  (save-buffers-kill-terminal))
 
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
-(set-fringe-mode 12)
-(column-number-mode)
-(delete-selection-mode 1)
-(electric-pair-mode 1)
-(save-place-mode)
-(global-display-line-numbers-mode 1)
-(blink-cursor-mode -1)
+(defun user/clean-quit ()
+  "Borra la sesión guardada y cierra Emacs (arranca desde cero la próxima vez)."
+  (interactive)
+  (let ((f (expand-file-name ".emacs.desktop" user-emacs-directory)))
+    (when (file-exists-p f)
+      (delete-file f)))
+  (save-buffers-kill-terminal))
 
-(setq scroll-conservatively 101
-      mouse-wheel-scroll-amount '(1 ((shift) . 1))
-      mouse-wheel-progressive-speed nil
-      mouse-wheel-follow-mouse t)
+(global-set-key (kbd "C-c q") #'user/save-and-quit)
+(global-set-key (kbd "C-x C-c") #'user/clean-quit)
 
-(dolist (mode '(term-mode-hook
-                shell-mode-hook
-                eshell-mode-hook
-                pdf-view-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;; Volver al último buffer usado
+(global-set-key (kbd "C-x ,") #'mode-line-other-buffer)
 
-(global-set-key (kbd "C-w") #'kill-region)
+;;; Historial
+(recentf-mode 1)
+(setq history-length 25)
+(savehist-mode 1)
 
-;;; Fuente
-(set-face-attribute 'default nil
-                    :font "FiraCode Nerd Font"
-                    :height 130
-                    :weight 'medium)
-(set-face-attribute 'variable-pitch nil
-                    :font "Roboto"
-                    :height 130
-                    :weight 'medium)
-(set-face-attribute 'fixed-pitch nil
-                    :font "FiraCode Nerd Font"
-                    :height 130
-                    :weight 'medium)
-(set-language-environment "UTF-8")
-(setq-default line-spacing 0)
-
-;;; Paleta Catppuccin Mocha
-(setq user/bg-0    "#11111B"   ; crust — fondo más oscuro
-      user/bg-1    "#181825"   ; mantle — fondo principal
-      user/bg-2    "#1e1e2e"   ; base — fondo más claro
-      user/acc-0   "#CBA6F7"   ; mauve — acento principal
-      user/acc-1   "#89B4FA"   ; blue — acento secundario
-      user/acc-2   "#cdd6f4")  ; text
-
-(add-hook 'after-init-hook
-          (lambda ()
-            (set-face-attribute 'default nil :background user/bg-1)
-            (set-face-attribute 'fringe nil :background user/bg-1)
-            (set-face-attribute 'line-number nil :background user/bg-1)
-            (set-face-attribute 'line-number-current-line nil
-                                :background user/bg-1
-                                :foreground user/acc-0)
-            (set-face-attribute 'mode-line nil :background user/bg-0)
-            (set-face-attribute 'mode-line-inactive nil :background user/bg-0)
-            (set-face-attribute 'vertical-border nil
-                                :background user/bg-0
-                                :foreground user/bg-0)))
-
-(add-hook 'minibuffer-setup-hook
-          (lambda ()
-            (face-remap-add-relative 'default `(:background ,user/bg-0))
-            (face-remap-add-relative 'fringe  `(:background ,user/bg-0 :foreground ,user/bg-0))))
-
-;;; Tema
-(use-package doom-themes
-  :config
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  (load-theme 'doom-dracula t)
-  (doom-themes-org-config))
-
-;;; Modeline
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :config
-  (display-battery-mode 1)
-  (display-time-mode 1)
-  :custom (doom-modeline-height 15))
-
-;;; Rainbow Delimiters
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
-;;; GC post-startup
-(add-hook 'after-init-hook
-          (lambda ()
-            (setq gc-cons-threshold (* 1024 1024 16)
-                  gc-cons-percentage 0.1)
-            (setq file-name-handler-alist file-name-handler-alist-original)
-            (makunbound 'file-name-handler-alist-original)))
+;;; Clipboard — sincronizar con el sistema (clave para pgtk + Wayland)
+(setq select-enable-clipboard t
+      select-enable-primary t)
 
 (provide 'user-files)
 ;;; user-files.el ends here
