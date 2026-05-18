@@ -34,18 +34,8 @@
     "vm.page-cluster" = 0;
   };
 
-  boot.loader = {
-    timeout = 30;
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot";
-    };
-    grub = {
-      enable = true;
-      device = "nodev";
-      efiSupport = true;
-    };
-  };
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.editor = false;
 
   boot.kernelPackages = pkgs.unstable.linuxPackages_zen;
 
