@@ -19,50 +19,53 @@ in
       package = pkgs.emacs30-pgtk;
       extraPackages = epkgs: with epkgs; [
         # UI
-        catppuccin-theme
         doom-themes
+        doom-modeline
+        nerd-icons
+        nerd-icons-dired
+
+        # Evil
+        evil
+        undo-tree
+
+        # Editor
+        envrc
+        which-key
+
+        # VC
+        magit
+
+        # LSP
+        lsp-mode
+        lsp-ui
+        yasnippet
+        quick-peek
+        dap-mode
+
+        # Lenguajes
+        rustic
+        nix-mode
+        corfu
+
+        hydra
+        eat
+        shackle
+
+
+        # Completion
         vertico
         orderless
-        marginalia
         consult
-        helpful
-        all-the-icons
-        doom-modeline
-        rainbow-delimiters
-        which-key
-        projectile
-        magit
-        org-modern
-        org-download
-        markdown-mode
-        nix-mode
-        diminish
-        sudo-edit
-        dashboard
-        corfu
-        cape
-        dap-mode
-        envrc
-        eat
+        marginalia
+        flycheck
+        flycheck-inline
 
-        # Rust
-        rustic        # modo principal: syntax, cargo commands, eglot integration
-        cargo-mode    # comandos de cargo extra (cargo-execute-task, etc.)
-
-        consult-eglot
-        tempel
-        tempel-collection
-        breadcrumb
-        yasnippet
-
-        # Lectura
+        outshine
         pdf-tools
-        nov
-        pdf-view-restore
 
-        # ventanas
-        ace-window
-      ] ++ [ config.programs.ewm.ewmPackage ];  # ← esto agrega ewm.el + libewm_core.so
+        projectile
+
+      ];
     };
 
     home.file.".config/emacs" = {
