@@ -204,3 +204,6 @@
 (use-package yasnippet
   :config
   (yas-global-mode 1))
+
+
+(electric-pair-mode 1)
