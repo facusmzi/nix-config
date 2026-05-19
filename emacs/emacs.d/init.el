@@ -1,3 +1,4 @@
+;;; init.el -*- lexical-binding: t; -*-
 ;; interfaz mínima
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (menu-bar-mode -1)
@@ -20,6 +21,9 @@
 ;; backups en una carpeta
 (setq make-backup-files nil)
 (setq auto-save-default nil)
+
+;; saca la confirmacion de cerrar buffer
+(setq confirm-kill-processes nil)
 
 ;; recargar archivos cambiados afuera de emacs
 (global-auto-revert-mode 1)
@@ -52,8 +56,7 @@
   (marginalia-mode))
 
 (use-package consult
-  :bind (("C-s" . consult-line)
-         ("C-x b" . consult-buffer)
+  :bind (("C-x b" . consult-buffer)
          ("C-x C-f" . find-file)))
 
 (use-package rainbow-delimiters
@@ -94,7 +97,11 @@
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   :config
-  (evil-mode 1))
+  (evil-mode 1)
+
+  (define-key evil-motion-state-map
+    (kbd "0")
+    #'evil-first-non-blank))
 
 (use-package evil-collection
   :after evil
@@ -113,12 +120,75 @@
     :global-prefix "C-q")
 
   (my/leader-keys
-    "f" '(my/find-file-or-create-directory :which-key "find file")
-    "b" '(consult-buffer :which-key "buffers")
-    "s" '(save-buffer :which-key "save buffer")
-    "g" '(magit-status :which-key "magit")
-    "t" '(vterm :which-key "terminal")
-    "q" '(mode-line-other-buffer :which-key "last buffer")))
+  ;; archivos
+  "f" '(my/find-file-or-create-directory :which-key "find file")
+
+  ;; abrir archivos recientes
+  "r" '(consult-recent-file :which-key "recent files")
+
+  ;; buffers
+  "b" '(consult-buffer :which-key "buffers")
+
+  ;; guardar
+  "s" '(save-buffer :which-key "save buffer")
+
+  ;; git
+  "g" '(magit-status :which-key "magit")
+
+  ;; terminal
+  "t" '(vterm :which-key "terminal")
+
+  ;; último buffer
+  "q" '(mode-line-other-buffer :which-key "last buffer")
+
+  ;; kill buffer
+  "k" '(kill-current-buffer :which-key "kill buffer")
+
+  ;; cierra una ventana
+  "w" '(delete-window :which-key "close window")
+  ;; buscar dentro del archivo
+  "/" '(consult-line :which-key "search")
+
+
+  ;; ----------------------------
+  ;; splits
+  ;; ----------------------------
+
+
+  "|" '(split-window-right :which-key "vertical split")
+  "-" '(split-window-below :which-key "horizontal split") 
+
+  ;; ----------------------------
+  ;; lsp / ide
+  ;; ----------------------------
+
+  "i" '(:ignore t :which-key "lsp")
+
+  ;; ir a definición
+  "id" '(lsp-find-definition :which-key "definition")
+
+  ;; documentación
+  "ih" '(lsp-describe-thing-at-point :which-key "hover docs")
+  
+  ;; formatting
+  "if" '(lsp-format-buffer :which-key "format")
+
+  ;; errores
+  "ie" '(flycheck-list-errors :which-key "errors")
+
+  ;; restart lsp
+  "iR" '(lsp-restart-workspace :which-key "restart lsp")))
+
+
+;; ----------------------------
+;; navegacion de venatanas
+;; ----------------------------
+
+  (global-set-key (kbd "M-h") 'windmove-left)
+  (global-set-key (kbd "M-j") 'windmove-down)
+  (global-set-key (kbd "M-k") 'windmove-up)
+  (global-set-key (kbd "M-l") 'windmove-right)
+ 
 
 ;; ----------------------------
 ;; programación
@@ -153,12 +223,10 @@
 (setq read-process-output-max (* 1024 1024))
 
 (use-package lsp-mode
-  :init
-  (setq lsp-keymap-prefix "C-c l")
   :custom
   (lsp-lens-enable nil)
   (lsp-eldoc-render-all nil)
-  (lsp-completion-provider :capf)
+  (lsp-completion-provider :none)
   :commands
   (lsp lsp-deferred))
 
@@ -168,7 +236,27 @@
   (lsp-ui-doc-enable t)
   (lsp-ui-doc-position 'bottom)
   (lsp-ui-doc-delay 0.5)
-  (lsp-ui-sideline-enable nil))
+  (lsp-ui-sideline-enable nil)
+
+  :config
+  (add-to-list
+   'display-buffer-alist
+   '("\\*lsp-help\\*"
+     (display-buffer-same-window))))
+
+(use-package flycheck
+  :init
+  (global-flycheck-mode)
+
+  :custom
+  (flycheck-indication-mode nil)
+  (flycheck-display-errors-delay 0.1)
+  (flycheck-check-syntax-automatically '(save mode-enabled))
+
+  :config
+  (setq flycheck-emacs-lisp-load-path 'inherit))
+
+
 
 ;; ----------------------------
 ;; modos web
@@ -207,3 +295,15 @@
 
 
 (electric-pair-mode 1)
+
+
+
+
+;; ----------------------------
+;; peticiones http
+;; ----------------------------
+(use-package restclient)
+
+
+(provide 'init)
+;;; init.el ends here

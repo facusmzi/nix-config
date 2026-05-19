@@ -45,8 +45,11 @@ in
         lsp-ui
         yasnippet
         treesit-grammars.with-all-grammars
-        apheleia
+        flycheck
 
+
+	#peticiones http
+	restclient
 
       ];
     };
