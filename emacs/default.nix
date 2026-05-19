@@ -46,10 +46,10 @@ in
         yasnippet
         treesit-grammars.with-all-grammars
         flycheck
-
-
-	#peticiones http
-	restclient
+	      nix-mode
+	      
+	      #peticiones http
+	      restclient
 
       ];
     };
