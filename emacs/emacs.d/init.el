@@ -23,7 +23,7 @@
 (setq auto-save-default nil)
 
 ;; saca la confirmacion de cerrar buffer
-(setq confirm-kill-processes nil)
+;;(setq confirm-kill-processes nil)
 
 ;; recargar archivos cambiados afuera de emacs
 (global-auto-revert-mode 1)
@@ -79,14 +79,28 @@
         (dired path))
     (find-file path)))
 
+
+(defun my/kill-buffer-force ()
+  (interactive)
+  (let ((kill-buffer-query-functions nil)
+        (confirm-kill-processes nil))
+    (kill-current-buffer)))
 ;; ----------------------------
 ;; terminal
 ;; ----------------------------
 
 (use-package vterm
   :config
-  ;; abrir vterm siempre en insert mode
-  (add-hook 'vterm-mode-hook #'evil-insert-state))
+  (add-hook 'vterm-mode-hook #'evil-insert-state)
+
+  (add-hook 'vterm-mode-hook
+            (lambda ()
+              (evil-local-set-key 'normal (kbd "M-h") 'windmove-left)
+              (evil-local-set-key 'normal (kbd "M-j") 'windmove-down)
+              (evil-local-set-key 'normal (kbd "M-k") 'windmove-up)
+              (evil-local-set-key 'normal (kbd "M-l") 'windmove-right))))
+
+
 
 ;; ----------------------------
 ;; keybinds
@@ -142,8 +156,7 @@
   "q" '(mode-line-other-buffer :which-key "last buffer")
 
   ;; kill buffer
-  "k" '(kill-current-buffer :which-key "kill buffer")
-
+  "k" '(my/kill-buffer-force :which-key "kill buffer")
   ;; cierra una ventana
   "w" '(delete-window :which-key "close window")
   ;; buscar dentro del archivo
@@ -302,8 +315,8 @@
 ;; ----------------------------
 ;; peticiones http
 ;; ----------------------------
-(use-package restclient)
-
+(use-package restclient
+  :mode ("\\.http\\'" . restclient-mode))
 
 (provide 'init)
 ;;; init.el ends here
