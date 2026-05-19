@@ -4,13 +4,13 @@ let
 in
 {
   fonts.packages = with pkgs; [
-    iosevka-comfy.comfy
-    nerd-fonts.fira-code
-    roboto
+#     iosevka-comfy.comfy
+#     nerd-fonts.fira-code
+#     roboto
   ];
 
   environment.systemPackages = with pkgs; [
-    ripgrep
+#     ripgrep
   ];
 
   home-manager.users = lib.genAttrs users (username: {
@@ -19,51 +19,36 @@ in
       package = pkgs.emacs30-pgtk;
       extraPackages = epkgs: with epkgs; [
         # UI
-        doom-themes
-        doom-modeline
-        nerd-icons
-        nerd-icons-dired
+        dracula-theme
 
-        # Evil
+        vertico
+        orderless
+        marginalia
+        consult
+        rainbow-delimiters
+
+        # keybinds
         evil
-        undo-tree
+        evil-collection
+        general
 
-        # Editor
-        envrc
-        which-key
+        #terminal
+        vterm
 
-        # VC
+        #programacion
         magit
-
-        # LSP
+        corfu
+        cape
+        envrc
+        # lsp
         lsp-mode
         lsp-ui
         yasnippet
-        quick-peek
-        dap-mode
+        web-mode
+        json-mode
+        typescript-mode
+        js2-mode
 
-        # Lenguajes
-        rustic
-        nix-mode
-        corfu
-
-        hydra
-        eat
-        shackle
-
-
-        # Completion
-        vertico
-        orderless
-        consult
-        marginalia
-        flycheck
-        flycheck-inline
-
-        outshine
-        pdf-tools
-
-        projectile
 
       ];
     };
