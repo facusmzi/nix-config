@@ -44,10 +44,8 @@ in
         lsp-mode
         lsp-ui
         yasnippet
-        web-mode
-        json-mode
-        typescript-mode
-        js2-mode
+        treesit-grammars.with-all-grammars
+        apheleia
 
 
       ];

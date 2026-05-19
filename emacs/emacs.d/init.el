@@ -14,14 +14,11 @@
 (load-theme 'dracula t)
 
 (use-package which-key
-  :ensure t
   :config
   (which-key-mode))
 
 ;; backups en una carpeta
-(setq backup-directory-alist
-      `(("." . "~/.emacs.d/backups")))
-
+(setq make-backup-files nil)
 (setq auto-save-default nil)
 
 ;; recargar archivos cambiados afuera de emacs
@@ -40,12 +37,10 @@
 ;; ----------------------------
 
 (use-package vertico
-  :ensure t
   :init
   (vertico-mode))
 
 (use-package orderless
-  :ensure t
   :custom
   (completion-styles '(orderless basic))
   (completion-category-defaults nil)
@@ -53,18 +48,15 @@
    '((file (styles partial-completion)))))
 
 (use-package marginalia
-  :ensure t
   :init
   (marginalia-mode))
 
 (use-package consult
-  :ensure t
   :bind (("C-s" . consult-line)
          ("C-x b" . consult-buffer)
          ("C-x C-f" . find-file)))
 
 (use-package rainbow-delimiters
-  :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (savehist-mode 1)
@@ -89,7 +81,6 @@
 ;; ----------------------------
 
 (use-package vterm
-  :ensure t
   :config
   ;; abrir vterm siempre en insert mode
   (add-hook 'vterm-mode-hook #'evil-insert-state))
@@ -99,7 +90,6 @@
 ;; ----------------------------
 
 (use-package evil
-  :ensure t
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
@@ -108,12 +98,10 @@
 
 (use-package evil-collection
   :after evil
-  :ensure t
   :config
   (evil-collection-init))
 
 (use-package general
-  :ensure t
   :config
 
   (setq general-auto-unbind-keys t)
@@ -136,11 +124,9 @@
 ;; programación
 ;; ----------------------------
 
-(use-package magit
-  :ensure t)
+(use-package magit)
 
 (use-package corfu
-  :ensure t
   :init
   (global-corfu-mode)
 
@@ -149,13 +135,11 @@
   (corfu-cycle t))
 
 (use-package cape
-  :ensure t
   :init
   (add-to-list 'completion-at-point-functions #'cape-file))
 
 
 (use-package envrc
-  :ensure t
   :config
   (envrc-global-mode))
 
@@ -166,30 +150,20 @@
 ;; LSP - soporte de lenguajes
 ;; ----------------------------
 
-(use-package lsp-mode
-  :ensure t
+(setq read-process-output-max (* 1024 1024))
 
+(use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
-
   :custom
   (lsp-lens-enable nil)
   (lsp-eldoc-render-all nil)
   (lsp-completion-provider :capf)
-  (read-process-output-max (* 1024 1024))
-
-  :hook
-  ((typescript-mode . lsp-deferred)
-   (js2-mode . lsp-deferred)
-   (web-mode . lsp-deferred))
-
   :commands
   (lsp lsp-deferred))
 
 (use-package lsp-ui
-  :ensure t
   :after lsp-mode
-
   :custom
   (lsp-ui-doc-enable t)
   (lsp-ui-doc-position 'bottom)
@@ -200,44 +174,33 @@
 ;; modos web
 ;; ----------------------------
 
-(use-package js2-mode
-  :ensure t
-  :mode "\\.js\\'"
-
-  :hook
-  (js2-mode . lsp-deferred))
-
-(use-package typescript-mode
-  :ensure t
-  :mode "\\.ts\\'"
-
-  :hook
-  (typescript-mode . lsp-deferred))
-
 (use-package web-mode
-  :ensure t
-  :mode ("\\.html\\'"
-         "\\.php\\'"
-         "\\.tsx\\'"
-         "\\.jsx\\'")
-
+  :mode ("\\.html\\'")
   :hook
   (web-mode . lsp-deferred))
 
-
 (use-package json-mode
-  :ensure t
-  :mode "\\.json\\'"
+  :mode "\\.json\\'")
 
-  :hook
-  (json-mode . (lambda ())))
+;; tree-sitter built-in (emacs 30)
+(defun my/typescript-setup ()
+  (setq-local indent-tabs-mode nil)
+  (setq-local tab-width 2)
+  (lsp-deferred))
+
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
+
+(add-hook 'typescript-ts-mode-hook #'my/typescript-setup)
+(add-hook 'tsx-ts-mode-hook #'my/typescript-setup)
+(add-hook 'js-ts-mode-hook #'my/typescript-setup)
+(add-hook 'html-mode-hook #'lsp-deferred)
 
 ;; ----------------------------
 ;; snippets
 ;; ----------------------------
 
 (use-package yasnippet
-  :ensure t
-
   :config
   (yas-global-mode 1))
