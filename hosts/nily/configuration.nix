@@ -3,7 +3,6 @@
   imports = [
     ../../modules/system/desktop
     ../../modules/system/services
-    ../../modules/system/dev
     ../../modules/system/packages
     ../../modules/system/editors
     ../../modules/system/virtualisation
