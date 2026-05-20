@@ -215,7 +215,15 @@
 
   :custom
   (corfu-auto t)
-  (corfu-cycle t))
+  (corfu-cycle t)
+  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 1))
+
+
+(add-hook 'lsp-completion-mode-hook
+          (lambda ()
+            (setq-local completion-styles '(orderless basic))
+            (setq-local completion-category-defaults nil)))
 
 (use-package cape
   :init
@@ -239,9 +247,14 @@
   :custom
   (lsp-lens-enable nil)
   (lsp-eldoc-render-all nil)
-  (lsp-completion-provider :none)
+  (lsp-completion-provider :capf)
+
+  (lsp-csharp-server-path (executable-find "OmniSharp"))
+  
   :commands
   (lsp lsp-deferred))
+
+
 
 (use-package lsp-ui
   :after lsp-mode
@@ -270,9 +283,12 @@
   (setq flycheck-emacs-lisp-load-path 'inherit))
 
 
+;;; csharp
 
+(use-package csharp-mode
+  :mode "\\.cs\\'")
 
-
+(add-hook 'csharp-mode-hook #'lsp)
 ;; -----------------------------
 ;; nix
 ;; -----------------------------

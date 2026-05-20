@@ -31,7 +31,8 @@ in
         evil
         evil-collection
         general
-
+        hydra
+        
         #terminal
         vterm
 
