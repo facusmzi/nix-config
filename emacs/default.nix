@@ -4,13 +4,13 @@ let
 in
 {
   fonts.packages = with pkgs; [
-#     iosevka-comfy.comfy
-#     nerd-fonts.fira-code
-#     roboto
+    #     iosevka-comfy.comfy
+    #     nerd-fonts.fira-code
+    #     roboto
   ];
 
   environment.systemPackages = with pkgs; [
-#     ripgrep
+    #     ripgrep
   ];
 
   home-manager.users = lib.genAttrs users (username: {
@@ -26,8 +26,26 @@ in
         marginalia
         consult
         rainbow-delimiters
+	      nix-mode
+        lsp-mode
+        lsp-ui
+
+	      # Git
+	      magit
+
+	      # Autocompletado inline
+	      corfu
+        envrc
 
 
+        # org-mode
+        org-modern
+
+        # utilidades
+        helpful
+        avy
+        
+        
       ];
     };
 
