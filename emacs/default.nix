@@ -27,30 +27,6 @@ in
         consult
         rainbow-delimiters
 
-        # keybinds
-        evil
-        evil-collection
-        general
-        hydra
-        
-        #terminal
-        vterm
-
-        #programacion
-        magit
-        corfu
-        cape
-        envrc
-        # lsp
-        lsp-mode
-        lsp-ui
-        yasnippet
-        treesit-grammars.with-all-grammars
-        flycheck
-	      nix-mode
-	      
-	      #peticiones http
-	      restclient
 
       ];
     };
