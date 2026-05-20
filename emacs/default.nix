@@ -29,6 +29,8 @@ in
 	      nix-mode
         lsp-mode
         lsp-ui
+        haskell-mode
+        lsp-haskell
 
 	      # Git
 	      magit
@@ -36,6 +38,7 @@ in
 	      # Autocompletado inline
 	      corfu
         envrc
+        
 
 
         # org-mode

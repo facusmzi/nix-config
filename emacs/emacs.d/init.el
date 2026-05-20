@@ -232,6 +232,8 @@
   :custom
   (lsp-auto-guess-root t)    ;; Detecta automáticamente la raíz del proyecto (.sln, .csproj)
   (lsp-keymap-prefix "C-c l");; Prefijo para todos los comandos lsp
+  :config
+  (lsp-enable-which-key-integration t)
   :commands lsp)
 
 (use-package lsp-ui
@@ -242,6 +244,36 @@
 
 (use-package csharp-mode
   :mode "\\.cs\\'") ;; Activa csharp-mode para archivos .cs
+
+
+
+
+;; ============================================================
+;; HASKELL
+;; haskell-mode → soporte base para .hs
+;; lsp-haskell  → conecta con HLS (Haskell Language Server)
+;; ormolu       → formateador, se ejecuta al guardar
+;; REPL         → C-c C-z abre/va al REPL
+;;                C-c C-l carga el archivo actual en el REPL
+;;                C-c C-e evalúa la expresión en punto
+;; HLS y ormolu tienen que estar en el PATH del proyecto,
+;; manejalo con un flake.nix que los incluya (envrc lo carga)
+;; ============================================================
+
+(setq haskell-mode-ormolu-program "ormolu")
+(setq haskell-process-type 'cabal-repl) ;; o 'stack-ghci si usás Stack, o 'ghci para bare GHCi
+
+(use-package haskell-mode
+  :mode "\\.hs\\'"
+  :hook
+  (haskell-mode . interactive-haskell-mode) ;; activa el REPL integrado
+  (haskell-mode . (lambda ()
+                    (add-hook 'before-save-hook #'haskell-mode-ormolu-format nil t))))
+
+(use-package lsp-haskell
+  :hook
+  (haskell-mode          . lsp)
+  (haskell-literate-mode . lsp))
 
 
 ;; ============================================================
