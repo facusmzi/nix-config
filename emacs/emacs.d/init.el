@@ -289,6 +289,16 @@
   :mode "\\.cs\\'")
 
 (add-hook 'csharp-mode-hook #'lsp)
+
+;; dotnet tools
+(add-to-list 'load-path "~/.config/emacs/lisp/")
+
+(use-package dotnet-tools
+  :load-path "~/.config/emacs/lisp/")
+
+(use-package dotnet-hydra
+  :load-path "~/.config/emacs/lisp/"
+  :demand t)
 ;; -----------------------------
 ;; nix
 ;; -----------------------------
