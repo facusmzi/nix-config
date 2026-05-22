@@ -69,7 +69,7 @@ in
     kdePackages.dolphin
     kdePackages.kate
     kdePackages.gwenview
-    kdePackages.spectacle
+    unstable.kdePackages.spectacle
     kdePackages.okular
   ];
 
