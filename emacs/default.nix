@@ -38,12 +38,7 @@ in
 	      # Autocompletado inline
 	      corfu
         envrc
-        
-
-
-        # org-mode
-        org-modern
-
+       
         # utilidades
         helpful
         avy

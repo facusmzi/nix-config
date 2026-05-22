@@ -69,7 +69,9 @@ in
     kdePackages.dolphin
     kdePackages.kate
     kdePackages.gwenview
-    unstable.kdePackages.spectacle
+    (unstable.kdePackages.spectacle.override { 
+    tesseractLanguages = [ "eng" "spa" ];      
+    })
     kdePackages.okular
   ];
 

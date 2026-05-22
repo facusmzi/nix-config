@@ -2,8 +2,7 @@
 ;; Activa lexical binding, mejora performance y es la forma moderna de escribir Elisp
 
 ;; ============================================================
-;; INTERFAZ MÍNIMA
-;; Saca todos los elementos visuales innecesarios de Emacs
+;; INTERFAZ MÍNIMA;; Saca todos los elementos visuales innecesarios de Emacs
 ;; ============================================================
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized)) ;; Arranca maximizado
@@ -289,18 +288,6 @@
 
 
 
-
-
-;; ============================================================
-;; ORG-MODERN
-;; Mejora visual de org-mode: títulos con símbolos, TODO/DONE
-;; con badges, listas con bullets reales, bloques de código
-;; con estilo. El archivo sigue siendo texto plano.
-;; ============================================================
-
-(use-package org-modern
-  :hook
-  (org-mode . org-modern-mode)) ;; Se activa automáticamente al abrir archivos .org
 
 
 
