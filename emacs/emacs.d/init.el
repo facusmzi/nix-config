@@ -315,3 +315,12 @@
 (use-package avy
   :bind ("M-s" . avy-goto-char-2))
 
+
+(use-package gptel
+  :ensure t
+  :config
+  ;; Registrar y establecer GitHub Copilot como el backend por defecto
+  (setq gptel-backend (gptel-make-gh-copilot "Copilot"))
+
+  ;; Configurar el modelo predeterminado del chat
+  (setq gptel-model 'gpt-4o))

@@ -42,6 +42,8 @@ in
         # utilidades
         helpful
         avy
+
+        gptel
         
         
       ];
