@@ -151,7 +151,7 @@ Contenido final (los módulos del kernel los dejás como los generó, solo agreg
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-partlabel/disk-main-ESP";
+    device = "/dev/disk/by-partlabel/disk-main-EFI";
     fsType = "vfat";
     options = [ "fmask=0077" "dmask=0077" ];
   };
@@ -219,8 +219,8 @@ Guardalo en `hosts/NOMBRE_HOST/disko.nix`. Recordá reemplazar el `device` con e
         content = {
           type = "gpt";
           partitions = {
-            ESP = {
-              name = "ESP";
+            EFI = {
+              name = "EFI";
               size = "4G";
               type = "EF00";
               content = {

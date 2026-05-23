@@ -58,7 +58,7 @@
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-partlabel/disk-main-ESP";
+    device = "/dev/disk/by-partlabel/disk-main-EFI";
     fsType = "vfat";
     options = [ "fmask=0077" "dmask=0077" ];
   };

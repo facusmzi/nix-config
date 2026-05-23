@@ -5,7 +5,6 @@
     ../../modules/system/services
     ../../modules/system/packages
     ../../modules/system/editors
-    ../../modules/system/games
     ../../modules/system/virtualisation
     ../../emacs
   ];
