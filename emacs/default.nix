@@ -38,6 +38,30 @@ in
 
         # AI
         gptel
+
+
+         # modal editing
+        evil
+        evil-collection
+
+        # undo backend para evil
+        undo-tree
+
+        # dispatcher
+        hydra
+
+        # mejor help buffers
+        helpful
+
+        # editar grep results
+        wgrep
+
+
+         cape
+
+       
+       
+        
         
       ];
     };
