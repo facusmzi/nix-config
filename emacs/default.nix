@@ -10,7 +10,7 @@ in
   ];
 
   environment.systemPackages = with pkgs; [
-    #     ripgrep
+         ripgrep
   ];
 
   home-manager.users = lib.genAttrs users (username: {
@@ -18,33 +18,26 @@ in
       enable = true;
       package = pkgs.emacs30-pgtk;
       extraPackages = epkgs: with epkgs; [
-        # UI
+       # UI
         dracula-theme
-
         vertico
         orderless
         marginalia
         consult
-        rainbow-delimiters
-	      nix-mode
-        lsp-mode
-        lsp-ui
+        nix-mode
         haskell-mode
-        lsp-haskell
-
-	      # Git
-	      magit
-
-	      # Autocompletado inline
-	      corfu
-        envrc
-       
-        # utilidades
-        helpful
-        avy
-
-        gptel
         
+        # Git
+        magit
+
+        # Autocompletado inline
+        corfu
+
+        # Entorno
+        envrc
+
+        # AI
+        gptel
         
       ];
     };

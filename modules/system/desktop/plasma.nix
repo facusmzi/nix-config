@@ -134,34 +134,35 @@ in
     };
 
     home.sessionVariables = {
-      EDITOR = "kate --block";
-      VISUAL = "kate --block";
+      EDITOR = "emacs";
+      VISUAL = "emacs";
     };
 
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/plain"               = [ "org.kde.kate.desktop" ];
-        "text/x-nix"               = [ "org.kde.kate.desktop" ];
-        "text/x-python"            = [ "org.kde.kate.desktop" ];
-        "text/x-shellscript"       = [ "org.kde.kate.desktop" ];
-        "text/x-csrc"              = [ "org.kde.kate.desktop" ];
-        "text/x-c++src"            = [ "org.kde.kate.desktop" ];
-        "text/x-chdr"              = [ "org.kde.kate.desktop" ];
-        "text/x-c++hdr"            = [ "org.kde.kate.desktop" ];
-        "text/x-java"              = [ "org.kde.kate.desktop" ];
-        "text/javascript"          = [ "org.kde.kate.desktop" ];
-        "text/css"                 = [ "org.kde.kate.desktop" ];
-        "text/xml"                 = [ "org.kde.kate.desktop" ];
-        "text/markdown"            = [ "org.kde.kate.desktop" ];
-        "text/x-rust"              = [ "org.kde.kate.desktop" ];
-        "application/json"         = [ "org.kde.kate.desktop" ];
-        "application/x-yaml"       = [ "org.kde.kate.desktop" ];
-        "application/xml"          = [ "org.kde.kate.desktop" ];
-        "application/toml"         = [ "org.kde.kate.desktop" ];
-        "application/octet-stream" = [ "org.kde.kate.desktop" ];
-        "inode/directory"          = [ "org.kde.dolphin.desktop" ];
-        "application/pdf"          = [ "org.kde.okular.desktop" ];
+        "text/plain"               = [ "emacsclient.desktop" ];
+        "text/x-nix"               = [ "emacsclient.desktop" ];
+        "text/x-python"            = [ "emacsclient.desktop" ];
+        "text/x-shellscript"       = [ "emacsclient.desktop" ];
+        "text/x-csrc"              = [ "emacsclient.desktop" ];
+        "text/x-c++src"            = [ "emacsclient.desktop" ];
+        "text/x-chdr"              = [ "emacsclient.desktop" ];
+        "text/x-c++hdr"            = [ "emacsclient.desktop" ];
+        "text/x-java"              = [ "emacsclient.desktop" ];
+        "text/javascript"          = [ "emacsclient.desktop" ];
+        "text/css"                 = [ "emacsclient.desktop" ];
+        "text/xml"                 = [ "emacsclient.desktop" ];
+        "text/markdown"            = [ "emacsclient.desktop" ];
+        "text/x-rust"              = [ "emacsclient.desktop" ];
+        "application/json"         = [ "emacsclient.desktop" ];
+        "application/x-yaml"       = [ "emacsclient.desktop" ];
+        "application/xml"          = [ "emacsclient.desktop" ];
+        "application/toml"         = [ "emacsclient.desktop" ];
+        "application/octet-stream" = [ "emacsclient.desktop" ];
+
+        "inode/directory" = [ "org.kde.dolphin.desktop" ];
+        "application/pdf" = [ "org.kde.okular.desktop" ];
       };
     };
   });
