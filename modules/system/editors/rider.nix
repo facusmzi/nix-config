@@ -24,6 +24,7 @@ let
       dotnetCorePackages.aspnetcore_8_0
       dotnetCorePackages.aspnetcore_9_0
       dotnetCorePackages.aspnetcore_10_0
+      avalonia
       powershell git
       icu openssl zlib krb5
     ]);
