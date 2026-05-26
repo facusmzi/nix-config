@@ -1,34 +1,7 @@
 ;;; init.el -*- lexical-binding: t; -*-
-;; Activa lexical binding: mejora performance y es la forma moderna de escribir Elisp
 
 ;; ============================================================
-;; BOOTSTRAP: use-package
-;; En NixOS los paquetes se declaran en home.nix (o similar),
-;; no desde Emacs. use-package ya viene disponible vía nix.
-;; Si alguna vez migrás a otra distro, descomentá el bloque
-;; de MELPA de abajo para instalar todo desde Emacs.
-;; ============================================================
-
-(require 'use-package)
-;; En NixOS no necesitamos :ensure t — nix ya instaló todo.
-;; Descomentá esto solo si instalás paquetes desde Emacs:
-;; (setq use-package-always-ensure t)
-
-;; -- ALTERNATIVA (no-NixOS) ----------------------------------
-;; (require 'package)
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; (package-initialize)
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
-;; (setq use-package-always-ensure t)
-;; ------------------------------------------------------------
-
-
-;; ============================================================
-;; STARTUP: acelerar el arranque (de colonq/init.el)
-;; Sube temporalmente el umbral de GC durante el init,
-;; después lo restaura al final del archivo.
+;; STARTUP
 ;; ============================================================
 
 (setq gc-cons-threshold 402653184
@@ -48,13 +21,13 @@
 (blink-cursor-mode -1)
 (tooltip-mode -1)
 (setq-default cursor-in-non-selected-windows nil
-              bidi-display-reordering nil)    ;; mejora performance en buffers largos
+              bidi-display-reordering nil)
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message t
       initial-scratch-message nil
       sentence-end-double-space nil
-      custom-file "/dev/null"                ;; tira las customizaciones en /dev/null
-      confirm-kill-emacs 'y-or-n-p)         ;; pide confirmación al salir
+      custom-file "/dev/null"
+      confirm-kill-emacs 'y-or-n-p)
 
 
 ;; ============================================================
@@ -65,7 +38,7 @@
 (global-auto-revert-mode 1)
 (fset 'yes-or-no-p 'y-or-n-p)
 (delete-selection-mode 1)
-(setq scroll-step 1)             ;; scroll más suave, sin saltos
+(setq scroll-step 1)
 
 
 ;; ============================================================
@@ -82,7 +55,7 @@
 
 (savehist-mode 1)
 (recentf-mode 1)
-(setq recentf-max-saved-items nil)  ;; guarda toda la lista, sin límite
+(setq recentf-max-saved-items nil)
 
 
 ;; ============================================================
@@ -113,10 +86,6 @@
 
 ;; ============================================================
 ;; UNDO-TREE
-;; Sistema de undo no-lineal (árbol en vez de lista).
-;; Necesario para el :undo-system de evil.
-;; Desactivamos el autoguardado del historial — genera archivos
-;; de undo en todos lados.
 ;; ============================================================
 
 (use-package undo-tree
@@ -133,16 +102,14 @@
 (use-package evil
   :custom
   (evil-want-integration t)
-  (evil-want-keybinding nil)      ;; evil-collection maneja buffers especiales
+  (evil-want-keybinding nil)
   (evil-want-C-u-scroll t)
-  (evil-want-minibuffer t)        ;; evil en el minibuffer (de colonq)
-  (evil-undo-system 'undo-tree)   ;; usa undo-tree como backend
-  (evil-auto-balance-windows nil) ;; no rebalancear ventanas automáticamente
+  (evil-want-minibuffer t)
+  (evil-undo-system 'undo-tree)
+  (evil-auto-balance-windows nil)
   :config
   (evil-mode 1)
 
-  ;; Estados iniciales para buffers especiales (de colonq)
-  ;; motion-state: hjkl funcionan, pero no insert/d/c/etc.
   (evil-set-initial-state 'magit-status-mode  'motion)
   (evil-set-initial-state 'magit-diff-mode    'motion)
   (evil-set-initial-state 'magit-stashes-mode 'motion)
@@ -150,29 +117,59 @@
   (evil-set-initial-state 'special-mode       'motion)
   (evil-set-initial-state 'Info-mode          'motion)
 
-  ;; Liberar "q" → dispatcher (ver sección HYDRA)
-  ;; Macros → "m" (en Vim vanilla "m" pone marcas, quedan en M-<letra>)
   (define-key evil-normal-state-map (kbd "m") 'evil-record-macro)
 
-  ;; ":" no hace nada por defecto — la abrimos en el dispatcher si la necesitamos
   (define-key evil-normal-state-map (kbd ":") nil)
   (define-key evil-motion-state-map (kbd ":") nil)
   (define-key evil-visual-state-map (kbd ":") nil)
 
-  ;; "#" comenta/descomenta la selección o línea (de colonq)
   (define-key evil-normal-state-map (kbd "#") #'comment-dwim)
   (define-key evil-visual-state-map (kbd "#") #'comment-dwim)
 
-  ;; 0 → primer caracter no-blanco (más útil en código)
   (define-key evil-normal-state-map (kbd "0") 'evil-first-non-blank)
   (define-key evil-motion-state-map (kbd "0") 'evil-first-non-blank)
   (define-key evil-visual-state-map (kbd "0") 'evil-first-non-blank))
 
 
 ;; ============================================================
+;; ESCAPE UNIVERSAL
+;; ============================================================
+
+(defadvice keyboard-escape-quit
+    (around keyboard-escape-quit-dont-close-windows activate)
+  (let ((buffer-quit-function (lambda () ())))
+    ad-do-it))
+
+(defun my/escape ()
+  "Escape universal estilo Vim."
+  (interactive)
+  (cond
+   ((minibufferp)
+    (abort-minibuffers))
+   ((and (bound-and-true-p corfu-mode) corfu--candidates)
+    (corfu-quit))
+   ((or (evil-insert-state-p) (evil-replace-state-p))
+    (evil-normal-state))
+   ((evil-visual-state-p)
+    (evil-exit-visual-state))
+   (t
+    (keyboard-quit))))
+
+(global-set-key (kbd "<escape>") #'my/escape)
+
+;; Minibuffers sin vertico (read-passwd, etc.)
+(with-eval-after-load 'evil
+  (dolist (map (list minibuffer-local-map
+                     minibuffer-local-ns-map
+                     minibuffer-local-completion-map
+                     minibuffer-local-must-match-map
+                     minibuffer-local-filename-completion-map))
+    (evil-define-key 'insert map
+      (kbd "<escape>") #'my/escape)))
+
+
+;; ============================================================
 ;; EVIL-COLLECTION
-;; Keybindings Evil para buffers que evil base no cubre:
-;; Magit, Dired, corfu, helpful, etc.
 ;; ============================================================
 
 (use-package evil-collection
@@ -183,17 +180,15 @@
 
 ;; ============================================================
 ;; DIRED
-;; evil-collection pisa "q" en dired con quit-window.
-;; Recreamos el keymap y lo reasignamos explícitamente.
 ;; ============================================================
 
 (use-package dired
   :custom
-  (dired-dwim-target t)           ;; sugiere el otro dired abierto como destino
+  (dired-dwim-target t)
   (dired-listing-switches "-lvah")
   :config
   (defun my/dired-find-file ()
-    "Abre directorio sin crear un nuevo buffer (reemplaza el actual)."
+    "Abre directorio sin crear un nuevo buffer."
     (interactive)
     (if (file-directory-p (dired-get-file-for-visit))
         (dired-find-alternate-file)
@@ -224,37 +219,7 @@
 
 
 ;; ============================================================
-;; ESCAPE UNIVERSAL
-;; <Escape> hace lo correcto según el contexto, sin cerrar
-;; ventanas como efecto secundario (bug de Emacs por defecto).
-;; ============================================================
-
-(defadvice keyboard-escape-quit
-    (around keyboard-escape-quit-dont-close-windows activate)
-  (let ((buffer-quit-function (lambda () ())))
-    ad-do-it))
-
-(defun my/escape ()
-  "Escape universal estilo Vim."
-  (interactive)
-  (cond
-   ((minibufferp)
-    (keyboard-escape-quit))
-   ((and (bound-and-true-p corfu-mode) corfu--candidates)
-    (corfu-quit))
-   ((or (evil-insert-state-p) (evil-replace-state-p))
-    (evil-normal-state))
-   ((evil-visual-state-p)
-    (evil-exit-visual-state))
-   (t
-    (keyboard-quit))))
-
-(global-set-key (kbd "<escape>") #'my/escape)
-
-
-;; ============================================================
 ;; MOVIMIENTO ENTRE VENTANAS
-;; M-hjkl funciona en cualquier modo, incluyendo Magit y Dired
 ;; ============================================================
 
 (global-set-key (kbd "M-h") #'windmove-left)
@@ -265,17 +230,10 @@
 
 ;; ============================================================
 ;; HYDRA + DISPATCHER EN "q"
-;;
-;; Apretás q → panel instantáneo con todas las opciones.
-;; :color teal → cada tecla ejecuta y cierra el panel.
-;; :color red  → la tecla se puede repetir (ej: zoom, resize).
-;; :hint nil   → usamos el string manual de arriba en vez del
-;;               hint autogenerado (más control visual).
 ;; ============================================================
 
 (use-package hydra)
 
-;; Sub-dispatcher para Version Control (inspirado en colonq/colonq-vc.el)
 (defhydra my/vc-dispatcher (:color teal :hint nil)
   "
   Git
@@ -297,7 +255,6 @@
   ("q" my/dispatcher/body)
   ("<escape>" nil))
 
-;; Sub-dispatcher para Eglot / LSP (Haskell y lo que agregues)
 (defhydra my/lsp-dispatcher (:color teal :hint nil)
   "
   LSP (Eglot)
@@ -316,7 +273,6 @@
   ("q" my/dispatcher/body)
   ("<escape>" nil))
 
-;; Dispatcher principal
 (defhydra my/dispatcher (:color teal :hint nil)
   "
   Dispatcher
@@ -331,42 +287,28 @@
   _2_ dividir ↓       _i_ lsp             _hv_ variable
   _3_ dividir →       _<escape>_ cancelar _hk_ tecla
   "
-  ;; Archivos
   ("f" find-file)
   ("r" consult-recent-file)
   ("s" save-buffer)
-
-  ;; Buffers
   ("b" consult-buffer)
   ("k" kill-current-buffer)
   ("q" (switch-to-buffer (other-buffer)))
-
-  ;; Búsqueda
   ("/" consult-ripgrep)
   ("l" consult-line)
-
-  ;; Ventanas
   ("1" delete-other-windows)
   ("2" split-window-below)
   ("3" split-window-right)
   ("w" delete-window)
-  ;; Zoom (red: se puede repetir sin cerrar el hydra)
   ("+" (text-scale-increase 1) :color red)
   ("=" (text-scale-increase 1) :color red)
   ("-" (text-scale-increase -1) :color red)
-
-  ;; Sub-dispatchers
   ("g" my/vc-dispatcher/body)
   ("i" my/lsp-dispatcher/body)
-
-  ;; Ayuda
   ("hf" helpful-callable)
   ("hv" helpful-variable)
   ("hk" helpful-key)
-
   ("<escape>" nil))
 
-;; Asignar dispatcher a "q" en normal, motion y emacs state
 (with-eval-after-load 'evil
   (define-key evil-normal-state-map (kbd "q") 'my/dispatcher/body)
   (define-key evil-motion-state-map (kbd "q") 'my/dispatcher/body)
@@ -378,7 +320,14 @@
 ;; ============================================================
 
 (use-package vertico
-  :init (vertico-mode))
+  :init (vertico-mode)
+  :config
+  ;; vertico usa use-local-map y reemplaza el keymap local del minibuffer,
+  ;; dejando los keymaps de evil sin efecto. evil-normalize-keymaps los
+  ;; reactiva después de cada setup de vertico.
+  (advice-add 'vertico--setup :after #'evil-normalize-keymaps)
+  (evil-define-key 'insert vertico-map
+    (kbd "<escape>") #'my/escape))
 
 (use-package orderless
   :custom
@@ -394,7 +343,6 @@
 
 ;; ============================================================
 ;; CORFU
-;; Completion inline para código, LSP, dabbrev.
 ;; ============================================================
 
 (use-package corfu
@@ -406,19 +354,11 @@
 
 ;; ============================================================
 ;; EGLOT (LSP)
-;; Built-in desde Emacs 29. Agrega ir a definición, errores
-;; en tiempo real, renombrar símbolos, etc.
-;; El language server de Haskell (haskell-language-server)
-;; debe estar disponible en el PATH — en NixOS va en home.nix.
 ;; ============================================================
 
 (use-package eglot
   :hook
-  ((haskell-mode . eglot-ensure))
-  ;; Para agregar más lenguajes, sumá una línea:
-  ;; (python-mode . eglot-ensure)
-  ;; (js-mode     . eglot-ensure)
-  )
+  ((haskell-mode . eglot-ensure)))
 
 
 ;; ============================================================
@@ -430,8 +370,6 @@
 
 ;; ============================================================
 ;; FLYMAKE
-;; Eglot lo usa internamente para mostrar errores.
-;; read-process-output-max mejora el throughput con LSP.
 ;; ============================================================
 
 (setq read-process-output-max (* 1024 1024))
@@ -453,7 +391,6 @@
 
 ;; ============================================================
 ;; WGREP
-;; Editar resultados de consult-ripgrep como si fuera un buffer.
 ;; ============================================================
 
 (use-package wgrep)
@@ -461,8 +398,6 @@
 
 ;; ============================================================
 ;; MAGIT
-;; q g → vc-dispatcher → v = magit-status
-;; C-x g también funciona como fallback directo.
 ;; ============================================================
 
 (use-package magit
@@ -470,8 +405,6 @@
   (magit-no-message '("Turning on"))
   :bind ("C-x g" . magit-status)
   :config
-  ;; Solo pisamos "q" — el resto (s, u, x, TAB, etc.) lo deja
-  ;; evil-collection intacto. Resetear el keymap entero rompe staging.
   (evil-define-key 'motion magit-mode-map
     (kbd "q") 'my/dispatcher/body)
   (evil-define-key 'normal magit-mode-map
@@ -480,7 +413,6 @@
 
 ;; ============================================================
 ;; ENVRC
-;; Integra direnv / nix develop / nix shell con Emacs.
 ;; ============================================================
 
 (use-package envrc
@@ -499,7 +431,7 @@
 
 
 ;; ============================================================
-;; RESTAURAR GC (debe ir al final del archivo)
+;; RESTAURAR GC
 ;; ============================================================
 
 (setq gc-cons-threshold 16777216
