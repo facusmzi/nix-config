@@ -349,7 +349,7 @@
   ("1" delete-other-windows)
   ("2" split-window-below)
   ("3" split-window-right)
-
+  ("w" delete-window)
   ;; Zoom (red: se puede repetir sin cerrar el hydra)
   ("+" (text-scale-increase 1) :color red)
   ("=" (text-scale-increase 1) :color red)
