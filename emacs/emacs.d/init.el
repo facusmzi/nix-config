@@ -153,14 +153,9 @@
    (t
     (keyboard-quit))))
 
-;; <escape> fuera del minibuffer: comportamiento vim normal
 (global-set-key (kbd "<escape>") #'my/escape)
-
-;; <f12> es la tecla universal de cancelar — funciona en cualquier contexto,
-;; incluyendo minibuffer, hydras, y en el futuro exwm
 (global-set-key (kbd "<f12>") #'keyboard-escape-quit)
 
-;; En minibuffers sin vertico (read-passwd, etc.)
 (with-eval-after-load 'evil
   (dolist (map (list minibuffer-local-map
                      minibuffer-local-ns-map
@@ -266,19 +261,22 @@
 
 (defhydra my/lsp-dispatcher (:color teal :hint nil)
   "
-  LSP (Eglot)
+  LSP
   ──────────────────────────────────────
-  _d_ ir a definición    _r_ referencias
-  _n_ renombrar símbolo  _a_ code actions
-  _e_ siguiente error    _f_ formatear
+  _d_ documentación      _r_ referencias
+  _D_ ir a definición    _a_ code actions
+  _n_ renombrar símbolo  _f_ formatear
+  _e_ siguiente error    _b_ volver atrás
   _q_ volver             _<f12>_ cancelar
   "
-  ("d" xref-find-definitions)
-  ("r" xref-find-references)
-  ("n" eglot-rename)
-  ("a" eglot-code-actions)
+  ("d" lsp-describe-thing-at-point)
+  ("D" lsp-ui-peek-find-definitions)
+  ("r" lsp-ui-peek-find-references)
+  ("n" lsp-rename)
+  ("a" lsp-execute-code-action)
   ("e" flymake-goto-next-error)
   ("f" my/format-buffer)
+  ("b" xref-go-back)
   ("q" my/dispatcher/body)
   ("<f12>" nil))
 
@@ -334,11 +332,9 @@
   :init (vertico-mode)
   :config
   (advice-add 'vertico--setup :after #'evil-normalize-keymaps)
-  ;; insert: escape pasa a normal, f12 cancela
   (evil-define-key 'insert vertico-map
     (kbd "<escape>") #'evil-normal-state
     (kbd "<f12>")    #'abort-minibuffers)
-  ;; normal: jk mueven, f12 cancela, RET confirma
   (evil-define-key 'normal vertico-map
     (kbd "j")        #'vertico-next
     (kbd "k")        #'vertico-previous
@@ -400,16 +396,40 @@
 
 
 ;; ============================================================
-;; EGLOT (LSP)
+;; LSP-MODE
 ;; ============================================================
 
-(use-package eglot
+(use-package lsp-mode
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-idle-delay 0.3)
+  (lsp-lens-enable nil)
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-enable-snippet nil)
+  (lsp-completion-provider :none)
   :hook
-  ((haskell-mode . eglot-ensure)
-   (nix-mode     . eglot-ensure))
+  ((haskell-mode . lsp-deferred)
+   (nix-mode     . lsp-deferred)
+   (lsp-mode     . lsp-enable-which-key-integration))
   :config
-  (add-to-list 'eglot-server-programs
-               '(nix-mode . ("nixd"))))
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("nixd"))
+    :major-modes '(nix-mode)
+    :server-id 'nixd)))
+
+(use-package lsp-ui
+  :custom
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-show-with-cursor nil)
+  (lsp-ui-doc-position 'at-point)
+  (lsp-ui-sideline-enable nil)
+  :hook (lsp-mode . lsp-ui-mode))
+
+(use-package lsp-pyright
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp-deferred))))
 
 
 ;; ============================================================
@@ -433,11 +453,11 @@
     (goto-char (min pos (point-max)))))
 
 (defun my/format-buffer ()
-  "Formatea: alejandra para nix, eglot-format para el resto."
+  "Formatea: alejandra para nix, lsp para el resto."
   (interactive)
   (cond
    ((derived-mode-p 'nix-mode) (my/alejandra-format-buffer))
-   ((bound-and-true-p eglot--managed-mode) (eglot-format))
+   ((bound-and-true-p lsp-mode) (lsp-format-buffer))
    (t (message "No hay formateador disponible"))))
 
 (add-hook 'nix-mode-hook

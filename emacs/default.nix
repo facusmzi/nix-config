@@ -7,11 +7,19 @@
 }: let
   users = ["facusmzi"];
 in {
+  # ============================================================
+  # FUENTES
+  # ============================================================
+
   fonts.packages = with pkgs; [
-    #     iosevka-comfy.comfy
-    #     nerd-fonts.fira-code
-    #     roboto
+    # iosevka-comfy.comfy
+    # nerd-fonts.fira-code
+    # roboto
   ];
+
+  # ============================================================
+  # PAQUETES DEL SISTEMA
+  # ============================================================
 
   environment.systemPackages = with pkgs; [
     ripgrep
@@ -19,51 +27,55 @@ in {
     nixd
   ];
 
+  # ============================================================
+  # HOME MANAGER
+  # ============================================================
+
   home-manager.users = lib.genAttrs users (username: {
     programs.emacs = {
       enable = true;
       package = pkgs.emacs30-pgtk;
       extraPackages = epkgs:
         with epkgs; [
-          # UI
+          # --- UI ---
           dracula-theme
           vertico
           orderless
           marginalia
           consult
+          consult-dir
+
+          # --- Modos de lenguaje ---
           nix-mode
           haskell-mode
 
-          # Git
+          # --- LSP ---
+          lsp-mode
+          lsp-ui
+          lsp-pyright
+          # --- Autocompletado ---
+          corfu
+          cape
+
+          # --- Git ---
           magit
 
-          # Autocompletado inline
-          corfu
-          # Navegación de directorios
-          consult-dir
-          # Entorno
-          envrc
-
-          # AI
-          gptel
-
-          # modal editing
+          # --- Modal editing ---
           evil
           evil-collection
-
-          # undo backend para evil
           undo-tree
 
-          # dispatcher
-          hydra
-
-          # mejor help buffers
-          helpful
-
-          # editar grep results
+          # --- Navegación / búsqueda ---
           wgrep
           restclient
-          cape
+
+          # --- Entorno ---
+          envrc
+
+          # --- Utilidades ---
+          hydra
+          helpful
+          gptel
         ];
     };
 
