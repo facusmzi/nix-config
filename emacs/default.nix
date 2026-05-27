@@ -1,8 +1,12 @@
-{ config, pkgs, lib, inputs, ... }:
-let
-  users = [ "facusmzi" ];
-in
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: let
+  users = ["facusmzi"];
+in {
   fonts.packages = with pkgs; [
     #     iosevka-comfy.comfy
     #     nerd-fonts.fira-code
@@ -10,7 +14,8 @@ in
   ];
 
   environment.systemPackages = with pkgs; [
-    ripgrep  alejandra
+    ripgrep
+    alejandra
     nixd
   ];
 
@@ -18,50 +23,48 @@ in
     programs.emacs = {
       enable = true;
       package = pkgs.emacs30-pgtk;
-      extraPackages = epkgs: with epkgs; [
-       # UI
-        dracula-theme
-        vertico
-        orderless
-        marginalia
-        consult
-        nix-mode
-        haskell-mode
-        
-        # Git
-        magit
+      extraPackages = epkgs:
+        with epkgs; [
+          # UI
+          dracula-theme
+          vertico
+          orderless
+          marginalia
+          consult
+          nix-mode
+          haskell-mode
 
-        # Autocompletado inline
-        corfu
+          # Git
+          magit
 
-        # Entorno
-        envrc
+          # Autocompletado inline
+          corfu
+          # Navegación de directorios
+          consult-dir
+          # Entorno
+          envrc
 
-        # AI
-        gptel
+          # AI
+          gptel
 
+          # modal editing
+          evil
+          evil-collection
 
-         # modal editing
-        evil
-        evil-collection
+          # undo backend para evil
+          undo-tree
 
-        # undo backend para evil
-        undo-tree
+          # dispatcher
+          hydra
 
-        # dispatcher
-        hydra
+          # mejor help buffers
+          helpful
 
-        # mejor help buffers
-        helpful
-
-        # editar grep results
-        wgrep
-
-
-         cape       
-        
-        
-      ];
+          # editar grep results
+          wgrep
+          restclient
+          cape
+        ];
     };
 
     home.file.".config/emacs" = {

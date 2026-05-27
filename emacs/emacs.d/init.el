@@ -144,8 +144,6 @@
   "Escape universal estilo Vim."
   (interactive)
   (cond
-   ((minibufferp)
-    (abort-minibuffers))
    ((and (bound-and-true-p corfu-mode) corfu--candidates)
     (corfu-quit))
    ((or (evil-insert-state-p) (evil-replace-state-p))
@@ -155,17 +153,28 @@
    (t
     (keyboard-quit))))
 
+;; <escape> fuera del minibuffer: comportamiento vim normal
 (global-set-key (kbd "<escape>") #'my/escape)
 
-;; Minibuffers sin vertico (read-passwd, etc.)
+;; <f12> es la tecla universal de cancelar — funciona en cualquier contexto,
+;; incluyendo minibuffer, hydras, y en el futuro exwm
+(global-set-key (kbd "<f12>") #'keyboard-escape-quit)
+
+;; En minibuffers sin vertico (read-passwd, etc.)
 (with-eval-after-load 'evil
   (dolist (map (list minibuffer-local-map
                      minibuffer-local-ns-map
                      minibuffer-local-completion-map
                      minibuffer-local-must-match-map
                      minibuffer-local-filename-completion-map))
+    (define-key map (kbd "<f12>") #'abort-minibuffers)
     (evil-define-key 'insert map
-      (kbd "<escape>") #'my/escape)))
+      (kbd "<escape>") #'evil-normal-state
+      (kbd "<f12>")    #'abort-minibuffers)
+    (evil-define-key 'normal map
+      (kbd "j")        #'next-line-or-history-element
+      (kbd "k")        #'previous-line-or-history-element
+      (kbd "<f12>")    #'abort-minibuffers)))
 
 
 ;; ============================================================
@@ -241,7 +250,7 @@
   _v_ status      _l_ log         _b_ blame
   _h_ file log    _d_ diff        _s_ switch branch
   _c_ commit      _p_ push        _u_ pull
-  _q_ volver      _<escape>_ cancelar
+  _q_ volver      _<f12>_ cancelar
   "
   ("v" magit-status)
   ("h" magit-log-buffer-file)
@@ -253,7 +262,7 @@
   ("p" magit-push-current-to-upstream)
   ("u" magit-pull-from-upstream)
   ("q" my/dispatcher/body)
-  ("<escape>" nil))
+  ("<f12>" nil))
 
 (defhydra my/lsp-dispatcher (:color teal :hint nil)
   "
@@ -262,7 +271,7 @@
   _d_ ir a definición    _r_ referencias
   _n_ renombrar símbolo  _a_ code actions
   _e_ siguiente error    _f_ formatear
-  _q_ volver             _<escape>_ cancelar
+  _q_ volver             _<f12>_ cancelar
   "
   ("d" xref-find-definitions)
   ("r" xref-find-references)
@@ -271,7 +280,7 @@
   ("e" flymake-goto-next-error)
   ("f" my/format-buffer)
   ("q" my/dispatcher/body)
-  ("<escape>" nil))
+  ("<f12>" nil))
 
 (defhydra my/dispatcher (:color teal :hint nil)
   "
@@ -281,15 +290,17 @@
   _f_ abrir           _b_ cambiar         _/_ buscar proyecto
   _r_ recientes       _k_ cerrar          _l_ buscar buffer
   _s_ guardar         _q_ buffer anterior _+_ zoom+ _-_ zoom-
+  _d_ directorio
   ──────────────────────────────────────────────────────
   Ventanas            Código              Ayuda
   _1_ solo esta       _g_ git             _hf_ función
   _2_ dividir ↓       _i_ lsp             _hv_ variable
-  _3_ dividir →       _<escape>_ cancelar _hk_ tecla
+  _3_ dividir →       _<f12>_ cancelar    _hk_ tecla
   "
   ("f" find-file)
   ("r" consult-recent-file)
   ("s" save-buffer)
+  ("d" consult-dir)
   ("b" consult-buffer)
   ("k" kill-current-buffer)
   ("q" (switch-to-buffer (other-buffer)))
@@ -307,7 +318,7 @@
   ("hf" helpful-callable)
   ("hv" helpful-variable)
   ("hk" helpful-key)
-  ("<escape>" nil))
+  ("<f12>" nil))
 
 (with-eval-after-load 'evil
   (define-key evil-normal-state-map (kbd "q") 'my/dispatcher/body)
@@ -322,12 +333,17 @@
 (use-package vertico
   :init (vertico-mode)
   :config
-  ;; vertico usa use-local-map y reemplaza el keymap local del minibuffer,
-  ;; dejando los keymaps de evil sin efecto. evil-normalize-keymaps los
-  ;; reactiva después de cada setup de vertico.
   (advice-add 'vertico--setup :after #'evil-normalize-keymaps)
+  ;; insert: escape pasa a normal, f12 cancela
   (evil-define-key 'insert vertico-map
-    (kbd "<escape>") #'my/escape))
+    (kbd "<escape>") #'evil-normal-state
+    (kbd "<f12>")    #'abort-minibuffers)
+  ;; normal: jk mueven, f12 cancela, RET confirma
+  (evil-define-key 'normal vertico-map
+    (kbd "j")        #'vertico-next
+    (kbd "k")        #'vertico-previous
+    (kbd "<f12>")    #'abort-minibuffers
+    (kbd "RET")      #'vertico-exit))
 
 (use-package orderless
   :custom
@@ -353,6 +369,32 @@
 
 
 ;; ============================================================
+;; CAPE
+;; ============================================================
+
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
+
+
+;; ============================================================
+;; CONSULT-DIR
+;; ============================================================
+
+(use-package consult-dir
+  :custom
+  (consult-dir-default-paths
+   '("~/nix-config"
+     "~/Documents/projects"
+     "~/Documents/org"))
+  :bind
+  (:map minibuffer-local-map
+        ("C-d" . consult-dir)))
+
+
+;; ============================================================
 ;; EGLOT (LSP)
 ;; ============================================================
 
@@ -363,6 +405,7 @@
   :config
   (add-to-list 'eglot-server-programs
                '(nix-mode . ("nixd"))))
+
 
 ;; ============================================================
 ;; HASKELL-MODE
