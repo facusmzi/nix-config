@@ -384,11 +384,16 @@
 ;; ============================================================
 
 (use-package consult-dir
-  :custom
-  (consult-dir-default-paths
-   '("~/nix-config"
-     "~/Documents/projects"
-     "~/Documents/org"))
+  :config
+  (setq consult-dir-sources
+        '((:name "Dirs"
+           :narrow   ?d
+           :category file
+           :face     consult-file
+           :items    (lambda ()
+                       '("~/nix-config/"
+                         "~/Documents/projects/"
+                         "~/Documents/org/")))))
   :bind
   (:map minibuffer-local-map
         ("C-d" . consult-dir)))
