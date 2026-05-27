@@ -10,7 +10,8 @@ in
   ];
 
   environment.systemPackages = with pkgs; [
-         ripgrep
+    ripgrep  alejandra
+    nixd
   ];
 
   home-manager.users = lib.genAttrs users (username: {

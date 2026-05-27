@@ -269,7 +269,7 @@
   ("n" eglot-rename)
   ("a" eglot-code-actions)
   ("e" flymake-goto-next-error)
-  ("f" eglot-format)
+  ("f" my/format-buffer)
   ("q" my/dispatcher/body)
   ("<escape>" nil))
 
@@ -358,14 +358,43 @@
 
 (use-package eglot
   :hook
-  ((haskell-mode . eglot-ensure)))
-
+  ((haskell-mode . eglot-ensure)
+   (nix-mode     . eglot-ensure))
+  :config
+  (add-to-list 'eglot-server-programs
+               '(nix-mode . ("nixd"))))
 
 ;; ============================================================
 ;; HASKELL-MODE
 ;; ============================================================
 
 (use-package haskell-mode)
+
+
+;; ============================================================
+;; FORMATEO POR MODO
+;; ============================================================
+
+(defun my/alejandra-format-buffer ()
+  "Formatea el buffer actual con alejandra (para nix-mode)."
+  (let ((pos (point)))
+    (shell-command-on-region
+     (point-min) (point-max)
+     "alejandra --quiet -"
+     nil t "*alejandra-errors*")
+    (goto-char (min pos (point-max)))))
+
+(defun my/format-buffer ()
+  "Formatea: alejandra para nix, eglot-format para el resto."
+  (interactive)
+  (cond
+   ((derived-mode-p 'nix-mode) (my/alejandra-format-buffer))
+   ((bound-and-true-p eglot--managed-mode) (eglot-format))
+   (t (message "No hay formateador disponible"))))
+
+(add-hook 'nix-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook #'my/alejandra-format-buffer nil t)))
 
 
 ;; ============================================================
