@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
 {
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ../../modules/system/desktop
     ../../modules/system/services
@@ -7,12 +10,14 @@
     ../../modules/system/editors
     ../../modules/system/virtualisation
     ../../emacs
+
+    ../../modules/system/services/samba.nix
   ];
 
   services.btrfs.autoScrub = {
     enable = true;
     interval = "monthly";
-    fileSystems = [ "/" ];
+    fileSystems = ["/"];
   };
 
   networking.hostName = "nily";
@@ -51,15 +56,15 @@
   time.timeZone = "America/Argentina/Buenos_Aires";
   i18n.defaultLocale = "es_AR.UTF-8";
   i18n.extraLocaleSettings = {
-    LC_ADDRESS        = "es_AR.UTF-8";
+    LC_ADDRESS = "es_AR.UTF-8";
     LC_IDENTIFICATION = "es_AR.UTF-8";
-    LC_MEASUREMENT    = "es_AR.UTF-8";
-    LC_MONETARY       = "es_AR.UTF-8";
-    LC_NAME           = "es_AR.UTF-8";
-    LC_NUMERIC        = "es_AR.UTF-8";
-    LC_PAPER          = "es_AR.UTF-8";
-    LC_TELEPHONE      = "es_AR.UTF-8";
-    LC_TIME           = "es_AR.UTF-8";
+    LC_MEASUREMENT = "es_AR.UTF-8";
+    LC_MONETARY = "es_AR.UTF-8";
+    LC_NAME = "es_AR.UTF-8";
+    LC_NUMERIC = "es_AR.UTF-8";
+    LC_PAPER = "es_AR.UTF-8";
+    LC_TELEPHONE = "es_AR.UTF-8";
+    LC_TIME = "es_AR.UTF-8";
   };
 
   services.xserver.xkb = {
@@ -67,8 +72,6 @@
     variant = "";
   };
 
-
-  
   console.keyMap = "la-latin1";
 
   security.rtkit.enable = true;
@@ -82,27 +85,29 @@
   users.users.facusmzi = {
     isNormalUser = true;
     description = "facusmzi";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
   };
 
   environment.systemPackages = with pkgs; [
-    vim wget curl htop
+    vim
+    wget
+    curl
+    htop
     libreoffice-fresh
-    ntfs3g p7zip
+    ntfs3g
+    p7zip
     qbittorrent
     wl-clipboard
     bitwarden-desktop
   ];
-
 
   services.nixMonitor = {
     enable = true;
     user = "facusmzi";
   };
 
-
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = ["nix-command" "flakes"];
     substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
