@@ -30,29 +30,14 @@
       confirm-kill-emacs 'y-or-n-p)
 
 
-;; reglas para todas las ventanas
+;; ============================================================
+;; DISPLAY BUFFER
+;; ============================================================
+
 (setq display-buffer-base-action
       '((display-buffer-reuse-window
          display-buffer-same-window)))
 
-
-;; MAGIT
-(defun my/magit-display-buffer (buffer)
-  (if (with-current-buffer buffer (derived-mode-p 'magit-diff-mode))
-      (let ((display-buffer-overriding-action
-             '(display-buffer-pop-up-window)))
-        (display-buffer buffer))
-    (if (string= (buffer-name buffer) "COMMIT_EDITMSG")
-        (display-buffer buffer '(display-buffer-same-window))
-      (let ((display-buffer-overriding-action
-             '(display-buffer-pop-up-window)))
-        (display-buffer buffer)))))
-
-
-(setq magit-display-buffer-function #'my/magit-display-buffer)
-
-
-;; magit 
 (defun my/magit-display-buffer (buffer)
   (cond
    ((string= (buffer-name buffer) "COMMIT_EDITMSG")
@@ -277,27 +262,6 @@
 
 (use-package hydra)
 
-(defhydra my/vc-dispatcher (:color teal :hint nil)
-  "
-  Git
-  ──────────────────────────────────────
-  _v_ status      _l_ log         _b_ blame
-  _h_ file log    _d_ diff        _s_ switch branch
-  _c_ commit      _p_ push        _u_ pull
-  _q_ volver      _<f12>_ cancelar
-  "
-  ("v" magit-status)
-  ("h" magit-log-buffer-file)
-  ("l" magit-log-current)
-  ("d" (magit-diff-range "HEAD"))
-  ("b" magit-blame-addition)
-  ("s" magit-checkout)
-  ("c" magit-commit-create)
-  ("p" magit-push-current-to-upstream)
-  ("u" magit-pull-from-upstream)
-  ("q" my/dispatcher/body)
-  ("<f12>" nil))
-
 (defhydra my/lsp-dispatcher (:color teal :hint nil)
   "
   LSP
@@ -350,7 +314,7 @@
   ("+" (text-scale-increase 1) :color red)
   ("=" (text-scale-increase 1) :color red)
   ("-" (text-scale-increase -1) :color red)
-  ("g" my/vc-dispatcher/body)
+  ("g" magit-status)
   ("i" my/lsp-dispatcher/body)
   ("hf" helpful-callable)
   ("hv" helpful-variable)
