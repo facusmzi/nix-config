@@ -30,6 +30,12 @@
       confirm-kill-emacs 'y-or-n-p)
 
 
+
+(setq display-buffer-base-action
+      '((display-buffer-reuse-window
+         display-buffer-same-window)))
+
+
 ;; ============================================================
 ;; COMPORTAMIENTO DEL EDITOR
 ;; ============================================================
