@@ -30,15 +30,41 @@
       confirm-kill-emacs 'y-or-n-p)
 
 
-
+;; reglas para todas las ventanas
 (setq display-buffer-base-action
       '((display-buffer-reuse-window
          display-buffer-same-window)))
 
+
+;; MAGIT
 (defun my/magit-display-buffer (buffer)
-  (let ((display-buffer-overriding-action
-         '(display-buffer-pop-up-window)))
-    (display-buffer buffer)))
+  (if (with-current-buffer buffer (derived-mode-p 'magit-diff-mode))
+      (let ((display-buffer-overriding-action
+             '(display-buffer-pop-up-window)))
+        (display-buffer buffer))
+    (if (string= (buffer-name buffer) "COMMIT_EDITMSG")
+        (display-buffer buffer '(display-buffer-same-window))
+      (let ((display-buffer-overriding-action
+             '(display-buffer-pop-up-window)))
+        (display-buffer buffer)))))
+
+
+(setq magit-display-buffer-function #'my/magit-display-buffer)
+
+
+;; magit 
+(defun my/magit-display-buffer (buffer)
+  (cond
+   ((string= (buffer-name buffer) "COMMIT_EDITMSG")
+    (display-buffer buffer '(display-buffer-same-window)))
+   ((with-current-buffer buffer (derived-mode-p 'magit-diff-mode))
+    (display-buffer buffer '(display-buffer-use-some-window
+                             (inhibit-same-window . t))))
+   (t
+    (let ((display-buffer-overriding-action
+           '(display-buffer-pop-up-window)))
+      (display-buffer buffer)))))
+
 
 (setq magit-display-buffer-function #'my/magit-display-buffer)
 
