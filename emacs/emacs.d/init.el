@@ -35,6 +35,13 @@
       '((display-buffer-reuse-window
          display-buffer-same-window)))
 
+(defun my/magit-display-buffer (buffer)
+  (let ((display-buffer-overriding-action
+         '(display-buffer-pop-up-window)))
+    (display-buffer buffer)))
+
+(setq magit-display-buffer-function #'my/magit-display-buffer)
+
 
 ;; ============================================================
 ;; COMPORTAMIENTO DEL EDITOR
