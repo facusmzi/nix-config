@@ -296,8 +296,9 @@
   Ventanas            Código              Ayuda
   _1_ solo esta       _g_ git             _hf_ función
   _2_ dividir ↓       _i_ lsp             _hv_ variable
-  _3_ dividir →       _<f12>_ cancelar    _hk_ tecla
-  "
+  _3_ dividir →       _t_ terminal        _hk_ tecla
+                      _<f12>_ cancelar
+"
   ("f" find-file)
   ("r" consult-recent-file)
   ("s" save-buffer)
@@ -305,6 +306,7 @@
   ("b" consult-buffer)
   ("k" kill-current-buffer)
   ("q" (switch-to-buffer (other-buffer)))
+  ("t" my/vterm-toggle)
   ("/" consult-ripgrep)
   ("l" consult-line)
   ("1" delete-other-windows)
@@ -518,6 +520,33 @@
 (use-package envrc
   :init
   (envrc-global-mode))
+
+
+
+
+
+;; ============================================================
+;; VTERM
+;; ============================================================
+
+(use-package vterm
+  :custom
+  (vterm-shell (or (executable-find "bash") "/bin/sh"))
+  (vterm-max-scrollback 10000)
+  :config
+  (evil-set-initial-state 'vterm-mode 'insert)
+  (define-key vterm-mode-map (kbd "M-h") #'windmove-left)
+  (define-key vterm-mode-map (kbd "M-l") #'windmove-right)
+  (define-key vterm-mode-map (kbd "M-k") #'windmove-up)
+  (define-key vterm-mode-map (kbd "M-j") #'windmove-down))
+
+(defun my/vterm-toggle ()
+  "Abre vterm o cambia a él si ya existe."
+  (interactive)
+  (if-let ((buf (get-buffer "*vterm*")))
+      (switch-to-buffer buf)
+    (vterm)))
+
 
 
 ;; ============================================================

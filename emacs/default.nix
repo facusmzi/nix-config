@@ -76,6 +76,7 @@ in {
           hydra
           helpful
           gptel
+          vterm
         ];
     };
 
