@@ -1,21 +1,24 @@
-{ config, pkgs, lib, ... }:
-
-let
-  # Usuarios que van a tener la config de plasma en home-manager
-  users = [ "facusmzi" ];
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  # Usuarios que van a tener la config de plasma en home-manager
+  users = ["facusmzi"];
+in {
   # FIX para variables de entorno excesivamente largas en plasma-workspace
   # https://github.com/NixOS/nixpkgs/issues/126590#issuecomment-3194531220
   nixpkgs.overlays = lib.singleton (final: prev: {
-    kdePackages = prev.kdePackages // {
-      plasma-workspace =
-        let
+    kdePackages =
+      prev.kdePackages
+      // {
+        plasma-workspace = let
           basePkg = prev.kdePackages.plasma-workspace;
 
           xdgdataPkg = pkgs.stdenv.mkDerivation {
             name = "${basePkg.name}-xdgdata";
-            buildInputs = [ basePkg ];
+            buildInputs = [basePkg];
             dontUnpack = true;
             dontFixup = true;
             dontWrapQtApps = true;
@@ -49,7 +52,7 @@ in
           };
         in
           derivedPkg;
-    };
+      };
   });
 
   # ─── Sistema ───────────────────────────────────────────────
@@ -69,10 +72,8 @@ in
     kdePackages.dolphin
     kdePackages.kate
     kdePackages.gwenview
-    (unstable.kdePackages.spectacle.override { 
-    tesseractLanguages = [ "eng" "spa" ];      
-    })
     kdePackages.okular
+    kdePackages.spectacle
   ];
 
   # ─── Home Manager ──────────────────────────────────────────
@@ -85,28 +86,27 @@ in
       workspace.lookAndFeel = "org.kde.breezedark.desktop";
 
       spectacle.shortcuts = {
-        captureEntireDesktop     = "";
+        captureEntireDesktop = "";
         captureRectangularRegion = "Ctrl+Ñ";
-        launch                   = "";
-        recordRegion             = "";
-        recordScreen             = "";
-        recordWindow             = "";
+        launch = "";
+        recordRegion = "";
+        recordScreen = "";
+        recordWindow = "";
       };
 
       hotkeys.commands = {
         screenshot-fullscreen = {
-          name    = "Captura pantalla completa";
-          key     = "Meta+Ctrl+S";
+          name = "Captura pantalla completa";
+          key = "Meta+Ctrl+S";
           command = "spectacle --fullscreen --nonotify";
         };
       };
-
 
       panels = [
         {
           location = "bottom";
           widgets = [
-            { name = "org.kde.plasma.kickoff"; }
+            {name = "org.kde.plasma.kickoff";}
             {
               name = "org.kde.plasma.icontasks";
               config.General.launchers = [
@@ -141,28 +141,28 @@ in
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/plain"               = [ "emacsclient.desktop" ];
-        "text/x-nix"               = [ "emacsclient.desktop" ];
-        "text/x-python"            = [ "emacsclient.desktop" ];
-        "text/x-shellscript"       = [ "emacsclient.desktop" ];
-        "text/x-csrc"              = [ "emacsclient.desktop" ];
-        "text/x-c++src"            = [ "emacsclient.desktop" ];
-        "text/x-chdr"              = [ "emacsclient.desktop" ];
-        "text/x-c++hdr"            = [ "emacsclient.desktop" ];
-        "text/x-java"              = [ "emacsclient.desktop" ];
-        "text/javascript"          = [ "emacsclient.desktop" ];
-        "text/css"                 = [ "emacsclient.desktop" ];
-        "text/xml"                 = [ "emacsclient.desktop" ];
-        "text/markdown"            = [ "emacsclient.desktop" ];
-        "text/x-rust"              = [ "emacsclient.desktop" ];
-        "application/json"         = [ "emacsclient.desktop" ];
-        "application/x-yaml"       = [ "emacsclient.desktop" ];
-        "application/xml"          = [ "emacsclient.desktop" ];
-        "application/toml"         = [ "emacsclient.desktop" ];
-        "application/octet-stream" = [ "emacsclient.desktop" ];
+        "text/plain" = ["emacsclient.desktop"];
+        "text/x-nix" = ["emacsclient.desktop"];
+        "text/x-python" = ["emacsclient.desktop"];
+        "text/x-shellscript" = ["emacsclient.desktop"];
+        "text/x-csrc" = ["emacsclient.desktop"];
+        "text/x-c++src" = ["emacsclient.desktop"];
+        "text/x-chdr" = ["emacsclient.desktop"];
+        "text/x-c++hdr" = ["emacsclient.desktop"];
+        "text/x-java" = ["emacsclient.desktop"];
+        "text/javascript" = ["emacsclient.desktop"];
+        "text/css" = ["emacsclient.desktop"];
+        "text/xml" = ["emacsclient.desktop"];
+        "text/markdown" = ["emacsclient.desktop"];
+        "text/x-rust" = ["emacsclient.desktop"];
+        "application/json" = ["emacsclient.desktop"];
+        "application/x-yaml" = ["emacsclient.desktop"];
+        "application/xml" = ["emacsclient.desktop"];
+        "application/toml" = ["emacsclient.desktop"];
+        "application/octet-stream" = ["emacsclient.desktop"];
 
-        "inode/directory" = [ "org.kde.dolphin.desktop" ];
-        "application/pdf" = [ "org.kde.okular.desktop" ];
+        "inode/directory" = ["org.kde.dolphin.desktop"];
+        "application/pdf" = ["org.kde.okular.desktop"];
       };
     };
   });

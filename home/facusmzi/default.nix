@@ -1,11 +1,11 @@
-{ config, pkgs, ... }:
-
 {
-
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ../../modules/home/ssh.nix
     ../../modules/home/git.nix
-
 
     ./git.nix
     ./ssh.nix
@@ -15,7 +15,7 @@
 
   home.packages = with pkgs; [
     fastfetch
-    vencord-plugins-third
+    #vencord-plugins-third
     vesktop
     kdePackages.kdenlive
     vlc
@@ -29,8 +29,6 @@
     enable = true;
     nix-direnv.enable = true;
   };
-
-
 
   programs.bash = {
     enable = true;

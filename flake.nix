@@ -2,11 +2,11 @@
   description = "Mi configuración NixOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -32,68 +32,75 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, plasma-manager, dms, sops-nix, ewm, ... }@inputs:
-    let
-      system = "x86_64-linux";
+  outputs = {
+    self,
+    nixpkgs,
+    nixpkgs-unstable,
+    home-manager,
+    plasma-manager,
+    dms,
+    sops-nix,
+    ewm,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
 
-      overlay-unstable = final: prev: {
-        unstable = import nixpkgs-unstable {
-          inherit system;
-          config.allowUnfree = true;
-        };
+    overlay-unstable = final: prev: {
+      unstable = import nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
       };
+    };
 
-      overlay-packages = import ./overlays/default.nix;
+    overlay-packages = import ./overlays/default.nix;
 
-      mkHomeManager = extraSharedModules: {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.users.facusmzi = import ./home/facusmzi;
-        home-manager.backupFileExtension = "backup";
-        home-manager.sharedModules = [
+    mkHomeManager = extraSharedModules: {
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+      home-manager.users.facusmzi = import ./home/facusmzi;
+      home-manager.backupFileExtension = "backup";
+      home-manager.sharedModules =
+        [
           plasma-manager.homeModules.plasma-manager
           sops-nix.homeManagerModules.sops
-        ] ++ extraSharedModules;
-      };
-
-    in
-    {
-      nixosConfigurations = {
-
-        nixi = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs; };
-          modules = [
-            ({ ... }: {
-              nixpkgs.overlays = [ overlay-unstable overlay-packages ];
-              nixpkgs.config.allowUnfree = true;
-            })
-            sops-nix.nixosModules.sops
-            ./hosts/nixi/configuration.nix
-            ./hosts/nixi/hardware-configuration.nix
-            home-manager.nixosModules.home-manager
-            (mkHomeManager [ inputs.dms.homeModules.dank-material-shell ])
-          ];
-        };
-
-        nily = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs; };
-          modules = [
-            ({ ... }: {
-              nixpkgs.overlays = [ overlay-unstable overlay-packages ];
-              nixpkgs.config.allowUnfree = true;
-            })
-            sops-nix.nixosModules.sops
-            ./hosts/nily/configuration.nix
-            ./hosts/nily/hardware-configuration.nix
-            home-manager.nixosModules.home-manager
-            (mkHomeManager [])
-          ];
-        };
-
-      };
-
-      templates = import ./templates/default.nix;
+        ]
+        ++ extraSharedModules;
     };
+  in {
+    nixosConfigurations = {
+      nixi = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = {inherit inputs;};
+        modules = [
+          ({...}: {
+            nixpkgs.overlays = [overlay-unstable overlay-packages];
+            nixpkgs.config.allowUnfree = true;
+          })
+          sops-nix.nixosModules.sops
+          ./hosts/nixi/configuration.nix
+          ./hosts/nixi/hardware-configuration.nix
+          home-manager.nixosModules.home-manager
+          (mkHomeManager [inputs.dms.homeModules.dank-material-shell])
+        ];
+      };
+
+      nily = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = {inherit inputs;};
+        modules = [
+          ({...}: {
+            nixpkgs.overlays = [overlay-unstable overlay-packages];
+            nixpkgs.config.allowUnfree = true;
+          })
+          sops-nix.nixosModules.sops
+          ./hosts/nily/configuration.nix
+          ./hosts/nily/hardware-configuration.nix
+          home-manager.nixosModules.home-manager
+          (mkHomeManager [])
+        ];
+      };
+    };
+
+    templates = import ./templates/default.nix;
+  };
 }
