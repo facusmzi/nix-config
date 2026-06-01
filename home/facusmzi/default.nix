@@ -16,7 +16,7 @@
   home.packages = with pkgs; [
     fastfetch
     #vencord-plugins-third
-    vesktop
+    #vesktop
     kdePackages.kdenlive
     vlc
     vlc-bittorrent

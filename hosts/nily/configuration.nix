@@ -96,7 +96,7 @@
     p7zip
     qbittorrent
     wl-clipboard
-    bitwarden-desktop
+    unstable.bitwarden-desktop
   ];
 
   services.nixMonitor = {
