@@ -10,8 +10,6 @@
     ../../modules/system/editors
     ../../modules/system/virtualisation
     ../../emacs
-
-    ../../modules/system/services/samba.nix
   ];
 
   services.btrfs.autoScrub = {
