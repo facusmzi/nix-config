@@ -10,7 +10,6 @@
     ../../modules/system/editors
 
     ../../emacs
-    ../../modules/system/services/qbittorrent.nix
     ../../modules/system/services/samba.nix
   ];
 
