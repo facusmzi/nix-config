@@ -73,7 +73,9 @@ in {
     kdePackages.kate
     kdePackages.gwenview
     kdePackages.okular
-    kdePackages.spectacle
+    (pkgs.kdePackages.spectacle.override {
+      tesseractLanguages = ["eng" "spa"];
+    })
   ];
 
   # ─── Home Manager ──────────────────────────────────────────
