@@ -550,6 +550,29 @@
 
 
 ;; ============================================================
+;; ORG-BABEL CSHARP
+;; ============================================================
+
+(let* ((dotnet-bin
+        (string-trim
+         (shell-command-to-string "readlink -f $(which dotnet)")))
+       (dotnet-root
+        (directory-file-name
+         (file-name-directory dotnet-bin))))
+  (setenv "DOTNET_ROOT" dotnet-root))
+
+
+(load (expand-file-name "ob-csharp" user-emacs-directory))
+
+(use-package org
+  :config
+  (setq org-babel-csharp-default-target-framework "net10.0")
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((csharp . t)))
+  (setq org-confirm-babel-evaluate nil))
+
+;; ============================================================
 ;; GPTEL + COPILOT
 ;; ============================================================
 
