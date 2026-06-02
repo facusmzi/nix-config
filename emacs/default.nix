@@ -25,6 +25,8 @@ in {
     ripgrep
     alejandra
     nixd
+    texliveMedium
+    texlivePackages.dvisvgm
   ];
 
   # ============================================================
@@ -77,6 +79,7 @@ in {
           helpful
           gptel
           vterm
+          preview-dvisvgm
         ];
     };
 

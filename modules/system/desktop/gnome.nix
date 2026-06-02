@@ -1,15 +1,11 @@
-{ config, pkgs, lib, ... }:
-
-let
-  users = [ "facusmzi" ];
-
-  flameshot-gui = pkgs.writeShellScriptBin "flameshot-gui" ''
-    QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot gui
-    sleep 0.5
-    xclip -selection clipboard -t image/png -o 2>/dev/null | wl-copy --type image/png
-  '';
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  users = ["facusmzi"];
+in {
   # ─── Sistema ───────────────────────────────────────────────
 
   services.xserver.enable = true;
@@ -43,17 +39,31 @@ in
     gnomeExtensions.caffeine
     gnomeExtensions.user-themes
 
-    flameshot
-    flameshot-gui
+    grim # ← necesario para Wayland
 
     qt5.qtwayland
     wl-clipboard
-    xclip
+    # xclip ya no hace falta
   ];
 
   # ─── Home Manager ──────────────────────────────────────────
 
   home-manager.users = lib.genAttrs users (_: {
+    services.flameshot = {
+      enable = true;
+      settings = {
+        General = {
+          useGrimAdapter = true;
+          disabledGrimWarning = true;
+          showStartupLaunchMessage = false;
+          showDesktopNotification = true;
+          showAbortNotification = false;
+        };
+      };
+    };
+
+    dconf.enable = true;
+
     dconf.settings = {
       "org/gnome/desktop/interface" = {
         color-scheme = "prefer-dark";
@@ -75,20 +85,20 @@ in
         ];
 
         favorite-apps = [
+          "firefox.desktop"
           "org.gnome.Console.desktop"
           "org.gnome.Nautilus.desktop"
-          "firefox.desktop"
         ];
       };
 
       "org/gnome/shell/extensions/dash-to-dock" = {
-        show-trash          = false;
-        show-mounts         = false;
+        show-trash = false;
+        show-mounts = false;
         show-mounts-network = false;
       };
 
       "org/gnome/shell/extensions/clipboard-indicator" = {
-        cache-images   = true;
+        cache-images = true;
         notify-on-copy = false;
       };
 
@@ -99,8 +109,8 @@ in
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/flameshot" = {
-        name    = "Flameshot";
-        command = "${flameshot-gui}/bin/flameshot-gui";
+        name = "Flameshot";
+        command = "flameshot gui"; # ← comando limpio, sin workaround
         binding = "<Control>ntilde";
       };
     };
@@ -108,13 +118,13 @@ in
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/plain"         = "org.gnome.TextEditor.desktop";
-        "text/x-nix"         = "org.gnome.TextEditor.desktop";
-        "text/x-python"      = "org.gnome.TextEditor.desktop";
+        "text/plain" = "org.gnome.TextEditor.desktop";
+        "text/x-nix" = "org.gnome.TextEditor.desktop";
+        "text/x-python" = "org.gnome.TextEditor.desktop";
         "text/x-shellscript" = "org.gnome.TextEditor.desktop";
-        "text/markdown"      = "org.gnome.TextEditor.desktop";
-        "application/json"   = "org.gnome.TextEditor.desktop";
-        "application/xml"    = "org.gnome.TextEditor.desktop";
+        "text/markdown" = "org.gnome.TextEditor.desktop";
+        "application/json" = "org.gnome.TextEditor.desktop";
+        "application/xml" = "org.gnome.TextEditor.desktop";
       };
     };
   });

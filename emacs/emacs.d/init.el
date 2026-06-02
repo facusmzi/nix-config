@@ -567,10 +567,21 @@
 (use-package org
   :config
   (setq org-babel-csharp-default-target-framework "net10.0")
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((csharp . t)))
-  (setq org-confirm-babel-evaluate nil))
+
+  (setq org-confirm-babel-evaluate nil)
+
+  ;; ============================================================
+  ;; LaTeX previews (FIX dvipng → dvisvgm)
+  ;; ============================================================
+  (setq org-startup-with-latex-preview t)
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-latex-create-formula-image-program 'dvisvgm))
+
+
 
 ;; ============================================================
 ;; GPTEL + COPILOT
