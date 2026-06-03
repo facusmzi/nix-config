@@ -432,7 +432,7 @@
   :hook (lsp-mode . lsp-ui-mode))
 
 (use-package lsp-pyright
-  :hook (python-mode . (lambda ()
+  :hook (python-ts-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp-deferred))))
 
@@ -465,9 +465,12 @@
    ((bound-and-true-p lsp-mode) (lsp-format-buffer))
    (t (message "No hay formateador disponible"))))
 
-(add-hook 'nix-mode-hook
-          (lambda ()
-            (add-hook 'before-save-hook #'my/alejandra-format-buffer nil t)))
+
+
+;; formatea al guardar en archivos nix
+;; (add-hook 'nix-mode-hook
+;;           (lambda ()
+;;             (add-hook 'before-save-hook #'my/alejandra-format-buffer nil t)))
 
 
 ;; ============================================================
