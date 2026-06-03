@@ -432,7 +432,7 @@
   :hook (lsp-mode . lsp-ui-mode))
 
 (use-package lsp-pyright
-  :hook (python-ts-mode . (lambda ()
+  :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp-deferred))))
 
