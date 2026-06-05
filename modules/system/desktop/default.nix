@@ -2,7 +2,7 @@
 {
   imports = [
     ./plasma.nix
-    ./ewm.nix
+    #./ewm.nix
     #./gnome.nix
     ./browsers
   ];

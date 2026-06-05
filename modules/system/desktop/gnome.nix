@@ -19,6 +19,13 @@ in {
     ];
   };
 
+
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
+  };
+
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour
     epiphany
@@ -33,7 +40,18 @@ in {
     gnomeExtensions.removable-drive-menu
     gnomeExtensions.blur-my-shell
     gnomeExtensions.dash-to-dock
-    gnomeExtensions.clipboard-indicator
+    (gnomeExtensions.copyous.overrideAttrs (oldAttrs: {
+      buildInputs = (oldAttrs.buildInputs or []) ++ [
+        libgda5
+        gsound
+      ];
+      preInstall = ''
+        sed -i "1i import GIRepository from 'gi://GIRepository';\nGIRepository.Repository.dup_default().prepend_search_path('${libgda5}/lib/girepository-1.0');\nGIRepository.Repository.dup_default().prepend_sea    rch_path('${gsound}/lib/girepository-1.0');\n" lib/preferences/dependencies/dependencies.js
+        sed -i "1i import GIRepository from 'gi://GIRepository';\nGIRepository.Repository.dup_default().prepend_search_path('${libgda5}/lib/girepository-1.0');\n" lib/database/gda.js
+        sed -i "1i import GIRepository from 'gi://GIRepository';\nGIRepository.Repository.dup_default().prepend_search_path('${gsound}/lib/girepository-1.0');\n" lib/common/sound.js
+        sed -i "1i import GIRepository from 'gi://GIRepository';\nGIRepository.Repository.dup_default().prepend_search_path('${gsound}/lib/girepository-1.0');\n" lib/preferences/general/feedbackSettings.js
+        '';
+    }))
     gnomeExtensions.pop-shell
     gnomeExtensions.transparent-window-moving
     gnomeExtensions.caffeine
@@ -41,9 +59,7 @@ in {
 
     grim # ← necesario para Wayland
 
-    qt5.qtwayland
-    wl-clipboard
-    # xclip ya no hace falta
+    qt6.qtwayland
   ];
 
   # ─── Home Manager ──────────────────────────────────────────
