@@ -70,6 +70,7 @@ in {
           # --- Evil ---
           evil
           evil-collection
+          general
           
         ];
     };

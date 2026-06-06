@@ -105,11 +105,7 @@
   :init
   (marginalia-mode))
 
-(use-package consult
-  :bind
-  (("C-s" . consult-line)
-   ("C-x b" . consult-buffer)
-   ("C-c r" . consult-recent-file)))
+(use-package consult)
 
 
 
@@ -117,9 +113,7 @@
 ;; MAGIT
 ;; ============================================================
 
-(use-package magit
-  :bind
-  (("C-x g" . magit-status)))
+(use-package magit)
 
 
 
@@ -244,9 +238,29 @@
 
 
 
+;; ============================================================
+;; GENERAL (LEADER KEY)
+;; ============================================================
 
+(with-eval-after-load 'evil
+  (define-key evil-normal-state-map (kbd "q") nil)
+  (define-key evil-visual-state-map (kbd "q") nil))
 
-
+(use-package general
+  :config
+  (general-define-key
+   :states '(normal visual)
+   :prefix "q"
+   "w" 'delete-window
+   "k" 'kill-current-buffer
+   "f" 'find-file
+   "b" 'consult-buffer
+   "r" 'consult-recent-file
+   "g" 'magit-status
+   "s" 'save-buffer
+   "q" 'previous-buffer
+   "2" 'split-window-below
+   "3" 'split-window-right))
 
 
 
