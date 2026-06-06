@@ -24,8 +24,6 @@ in {
 
   environment.systemPackages = with pkgs; [
     ripgrep
-    alejandra
-    nixd
     texliveMedium
     texlivePackages.dvisvgm
   ];
@@ -42,45 +40,22 @@ in {
         with epkgs; [
           # --- UI ---
           dracula-theme
+
+          # --- Entorno ---
+          envrc
+	        nix-mode
+	        
+          # --- Utilidades ---
+          gptel
+          preview-dvisvgm
+          # --- Completion ---
           vertico
           orderless
           marginalia
           consult
-          consult-dir
 
-          # --- Modos de lenguaje ---
-          nix-mode
-          haskell-mode
-
-          # --- LSP ---
-          lsp-mode
-          lsp-ui
-          lsp-pyright
-          # --- Autocompletado ---
-          corfu
-          cape
-
-          # --- Git ---
-          magit
-
-          # --- Modal editing ---
-          evil
-          evil-collection
-          undo-tree
-
-          # --- Navegación / búsqueda ---
-          wgrep
-          restclient
-
-          # --- Entorno ---
-          envrc
-
-          # --- Utilidades ---
-          hydra
-          helpful
-          gptel
-          vterm
-          preview-dvisvgm
+	        # -- vc
+	        magit
         ];
     };
 
