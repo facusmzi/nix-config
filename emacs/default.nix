@@ -65,6 +65,12 @@ in {
 
           # --- vc ---
           magit
+
+
+          # --- Evil ---
+          evil
+          evil-collection
+          
         ];
     };
 

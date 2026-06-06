@@ -68,7 +68,6 @@
   services.xserver.xkb = {
     layout = "latam";
     variant = "";
-    options = "ctrl:nocaps";
   };
 
   console.keyMap = "la-latin1";

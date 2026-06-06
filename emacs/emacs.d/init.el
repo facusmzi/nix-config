@@ -161,9 +161,9 @@
 ;; TREESITTER
 ;; ============================================================
 
-(setxgq major-mode-remap-alist
+(setq major-mode-remap-alist
       '((python-mode . python-ts-mode)
-        (nix-mode    . nix-ts-mode)))
+        ))
 
 
 ;; ============================================================
@@ -221,6 +221,33 @@
   :config
   (setq gptel-backend (gptel-make-gh-copilot "Copilot"))
   (setq gptel-model 'gpt-4o))
+
+
+
+
+;; ============================================================
+;; EVIL MODE
+;; ============================================================
+
+(use-package evil
+  :custom
+  (evil-want-integration t)
+  (evil-want-keybinding nil) ;; requerido para evil-collection
+  (evil-undo-system 'undo-redo) ;; usa el undo nativo de emacs 28+
+  :init
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
+
+
+
+
+
+
+
 
 
 ;; ============================================================
