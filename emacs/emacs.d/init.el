@@ -64,7 +64,7 @@
 
 (setq make-backup-files nil
       auto-save-default nil)
-
+(setq create-lockfiles nil)
 
 ;; ;; ============================================================
 ;; ;; TEMA
@@ -233,9 +233,10 @@
 
 (use-package evil-collection
   :after evil
+  :custom
+  (evil-collection-setup-minibuffer t)
   :config
   (evil-collection-init))
-
 
 
 ;; ============================================================
@@ -250,16 +251,16 @@
     :prefix "q")
 
   (my/leader
-   "w" 'delete-window
-   "k" 'kill-current-buffer
-   "f" 'find-file
-   "b" 'consult-buffer
-   "r" 'consult-recent-file
-   "g" 'magit-status
-   "s" 'save-buffer
-   "q" 'previous-buffer
-   "2" 'split-window-below
-   "3" 'split-window-right))
+    "w" 'delete-window
+    "k" 'kill-current-buffer
+    "f" 'find-file
+    "b" 'consult-buffer
+    "r" 'consult-recent-file
+    "g" 'magit-status
+    "s" 'save-buffer
+    "q" 'previous-buffer
+    "2" 'split-window-below
+    "3" 'split-window-right))
 
 ;; ============================================================
 ;; RESTAURAR GC
