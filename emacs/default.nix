@@ -35,7 +35,7 @@ in {
   home-manager.users = lib.genAttrs users (username: {
     programs.emacs = {
       enable = true;
-      package = pkgs.emacs30-pgtk;
+      package = pkgs.emacs30-pgtk.override { withTreeSitter = true; };
       extraPackages = epkgs:
         with epkgs; [
           # --- UI ---
@@ -43,19 +43,28 @@ in {
 
           # --- Entorno ---
           envrc
-	        nix-mode
-	        
+          nix-mode
+
           # --- Utilidades ---
           gptel
           preview-dvisvgm
+
           # --- Completion ---
           vertico
           orderless
           marginalia
           consult
+          corfu
+ 
 
-	        # -- vc
-	        magit
+          # --- Treesitter grammars ---
+          (treesit-grammars.with-grammars (g: [
+            g.tree-sitter-python
+            g.tree-sitter-nix
+          ]))
+
+          # --- vc ---
+          magit
         ];
     };
 

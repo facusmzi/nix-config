@@ -36,7 +36,7 @@
 
 (electric-pair-mode 1)
 (global-auto-revert-mode 1)
-(fset 'yes-or-no-p 'y-or-n-p)
+(setq use-short-answers t)
 (delete-selection-mode 1)
 (setq scroll-step 1)
 
@@ -140,6 +140,43 @@
 
 (use-package nix-mode
   :mode "\\.nix\\'")
+
+
+
+
+
+;; ============================================================
+;; CORFU
+;; ============================================================
+
+(use-package corfu
+  :custom
+  (corfu-auto t)
+  (corfu-auto-delay 0.2)
+  :init
+  (global-corfu-mode))
+
+
+;; ============================================================
+;; TREESITTER
+;; ============================================================
+
+(setxgq major-mode-remap-alist
+      '((python-mode . python-ts-mode)
+        (nix-mode    . nix-ts-mode)))
+
+
+;; ============================================================
+;; EGLOT (LSP)
+;; ============================================================
+(use-package eglot
+  :hook
+  ((python-ts-mode . eglot-ensure))
+  :config
+  (add-to-list 'eglot-server-programs
+               '(python-ts-mode . ("pyright-langserver" "--stdio"))))
+
+
 
 
 ;; ============================================================
