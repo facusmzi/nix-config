@@ -99,10 +99,10 @@
     unstable.bitwarden-desktop
   ];
 
-  services.nixMonitor = {
-    enable = true;
-    user = "facusmzi";
-  };
+  # services.nixMonitor = {
+  #   enable = true;
+  #   user = "facusmzi";
+  # };
 
   nix.settings = {
     experimental-features = ["nix-command" "flakes"];
