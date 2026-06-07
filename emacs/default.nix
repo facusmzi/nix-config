@@ -57,12 +57,6 @@ in {
           corfu
  
 
-          # --- Treesitter grammars ---
-          (treesit-grammars.with-grammars (g: [
-            g.tree-sitter-python
-            g.tree-sitter-nix
-          ]))
-
           # --- vc ---
           magit
 
@@ -71,6 +65,14 @@ in {
           evil
           evil-collection
           general
+
+
+          # --- Treesitter grammars ---
+          (treesit-grammars.with-grammars (g: [
+            g.tree-sitter-python
+            g.tree-sitter-nix
+          ]))
+
           
         ];
     };
