@@ -117,8 +117,8 @@
            :face consult-file
            :items (lambda ()
                     '("~/nix-config/"
-                      "~/Documents/projects/"
-                      "~/Documents/org/"))))))
+                      "~/Documentos/projects/"
+                      "~/Documentsorg/"))))))
 
 
 ;; ============================================================
