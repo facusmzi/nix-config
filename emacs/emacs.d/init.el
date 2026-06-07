@@ -250,6 +250,8 @@
   (evil-want-integration t)
   (evil-want-keybinding nil) ;; requerido para evil-collection
   (evil-undo-system 'undo-redo) ;; usa el undo nativo de emacs 28+
+  (evil-move-cursor-back nil)
+  (evil-move-beyond-eol t)
   :init
   (evil-mode 1))
 
