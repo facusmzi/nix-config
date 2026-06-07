@@ -1,5 +1,3 @@
-
-
 ;; ============================================================
 ;; STARTUP
 ;; ============================================================
@@ -109,6 +107,18 @@
 
 (use-package consult)
 
+
+(use-package consult-dir
+  :config
+  (setq consult-dir-sources
+        '((:name "Dirs"
+           :narrow ?d
+           :category file
+           :face consult-file
+           :items (lambda ()
+                    '("~/nix-config/"
+                      "~/Documents/projects/"
+                      "~/Documents/org/"))))))
 
 
 ;; ============================================================
@@ -267,6 +277,7 @@
     "k" 'kill-current-buffer
     "f" 'find-file
     "b" 'consult-buffer
+    "d" 'consult-dir
     "r" 'consult-recent-file
     "l" 'consult-line
     "p" 'consult-ripgrep

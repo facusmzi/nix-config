@@ -55,7 +55,7 @@ in {
           marginalia
           consult
           corfu
- 
+          consult-dir
 
           # --- vc ---
           magit
