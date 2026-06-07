@@ -261,6 +261,20 @@
   (evil-collection-init))
 
 
+
+;; ============================================================
+;; DIRED (VIM-LIKE)
+;; ============================================================
+
+(use-package dired
+  :ensure nil
+  :after evil
+  :config
+  (evil-define-key 'normal dired-mode-map
+    (kbd "h") #'dired-up-directory
+    (kbd "l") #'dired-find-file))
+
+
 ;; ============================================================
 ;; GENERAL (LEADER KEY)
 ;; ============================================================
