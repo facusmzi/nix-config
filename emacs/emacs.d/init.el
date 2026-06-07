@@ -1,4 +1,4 @@
-;;; init.el -*- lexical-binding: t; -*-
+
 
 ;; ============================================================
 ;; STARTUP
@@ -17,6 +17,8 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(save-place-mode 1)
+(show-paren-mode 1)
 (scroll-bar-mode -1)
 (blink-cursor-mode -1)
 (tooltip-mode -1)
@@ -266,11 +268,17 @@
     "f" 'find-file
     "b" 'consult-buffer
     "r" 'consult-recent-file
+    "l" 'consult-line
+    "p" 'consult-ripgrep
     "g" 'magit-status
     "s" 'save-buffer
+    "e" 'execute-extended-command
     "q" 'previous-buffer
+    "n" 'next-buffer
     "2" 'split-window-below
-    "3" 'split-window-right))
+    "3" 'split-window-right
+    ";" 'comment-line
+    ))
 
 ;; ============================================================
 ;; RESTAURAR GC
