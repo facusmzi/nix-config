@@ -159,8 +159,16 @@
   :custom
   (corfu-auto t)
   (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 2)
   :init
-  (global-corfu-mode))
+  (global-corfu-mode)
+  :config
+  ;; orderless para completion de lsp
+  (defun my/lsp-completion-setup ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
+  (add-hook 'lsp-completion-mode-hook #'my/lsp-completion-setup))
+
 
 
 ;; ============================================================
@@ -173,14 +181,44 @@
 
 
 ;; ============================================================
-;; EGLOT (LSP)
+;; LSP-MODE
 ;; ============================================================
-(use-package eglot
+
+(use-package lsp-mode
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-idle-delay 0.3)
+  (lsp-log-io nil)
+  (lsp-completion-provider :none)  
+  (lsp-headerline-breadcrumb-enable nil)
   :hook
-  ((python-ts-mode . eglot-ensure))
-  :config
-  (add-to-list 'eglot-server-programs
-               '(python-ts-mode . ("pyright-langserver" "--stdio"))))
+  ((python-ts-mode . lsp-deferred)
+   (haskell-mode   . lsp-deferred)
+   (lsp-mode       . lsp-enable-which-key-integration))
+  :commands (lsp lsp-deferred))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :custom
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-show-with-cursor nil)
+  (lsp-ui-sideline-enable t)
+  (lsp-ui-sideline-show-diagnostics t))
+
+
+;; ============================================================
+;; HASKELL
+;; ============================================================
+
+(use-package haskell-mode
+  :hook
+  (haskell-mode . interactive-haskell-mode))
+
+(use-package lsp-haskell
+  :after lsp-mode
+  :custom
+  (lsp-haskell-server-path "haskell-language-server-wrapper"))
+
 
 
 

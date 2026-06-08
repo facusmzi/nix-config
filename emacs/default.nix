@@ -61,6 +61,14 @@ in {
           magit
 
 
+          # --- LSP ---
+          lsp-mode
+          lsp-ui
+
+          # --- Haskell ---
+          haskell-mode
+          lsp-haskell
+
           # --- Evil ---
           evil
           evil-collection
