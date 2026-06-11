@@ -26,6 +26,8 @@ in {
     ripgrep
     texliveMedium
     texlivePackages.dvisvgm
+    nixd           
+    nixfmt-rfc-style
   ];
 
   # ============================================================

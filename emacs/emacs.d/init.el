@@ -112,13 +112,13 @@
   :config
   (setq consult-dir-sources
         '((:name "Dirs"
-           :narrow ?d
-           :category file
-           :face consult-file
-           :items (lambda ()
-                    '("~/nix-config/"
-                      "~/Documentos/projects/"
-                      "~/Documentsorg/"))))))
+		 :narrow ?d
+		 :category file
+		 :face consult-file
+		 :items (lambda ()
+			  '("~/nix-config/"
+			    "~/Documentos/projects/"
+			    "~/Documentsorg/"))))))
 
 
 ;; ============================================================
@@ -194,6 +194,7 @@
   :hook
   ((python-ts-mode . lsp-deferred)
    (haskell-mode   . lsp-deferred)
+   (nix-mode       . lsp-deferred)   
    (lsp-mode       . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred))
 
@@ -204,6 +205,20 @@
   (lsp-ui-doc-show-with-cursor nil)
   (lsp-ui-sideline-enable t)
   (lsp-ui-sideline-show-diagnostics t))
+
+
+
+
+
+;; ============================================================
+;; NIX LSP (nixd)
+;; ============================================================
+
+(with-eval-after-load 'lsp-mode
+  (setq lsp-nix-nixd-server-path "nixd"
+        lsp-nix-nixd-formatting-command ["nixfmt"]
+        lsp-nix-nixd-nixpkgs-expr "import <nixpkgs> {}"))
+
 
 
 ;; ============================================================
