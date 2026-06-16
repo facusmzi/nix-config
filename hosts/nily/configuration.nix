@@ -39,7 +39,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.editor = false;
 
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
