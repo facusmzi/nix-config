@@ -118,7 +118,7 @@
 		 :items (lambda ()
 			  '("~/nix-config/"
 			    "~/Documentos/projects/"
-			    "~/Documentsorg/"))))))
+			    "~/Documentos/org/"))))))
 
 
 ;; ============================================================
