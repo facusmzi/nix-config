@@ -6,8 +6,9 @@
   ...
 }:
 let
-  users = ["facusmzi"];
-in {
+  users = [ "facusmzi" ];
+in
+{
   # ============================================================
   # FUENTES
   # ============================================================
@@ -24,10 +25,17 @@ in {
 
   environment.systemPackages = with pkgs; [
     ripgrep
-    texliveMedium
-    texlivePackages.dvisvgm
-    nixd           
-    nixfmt-rfc-style
+    (texlive.combine {
+      inherit (texlive)
+        scheme-medium
+        wrapfig
+        ulem
+        capt-of
+        hyperref
+        dvisvgm;
+    })
+    nixd
+    nixfmt
   ];
 
   # ============================================================
@@ -38,8 +46,8 @@ in {
     programs.emacs = {
       enable = true;
       package = pkgs.emacs30-pgtk.override { withTreeSitter = true; };
-      extraPackages = epkgs:
-        with epkgs; [
+      extraPackages =
+        epkgs: with epkgs; [
           # --- UI ---
           dracula-theme
 
@@ -62,7 +70,6 @@ in {
           # --- vc ---
           magit
 
-
           # --- LSP ---
           lsp-mode
           lsp-ui
@@ -71,11 +78,14 @@ in {
           haskell-mode
           lsp-haskell
 
+
+          # --- PDF ---
+          pdf-tools
+
           # --- Evil ---
           evil
           evil-collection
           general
-
 
           # --- Treesitter grammars ---
           (treesit-grammars.with-grammars (g: [
@@ -83,7 +93,6 @@ in {
             g.tree-sitter-nix
           ]))
 
-          
         ];
     };
 

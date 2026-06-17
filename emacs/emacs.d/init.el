@@ -48,6 +48,21 @@
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
 
+;; ============================================================
+;; NÚMEROS DE LÍNEA Y COLUMNA
+;; ============================================================
+
+(defvar my/disable-line-numbers-modes
+  '(pdf-view-mode term-mode shell-mode eshell-mode)
+  "Modos donde no quiero `display-line-numbers-mode' activo.")
+
+(defun my/maybe-disable-line-numbers ()
+  (when (apply #'derived-mode-p my/disable-line-numbers-modes)
+    (display-line-numbers-mode -1)))
+
+(add-hook 'after-change-major-mode-hook #'my/maybe-disable-line-numbers t)
+
+
 
 ;; ============================================================
 ;; HISTORIAL Y ARCHIVOS RECIENTES
@@ -263,13 +278,24 @@
 
   (setq org-confirm-babel-evaluate nil)
 
-  ;; ============================================================
-  ;; LaTeX previews (FIX dvipng → dvisvgm)
-  ;; ============================================================
-  (setq org-startup-with-latex-preview t)
-  (setq org-preview-latex-default-process 'dvisvgm)
-  (setq org-latex-create-formula-image-program 'dvisvgm))
 
+  
+;; ============================================================
+;; LaTeX previews (FIX dvipng → dvisvgm)
+;; ============================================================
+
+(setq org-startup-with-latex-preview t)
+(setq org-preview-latex-default-process 'dvisvgm)
+(setq org-latex-create-formula-image-program 'dvisvgm))
+
+(use-package pdf-tools
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :init
+  (pdf-loader-install)
+  :custom
+  (pdf-view-midnight-colors '("#f8f8f2" . "#282a36")) ;; texto . fondo, paleta Dracula
+  :hook
+  (pdf-view-mode . pdf-view-midnight-minor-mode))
 
 
 ;; ============================================================
