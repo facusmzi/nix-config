@@ -378,7 +378,7 @@
     "g" 'magit-status
     "s" 'save-buffer
     "e" 'execute-extended-command
-    "q" 'previous-buffer
+    "q" '(lambda () (interactive) (switch-to-buffer (other-buffer (current-buffer) 1)))
     "n" 'next-buffer
     "o" 'other-window
     "2" 'split-window-below
