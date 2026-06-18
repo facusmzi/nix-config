@@ -53,7 +53,7 @@
 ;; ============================================================
 
 (defvar my/disable-line-numbers-modes
-  '(pdf-view-mode term-mode shell-mode eshell-mode)
+  '(pdf-view-mode term-mode shell-mode eshell-mode vterm-mode )
   "Modos donde no quiero `display-line-numbers-mode' activo.")
 
 (defun my/maybe-disable-line-numbers ()
@@ -280,13 +280,13 @@
 
 
   
-;; ============================================================
-;; LaTeX previews (FIX dvipng → dvisvgm)
-;; ============================================================
+  ;; ============================================================
+  ;; LaTeX previews (FIX dvipng → dvisvgm)
+  ;; ============================================================
 
-(setq org-startup-with-latex-preview t)
-(setq org-preview-latex-default-process 'dvisvgm)
-(setq org-latex-create-formula-image-program 'dvisvgm))
+  (setq org-startup-with-latex-preview t)
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-latex-create-formula-image-program 'dvisvgm))
 
 (use-package pdf-tools
   :mode ("\\.pdf\\'" . pdf-view-mode)
@@ -345,6 +345,17 @@
 
 
 ;; ============================================================
+;; VTERM
+;; ============================================================
+
+(use-package vterm
+  :commands vterm
+  :custom
+  (vterm-shell (getenv "SHELL"))
+  (vterm-max-scrollback 10000))
+
+
+;; ============================================================
 ;; GENERAL (LEADER KEY)
 ;; ============================================================
 
@@ -361,6 +372,7 @@
     "b" 'consult-buffer
     "d" 'consult-dir
     "r" 'consult-recent-file
+    "t" 'vterm
     "l" 'consult-line
     "p" 'consult-ripgrep
     "g" 'magit-status
@@ -372,7 +384,7 @@
     "2" 'split-window-below
     "3" 'split-window-right
     ";" 'comment-line
-    )   ))
+    ))
 
 ;; ============================================================
 ;; RESTAURAR GC

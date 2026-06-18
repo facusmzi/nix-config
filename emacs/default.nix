@@ -59,6 +59,11 @@ in
           gptel
           preview-dvisvgm
 
+
+          # --- Terminal ---
+          vterm
+
+
           # --- Completion ---
           vertico
           orderless
