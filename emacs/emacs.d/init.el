@@ -308,18 +308,6 @@
   (setq gptel-model 'gpt-4o))
 
 
-
-;; ============================================================
-;; VENTANAS
-;; ============================================================
-
-(global-set-key (kbd "M-h") 'windmove-left)
-(global-set-key (kbd "M-j") 'windmove-down)
-(global-set-key (kbd "M-k") 'windmove-up)
-(global-set-key (kbd "M-l") 'windmove-right)
-
-
-
 ;; ============================================================
 ;; EVIL MODE
 ;; ============================================================
@@ -366,7 +354,6 @@
     :states '(normal visual)
     :keymaps 'override
     :prefix "q")
-
   (my/leader
     "w" 'delete-window
     "k" 'kill-current-buffer
@@ -381,10 +368,11 @@
     "e" 'execute-extended-command
     "q" 'previous-buffer
     "n" 'next-buffer
+    "o" 'other-window
     "2" 'split-window-below
     "3" 'split-window-right
     ";" 'comment-line
-    ))
+    )   ))
 
 ;; ============================================================
 ;; RESTAURAR GC
