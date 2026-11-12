@@ -119,29 +119,10 @@ in {
     DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER = "1";
     DOTNET_WATCH_RESTART_ON_RUDE_EDIT = "1";
 
-    LD_LIBRARY_PATH = lib.makeLibraryPath (with pkgs; [
-      fontconfig
-      libglvnd
-      libGL
-      wayland
-      libx11
-      libxcursor
-      libxi
-      libice
-      libsm
-      libxrandr
-      skia
-      harfbuzz
-      libwebp
-      libjpeg
-      libpng
-      zlib
-      icu
-      openssl
-      krb5
-      gst_all_1.gstreamer
-      gst_all_1.gst-plugins-base
-    ]);
+    # Sin LD_LIBRARY_PATH global: se hereda en toda la sesión y rompe los
+    # programas de unstable (p. ej. Emacs 31 con un GStreamer de stable).
+    # Los binarios de afuera usan nix-ld (arriba), y cada proyecto Avalonia
+    # define su LD_LIBRARY_PATH en el devShell (templates/avalonia).
   };
 
   environment.shellAliases = {
