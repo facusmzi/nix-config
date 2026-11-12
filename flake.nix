@@ -30,6 +30,11 @@
       url = "https://codeberg.org/ezemtsov/ewm/archive/master.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
+    claude-desktop = {
+      url = "github:aaddrick/claude-desktop-debian";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = {

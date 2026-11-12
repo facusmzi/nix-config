@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: {
   imports = [
@@ -95,8 +96,8 @@
     ntfs3g
     p7zip
     qbittorrent
-    wl-clipboard
     unstable.bitwarden-desktop
+    inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop-fhs
   ];
 
   # services.nixMonitor = {
