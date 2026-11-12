@@ -83,6 +83,8 @@
 
   users.users.facusmzi = {
     isNormalUser = true;
+    # Mismo UID que tenía el usuario anterior: los archivos de /home siguen siendo suyos.
+    uid = 1000;
     description = "facusmzi";
     extraGroups = ["networkmanager" "wheel"];
   };
