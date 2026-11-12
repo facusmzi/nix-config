@@ -45,7 +45,9 @@ in
   home-manager.users = lib.genAttrs users (username: {
     programs.emacs = {
       enable = true;
-      package = pkgs.emacs30-pgtk.override { withTreeSitter = true; };
+      # Emacs 31 desde unstable (trae ob-csharp incluido). Tree-sitter ya
+      # viene activado por defecto.
+      package = pkgs.unstable.emacs-pgtk;
       extraPackages =
         epkgs: with epkgs; [
           # --- UI ---
@@ -87,10 +89,8 @@ in
           # --- PDF ---
           pdf-tools
 
-          # --- Evil ---
-          evil
-          evil-collection
-          general
+          # --- Edición ---
+          move-text
 
           # --- Treesitter grammars ---
           (treesit-grammars.with-grammars (g: [

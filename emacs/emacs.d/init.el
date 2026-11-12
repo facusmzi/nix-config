@@ -1,3 +1,5 @@
+;;; init.el --- configuración personal -*- lexical-binding: t; -*-
+
 ;; ============================================================
 ;; STARTUP
 ;; ============================================================
@@ -6,6 +8,51 @@
       gc-cons-percentage 0.6)
 (defvar my/file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
+
+
+;; ============================================================
+;; INTERCAMBIO CTRL <-> META (solo dentro de Emacs)
+;; ============================================================
+;; Alt físico + tecla  -> C-tecla
+;; Ctrl físico + tecla -> M-tecla
+;; Fuera de Emacs el teclado queda igual.
+;; Esc sigue sirviendo como Meta: Esc x = M-x.
+
+(defun mi/swap-ctrl-meta (base)
+  "Intercambia C-BASE y M-BASE en `key-translation-map'."
+  (let ((c (event-convert-list (list 'control base)))
+        (m (event-convert-list (list 'meta base))))
+    (define-key key-translation-map (vector c) (vector m))
+    (define-key key-translation-map (vector m) (vector c))))
+
+;; 1. Casi todas las teclas: intercambio directo.
+;;    i y m van aparte (paso 2). [ y Retroceso se dejan como están (paso 3).
+(dolist (base (append
+               (seq-remove (lambda (ch) (memq ch '(?i ?m ?\[)))
+                           (number-sequence ?! ?~))
+               '(?\s left right up down home end prior next delete)))
+  (mi/swap-ctrl-meta base))
+
+;; 2. i y m.
+;;    Para Emacs, C-i es lo mismo que Tab y C-m lo mismo que Enter
+;;    (herencia del ASCII). En el Emacs gráfico se pueden separar:
+;;    input-decode-map convierte Ctrl+i y Ctrl+m físicos en teclas propias,
+;;    <C-i> y <C-m>, sin tocar las teclas Tab y Enter.
+(define-key input-decode-map [?\C-i] [C-i])
+(define-key input-decode-map [?\C-m] [C-m])
+;;    Ctrl+i / Ctrl+m físicos -> M-i / M-m (siguen la regla Ctrl = M-)
+(define-key key-translation-map [C-i] (kbd "M-i"))
+(define-key key-translation-map [C-m] (kbd "M-m"))
+;;    Alt+i / Alt+m físicos -> C-i / C-m (siguen la regla Alt = C-),
+;;    o sea, actúan como Tab y Enter, igual que C-i y C-m en cualquier Emacs.
+(define-key key-translation-map (kbd "M-i") (kbd "C-i"))
+(define-key key-translation-map (kbd "M-m") (kbd "C-m"))
+
+;; 3. Lo que queda sin intercambiar, a propósito:
+;;    - [ : en teclado latam/español se escribe con AltGr, así que Ctrl+[ y
+;;      Alt+[ casi no se pueden apretar. Además C-[ es Esc, que usamos como Meta.
+;;    - Retroceso: Alt+Retroceso y Ctrl+Retroceso ya borran la palabra
+;;      anterior; intercambiarlos no cambia nada y los rompe.
 
 
 ;; ============================================================
@@ -39,6 +86,9 @@
 (setq use-short-answers t)
 (delete-selection-mode 1)
 (setq scroll-step 1)
+
+;; Al borrar un archivo no lo borra directamente: lo manda a la papelera.
+(setq delete-by-moving-to-trash t)
 
 
 ;; ============================================================
@@ -120,7 +170,12 @@
   :init
   (marginalia-mode))
 
-(use-package consult)
+;; C-s sigue siendo isearch; consult-line va en M-s l (Ctrl+s, l).
+(use-package consult
+  :bind
+  (("M-s l" . consult-line)
+   ("C-x b" . consult-buffer)
+   ("C-c r" . consult-recent-file)))
 
 
 (use-package consult-dir
@@ -134,6 +189,20 @@
 			  '("~/nix-config/"
 			    "~/Documentos/projects/"
 			    "~/Documentos/org/"))))))
+
+
+;; ============================================================
+;; EDICIÓN
+;; ============================================================
+
+;; move-text: subir/bajar la línea o la región con M-↑ / M-↓
+;; (Ctrl+↑ / Ctrl+↓ con el intercambio). En org mandan las teclas de org.
+(use-package move-text
+  :config
+  (move-text-default-bindings))
+
+;; imenu: índice de headings de org (Ctrl+i con el intercambio)
+(global-set-key (kbd "M-i") #'imenu)
 
 
 ;; ============================================================
@@ -266,15 +335,16 @@
   (setenv "DOTNET_ROOT" dotnet-root))
 
 
-(load (expand-file-name "ob-csharp" user-emacs-directory))
-
+;; ob-csharp viene incluido en Emacs 31 (org 9.8); lo carga
+;; org-babel-do-load-languages.
 (use-package org
   :config
   (setq org-babel-csharp-default-target-framework "net10.0")
 
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((csharp . t)))
+   '((emacs-lisp . t)
+     (csharp . t)))
 
   (setq org-confirm-babel-evaluate nil)
 
@@ -298,50 +368,8 @@
   (pdf-view-mode . pdf-view-midnight-minor-mode))
 
 
-;; ============================================================
-;; GPTEL + COPILOT
-;; ============================================================
-
-(use-package gptel
-  :config
-  (setq gptel-backend (gptel-make-gh-copilot "Copilot"))
-  (setq gptel-model 'gpt-4o))
 
 
-;; ============================================================
-;; EVIL MODE
-;; ============================================================
-
-(use-package evil
-  :custom
-  (evil-want-integration t)
-  (evil-want-keybinding nil) ;; requerido para evil-collection
-  (evil-undo-system 'undo-redo) ;; usa el undo nativo de emacs 28+
-  (evil-move-cursor-back nil)
-  (evil-move-beyond-eol t)
-  :init
-  (evil-mode 1))
-
-(use-package evil-collection
-  :after evil
-  :custom
-  (evil-collection-setup-minibuffer t)
-  :config
-  (evil-collection-init))
-
-
-
-;; ============================================================
-;; DIRED (VIM-LIKE)
-;; ============================================================
-
-(use-package dired
-  :ensure nil
-  :after evil
-  :config
-  (evil-define-key 'normal dired-mode-map
-    (kbd "h") #'dired-up-directory
-    (kbd "l") #'dired-find-file))
 
 
 ;; ============================================================
@@ -355,36 +383,6 @@
   (vterm-max-scrollback 10000))
 
 
-;; ============================================================
-;; GENERAL (LEADER KEY)
-;; ============================================================
-
-(use-package general
-  :config
-  (general-create-definer my/leader
-    :states '(normal visual)
-    :keymaps 'override
-    :prefix "q")
-  (my/leader
-    "w" 'delete-window
-    "k" 'kill-current-buffer
-    "f" 'find-file
-    "b" 'consult-buffer
-    "d" 'consult-dir
-    "r" 'consult-recent-file
-    "t" 'vterm
-    "l" 'consult-line
-    "p" 'consult-ripgrep
-    "g" 'magit-status
-    "s" 'save-buffer
-    "e" 'execute-extended-command
-    "q" '(lambda () (interactive) (switch-to-buffer (other-buffer (current-buffer) 1)))
-    "n" 'next-buffer
-    "o" 'other-window
-    "2" 'split-window-below
-    "3" 'split-window-right
-    ";" 'comment-line
-    ))
 
 ;; ============================================================
 ;; RESTAURAR GC
