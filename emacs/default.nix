@@ -15,7 +15,7 @@ in
 
   fonts.packages = with pkgs; [
     # iosevka-comfy.comfy
-    # nerd-fonts.fira-code
+    nerd-fonts.fira-code
     # roboto
   ];
 
@@ -25,6 +25,7 @@ in
 
   environment.systemPackages = with pkgs; [
     ripgrep
+    pandoc # para el preview de markdown-mode
     (texlive.combine {
       inherit (texlive)
         scheme-medium
@@ -56,9 +57,9 @@ in
           # --- Entorno ---
           envrc
           nix-mode
+          markdown-mode
 
           # --- Utilidades ---
-          gptel
           preview-dvisvgm
 
 

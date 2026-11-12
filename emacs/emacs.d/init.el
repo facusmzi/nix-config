@@ -60,6 +60,9 @@
 ;; ============================================================
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; Fuente: Fira Code (nerd-fonts.fira-code en emacs/default.nix).
+;; Va en default-frame-alist para que también aplique a frames de emacsclient.
+(add-to-list 'default-frame-alist '(font . "FiraCode Nerd Font-12"))
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (save-place-mode 1)
@@ -178,7 +181,13 @@
    ("C-c r" . consult-recent-file)))
 
 
+;; C-x C-d (Alt+x Alt+d con el intercambio): global y dentro del minibuffer,
+;; para saltar de carpeta en medio de un find-file.
 (use-package consult-dir
+  :bind
+  (("C-x C-d" . consult-dir)
+   :map minibuffer-local-completion-map
+   ("C-x C-d" . consult-dir))
   :config
   (setq consult-dir-sources
         '((:name "Dirs"
@@ -230,6 +239,18 @@
 
 (use-package nix-mode
   :mode "\\.nix\\'")
+
+
+;; ============================================================
+;; MARKDOWN
+;; ============================================================
+;; Preview: C-c C-c l (Alt+c Alt+c l) en una ventana al lado con eww,
+;;          C-c C-c p (Alt+c Alt+c p) en el navegador.
+
+(use-package markdown-mode
+  :mode ("\\.md\\'" . gfm-mode)
+  :custom
+  (markdown-command "pandoc"))
 
 
 
@@ -376,8 +397,17 @@
 ;; VTERM
 ;; ============================================================
 
+;; C-c t (Alt+c t con el intercambio): abre vterm en una ventana a la
+;; derecha y le pasa el foco. Si ya está visible, va a esa ventana.
+(add-to-list 'display-buffer-alist
+             '("\\`\\*vterm"
+               (display-buffer-reuse-window display-buffer-in-direction)
+               (direction . right)
+               (window-width . 0.5)))
+
 (use-package vterm
   :commands vterm
+  :bind ("C-c t" . vterm)
   :custom
   (vterm-shell (getenv "SHELL"))
   (vterm-max-scrollback 10000))
