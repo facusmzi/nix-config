@@ -126,9 +126,6 @@
     isNormalUser = true;
     description = "facusmzi";
     extraGroups = ["networkmanager" "wheel"];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIByBShyZcM+mCQVqp+Jylh4oFtmLcO4StISJF8NEIVHX nily→nixi"
-    ];
   };
 
   # Paquetes básicos del sistema

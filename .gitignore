@@ -1,4 +1,11 @@
-# Claves y secretos locales
 result
 result-*
 .direnv
+
+# Claves y secretos locales (nunca deberían estar en el repo)
+keys.txt
+age-*.txt
+*.key
+*.pem
+id_*
+!id_*.pub

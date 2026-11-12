@@ -1,15 +1,23 @@
 keys:
-  - &nily  age1r727rele2k495wl29z5eltlzynetgz3fj5me9jm2e5056437c3rsgjr9yc
+  # Clave personal de respaldo. La privada vive FUERA de las máquinas
+  # (gestor de contraseñas / USB). Permite recuperar y editar los secretos
+  # aunque se reinstalen todos los hosts.
+  - &admin age1y9r8ejn7ggpcyuv94a9un94dh99zgugelmwt0v03076rxvhxxg7q69gvrx
+
+  # Claves host (ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub)
+  - &nily  age13jk8a7xhmtqgram4t5l9k8zp34mja5fzz90q4qq670svk3mdc4xqknlq2c
   - &nixi  age1gkhhgjn876sqcc3n6tn246z9v9jk0wq7fuekwxzqq3p0lgndsq8szy9vr2
 
 creation_rules:
   - path_regex: secrets/common\.yaml$
     key_groups:
       - age:
+          - *admin
           - *nily
           - *nixi
 
   - path_regex: secrets/nily\.yaml$
     key_groups:
       - age:
+          - *admin
           - *nily

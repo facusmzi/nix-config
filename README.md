@@ -292,17 +292,25 @@ sudo nixos-rebuild switch --flake ~/nix-config#NOMBRE_HOST
 
 ### 3. Configurar sops
 
-```bash
-mkdir -p ~/.config/sops/age
-sudo ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key > ~/.config/sops/age/keys.txt
-chmod 600 ~/.config/sops/age/keys.txt
+Los secretos (`secrets/common.yaml`) están cifrados para tres destinatarios
+(ver `.sops.yaml`):
 
-# Obtener la clave pública (necesaria para agregar este host a .sops.yaml)
-sudo ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
+- **admin**: clave age personal. La privada se guarda **fuera** de las máquinas
+  (gestor de contraseñas / USB). Es el respaldo: con ella siempre se pueden
+  recuperar y editar los secretos.
+- **nily / nixi**: la clave host SSH de cada máquina, convertida a age.
+  sops-nix la usa como root durante `nixos-rebuild` para descifrar.
+
+La clave host **nunca** se copia al home del usuario.
+
+Obtener la clave pública del host nuevo:
+
+```bash
+ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
 ```
 
-Luego, desde una máquina que ya tenga acceso a los secretos:
-1. Agregar la clave pública al `.sops.yaml`
+Luego, desde una máquina que tenga la clave admin:
+1. Agregar la clave pública al `.sops.yaml` (en `keys` y en `creation_rules`)
 2. Correr `sops updatekeys ~/nix-config/secrets/common.yaml`
 3. Commitear y pushear
 
@@ -316,6 +324,9 @@ Hacer pull en la máquina nueva y rebuild de nuevo.
 ssh-keygen -t ed25519 -f ~/.ssh/key1 -C "cuenta1"
 ssh-keygen -t ed25519 -f ~/.ssh/key2 -C "cuenta2"
 ```
+
+- `key1`: cuenta principal (`github.com` en `home/facusmzi/ssh.nix`)
+- `key2`: cuenta de trabajo, se usa automáticamente en todo lo que esté en `~/work/`
 
 ---
 
@@ -341,60 +352,74 @@ cat ~/.ssh/key2.pub
 ### 6. Probar conexión SSH
 
 ```bash
-ssh -T git@github.com
-ssh -T git@github.com-work
+ssh -T git@github.com                                                   # cuenta principal
+ssh -i ~/.ssh/key2 -F /dev/null -o IdentitiesOnly=yes -T git@github.com  # cuenta de trabajo
 ```
 
 ---
 
 ### 7. Repos de la cuenta secundaria
 
+Todo lo que esté en `~/work/` usa la identidad y la clave de trabajo
+automáticamente, con la URL normal:
+
 ```bash
 mkdir -p ~/work
 cd ~/work
-git clone git@github.com-work:usuario2/repo.git
+git clone git@github.com:usuario2/repo.git
 ```
 
 ---
 
-### Editor para sops
+### Editar secretos
+
+Con la clave admin en `~/.config/sops/age/keys.txt` (permisos 600):
 
 ```bash
 EDITOR="kate --block" sops ~/nix-config/secrets/common.yaml
 ```
 
----
+Sin la clave admin, usando la clave host (requiere sudo, no copia nada):
 
-## Reinstalar en una máquina existente (clave sops perdida)
-
-Cuando reinstalás NixOS en una máquina que ya estaba en el repo, la clave host SSH cambia y sops ya no puede abrir los secretos anteriores. El archivo encriptado con la clave vieja es irrecuperable — hay que recrearlo.
-
-**1. Primer rebuild** (va a fallar home-manager pero está bien por ahora):
 ```bash
-sudo nixos-rebuild switch --flake ~/nix-config#NOMBRE_HOST
+sudo env EDITOR="kate --block" SOPS_AGE_SSH_PRIVATE_KEY_FILE=/etc/ssh/ssh_host_ed25519_key \
+  sops ~/nix-config/secrets/common.yaml
 ```
 
-**2. Generar la nueva clave age:**
-```bash
-mkdir -p ~/.config/sops/age
-sudo ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key > ~/.config/sops/age/keys.txt
-chmod 600 ~/.config/sops/age/keys.txt
-sudo ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
-```
+Estructura esperada:
 
-**3. Actualizar `.sops.yaml`** con la nueva clave pública:
 ```yaml
-keys:
-  - &nily  age1NUEVA_CLAVE_AQUI
+git:
+  user1_name: ...
+  user1_email: ...
+  user2_name: ...
+  user2_email: ...
 ```
 
-**4. Borrar el secreto viejo y recrearlo:**
+sops-nix arma con eso `/run/secrets/rendered/git-identity` y
+`/run/secrets/rendered/git-identity-work`, que git incluye (ver
+`modules/system/services/sops.nix` y `home/facusmzi/git.nix`).
+
+---
+
+## Reinstalar en una máquina existente
+
+La clave host SSH cambia al reinstalar, pero los secretos **no se pierden**:
+siguen cifrados también para la clave admin.
+
+**1. Obtener la nueva clave pública del host:**
 ```bash
-rm ~/nix-config/secrets/common.yaml
-EDITOR="kate --block" sops ~/nix-config/secrets/common.yaml
+ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
 ```
 
-**5. Commitear y rebuild:**
+**2. Reemplazarla en `.sops.yaml`** (ej. `&nily age1NUEVA_CLAVE_AQUI`).
+
+**3. Recifrar con la clave admin** (desde cualquier máquina que la tenga):
+```bash
+sops updatekeys ~/nix-config/secrets/common.yaml
+```
+
+**4. Commitear y rebuild:**
 ```bash
 git add -A
 git commit -m "fix: actualizar clave sops NOMBRE_HOST"

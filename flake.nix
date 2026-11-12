@@ -62,7 +62,6 @@
       home-manager.sharedModules =
         [
           plasma-manager.homeModules.plasma-manager
-          sops-nix.homeManagerModules.sops
         ]
         ++ extraSharedModules;
     };

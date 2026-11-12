@@ -21,12 +21,11 @@
       awk '$5 >= 3071' "${config.programs.ssh.package}/etc/ssh/moduli" >"$out"
     '';
 
-    # Solo clave ed25519 con más entropy (default es 16 rounds)
+    # Solo clave host ed25519 (también la usa sops-nix para desencriptar)
     hostKeys = [
       {
         comment = "${config.networking.hostName}.local";
         path = "/etc/ssh/ssh_host_ed25519_key";
-        rounds = 100;
         type = "ed25519";
       }
     ];
