@@ -26,7 +26,7 @@
     (define-key key-translation-map (vector m) (vector c))))
 
 ;; 1. Casi todas las teclas: intercambio directo.
-;;    i y m van aparte (paso 2). [ y Retroceso se dejan como están (paso 3).
+;;    i y m van aparte (paso 2). [ y Retroceso se dejan como están (abajo).
 (dolist (base (append
                (seq-remove (lambda (ch) (memq ch '(?i ?m ?\[)))
                            (number-sequence ?! ?~))
@@ -48,7 +48,15 @@
 (define-key key-translation-map (kbd "M-i") (kbd "C-i"))
 (define-key key-translation-map (kbd "M-m") (kbd "C-m"))
 
-;; 3. Lo que queda sin intercambiar, a propósito:
+;; 3. Ctrl+x físico tiene que dar M-x al instante.
+;;    `function-key-map' trae el prefijo C-x @ (C-x @ h, C-x @ s…, para
+;;    aplicar modificadores en terminales sin esas teclas). Como C-x es un
+;;    prefijo ahí, Emacs se quedaba esperando otra tecla antes de aplicar el
+;;    intercambio, y mientras tanto which-key mostraba el popup de C-x.
+;;    Sacar ese prefijo hace que Ctrl+x se traduzca a M-x apenas se aprieta.
+(define-key function-key-map [?\C-x] nil t)
+
+;; Lo que queda sin intercambiar, a propósito:
 ;;    - [ : en teclado latam/español se escribe con AltGr, así que Ctrl+[ y
 ;;      Alt+[ casi no se pueden apretar. Además C-[ es Esc, que usamos como Meta.
 ;;    - Retroceso: Alt+Retroceso y Ctrl+Retroceso ya borran la palabra
@@ -71,7 +79,7 @@
 (blink-cursor-mode -1)
 (tooltip-mode -1)
 (setq-default cursor-in-non-selected-windows nil
-              bidi-display-reordering nil)
+	      bidi-display-reordering nil)
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message t
       initial-scratch-message nil
@@ -202,7 +210,7 @@
    ("C-x C-d" . consult-dir))
   :config
   (setq consult-dir-sources
-        '((:name "Dirs"
+	'((:name "Dirs"
 		 :narrow ?d
 		 :category file
 		 :face consult-file
@@ -287,7 +295,7 @@
   ;; orderless para completion de lsp
   (defun my/lsp-completion-setup ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
+	  '(orderless)))
   (add-hook 'lsp-completion-mode-hook #'my/lsp-completion-setup))
 
 ;; cape-file: completa rutas de archivos con corfu en cualquier buffer.
@@ -304,7 +312,7 @@
 
 (setq major-mode-remap-alist
       '((python-mode . python-ts-mode)
-        ))
+	))
 
 
 ;; ============================================================
@@ -351,8 +359,8 @@
 
 (with-eval-after-load 'lsp-mode
   (setq lsp-nix-nixd-server-path "nixd"
-        lsp-nix-nixd-formatting-command ["nixfmt"]
-        lsp-nix-nixd-nixpkgs-expr "import <nixpkgs> {}"))
+	lsp-nix-nixd-formatting-command ["nixfmt"]
+	lsp-nix-nixd-nixpkgs-expr "import <nixpkgs> {}"))
 
 
 
@@ -378,11 +386,11 @@
 ;; ============================================================
 
 (let* ((dotnet-bin
-        (string-trim
-         (shell-command-to-string "readlink -f $(which dotnet)")))
+	(string-trim
+	 (shell-command-to-string "readlink -f $(which dotnet)")))
        (dotnet-root
-        (directory-file-name
-         (file-name-directory dotnet-bin))))
+	(directory-file-name
+	 (file-name-directory dotnet-bin))))
   (setenv "DOTNET_ROOT" dotnet-root))
 
 
@@ -400,7 +408,7 @@
   (setq org-confirm-babel-evaluate nil)
 
 
-  
+
   ;; ============================================================
   ;; LaTeX previews (FIX dvipng → dvisvgm)
   ;; ============================================================
@@ -430,10 +438,10 @@
 ;; C-c t (Alt+c t con el intercambio): abre vterm en una ventana a la
 ;; derecha y le pasa el foco. Si ya está visible, va a esa ventana.
 (add-to-list 'display-buffer-alist
-             '("\\`\\*vterm"
-               (display-buffer-reuse-window display-buffer-in-direction)
-               (direction . right)
-               (window-width . 0.5)))
+	     '("\\`\\*vterm"
+	       (display-buffer-reuse-window display-buffer-in-direction)
+	       (direction . right)
+	       (window-width . 0.5)))
 
 (use-package vterm
   :commands vterm
