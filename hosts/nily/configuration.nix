@@ -100,6 +100,8 @@
     qbittorrent
     unstable.bitwarden-desktop
     inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop-fhs
+    # Solo existe en unstable (en 26.05 está antigravity, el editor).
+    unstable.antigravity-hub
   ];
 
   # services.nixMonitor = {
