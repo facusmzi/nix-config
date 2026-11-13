@@ -415,7 +415,17 @@
 
   (setq org-startup-with-latex-preview t)
   (setq org-preview-latex-default-process 'dvisvgm)
-  (setq org-latex-create-formula-image-program 'dvisvgm))
+  (setq org-latex-create-formula-image-program 'dvisvgm)
+
+  ;; Símbolos de lógica: Fira Code no tiene ∼ ⇒ ⇔ ⊻, se toman de DejaVu.
+  (set-fontset-font t '(#x2190 . #x21FF) "DejaVu Sans Mono")   ; flechas ⇒ ⇔
+  (set-fontset-font t '(#x2200 . #x22FF) "DejaVu Sans Mono")   ; ∼ ∧ ∨
+  (set-fontset-font t ?⊻ "DejaVu Math TeX Gyre")
+
+  ;; valign: alinea las tablas por píxel. Sin esto, esos símbolos (y los
+  ;; emojis) salen de otra fuente con otro ancho y las columnas se corren.
+  (setq valign-fancy-bar t)
+  (add-hook 'org-mode-hook #'valign-mode))
 
 (use-package pdf-tools
   :mode ("\\.pdf\\'" . pdf-view-mode)

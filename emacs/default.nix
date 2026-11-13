@@ -61,6 +61,7 @@ in
 
           # --- Utilidades ---
           preview-dvisvgm
+          valign # alinea tablas de org con símbolos de otras fuentes (∼ ⇒ ⇔ ⊻ ✅)
 
 
           # --- Terminal ---
