@@ -94,8 +94,13 @@
 ;; Por defecto la rueda solo se anima si el salto supera
 ;; `pixel-scroll-precision-large-scroll-height', que vale nil, así que
 ;; cada paso salta de golpe. Con 1.0 se anima siempre.
-;; Más suave: subir total-time (0.25, 0.3). Más rápido: bajarlo.
-(setq pixel-scroll-precision-large-scroll-height 1.0 pixel-scroll-precision-interpolation-total-time 0.3 mouse-wheel-scroll-amount '(3 ((shift) . hscroll)) mouse-wheel-progressive-speed nil)
+;; 3 líneas por paso y sin acelerar al girar rápido, parecido a VS Code.
+;; Más suave: subir total-time. Más rápido: bajarlo.
+(pixel-scroll-precision-mode 1)
+(setq pixel-scroll-precision-large-scroll-height 1.0
+      pixel-scroll-precision-interpolation-total-time 0.3
+      mouse-wheel-scroll-amount '(3 ((shift) . hscroll))
+      mouse-wheel-progressive-speed nil)
 
 ;; Al borrar un archivo no lo borra directamente: lo manda a la papelera.
 (setq delete-by-moving-to-trash t)
