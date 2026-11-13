@@ -173,10 +173,10 @@
   :init
   (marginalia-mode))
 
-;; C-s sigue siendo isearch; consult-line va en M-s l (Ctrl+s, l).
+;; C-s (Alt+s con el intercambio) busca dentro del buffer con consult-line.
 (use-package consult
   :bind
-  (("M-s l" . consult-line)
+  (("C-s" . consult-line)
    ("C-x b" . consult-buffer)
    ("C-c r" . consult-recent-file)))
 
@@ -209,6 +209,10 @@
 (use-package move-text
   :config
   (move-text-default-bindings))
+
+;; rainbow-delimiters: colorea cada nivel de paréntesis distinto.
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; imenu: índice de headings de org (Ctrl+i con el intercambio)
 (global-set-key (kbd "M-i") #'imenu)
@@ -274,6 +278,12 @@
           '(orderless)))
   (add-hook 'lsp-completion-mode-hook #'my/lsp-completion-setup))
 
+;; cape-file: completa rutas de archivos con corfu en cualquier buffer.
+;; En los buffers con lsp corre después de la completion de lsp.
+(use-package cape
+  :init
+  (add-hook 'completion-at-point-functions #'cape-file))
+
 
 
 ;; ============================================================
@@ -288,6 +298,14 @@
 ;; ============================================================
 ;; LSP-MODE
 ;; ============================================================
+
+;; lsp recibe respuestas grandes del servidor: leer de a 1 MB en vez de 64 KB.
+(setq read-process-output-max (* 1024 1024))
+
+;; yasnippet: lsp-mode lo usa para los snippets que propone el servidor
+;; (argumentos de funciones, etc.).
+(use-package yasnippet
+  :hook (prog-mode . yas-minor-mode))
 
 (use-package lsp-mode
   :custom

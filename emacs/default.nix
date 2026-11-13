@@ -73,6 +73,7 @@ in
           marginalia
           consult
           corfu
+          cape
           consult-dir
 
           # --- vc ---
@@ -92,6 +93,8 @@ in
 
           # --- Edición ---
           move-text
+          yasnippet
+          rainbow-delimiters
 
           # --- Treesitter grammars ---
           (treesit-grammars.with-grammars (g: [
