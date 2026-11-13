@@ -100,6 +100,26 @@
         "type": "github"
       }
     },
+    "laminix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792359222,
+        "narHash": "sha256-S1hhTdCZD4dK8s/qUlYVMaRLfub2ulKuAbqOlRc1l0w=",
+        "owner": "jackboykin",
+        "repo": "laminix",
+        "rev": "a0e6cf98cd749b1ab8a472095cbdef59abd0b9ab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jackboykin",
+        "repo": "laminix",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1794165970,
@@ -198,6 +218,7 @@
         "dms": "dms",
         "ewm": "ewm",
         "home-manager": "home-manager",
+        "laminix": "laminix",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "plasma-manager": "plasma-manager",

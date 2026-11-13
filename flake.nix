@@ -35,6 +35,11 @@
       url = "github:aaddrick/claude-desktop-debian";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
+    laminix = {
+      url = "github:jackboykin/laminix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -46,6 +51,7 @@
     dms,
     sops-nix,
     ewm,
+    laminix,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -81,6 +87,7 @@
             nixpkgs.config.allowUnfree = true;
           })
           sops-nix.nixosModules.sops
+          inputs.laminix.nixosModules.default
           ./hosts/nixi/configuration.nix
           ./hosts/nixi/hardware-configuration.nix
           home-manager.nixosModules.home-manager
@@ -97,6 +104,7 @@
             nixpkgs.config.allowUnfree = true;
           })
           sops-nix.nixosModules.sops
+          inputs.laminix.nixosModules.default
           ./hosts/nily/configuration.nix
           ./hosts/nily/hardware-configuration.nix
           home-manager.nixosModules.home-manager
